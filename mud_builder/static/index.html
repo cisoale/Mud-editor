@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="it">
 
 <head>
@@ -8,97 +9,68 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Realm Builder</title>
+    <title>
+        Realm Builder
+    </title>
 
-    <link rel="icon" href="data:,">
+    <!-- CSS -->
 
     <link rel="stylesheet"
-          href="style.css">
+          href="/static/style.css">
 
 </head>
 
 <body>
 
     <!-- ===================================== -->
-    <!-- TOPBAR -->
+    <!-- APP -->
     <!-- ===================================== -->
 
-    <header id="topbar">
+    <div id="app">
 
         <!-- ================================= -->
-        <!-- LOGO -->
+        <!-- TOPBAR -->
         <!-- ================================= -->
 
-        <div class="logo">
+        <header id="topbar">
 
-            <h1>
+            <!-- LOGO -->
+
+            <div id="logo">
+
                 REALM BUILDER
-            </h1>
 
-            <button id="helpButton"
-                    class="toolbarButton"
-                    onclick="openHelpModal()">
+            </div>
 
-                ?
+            <!-- TOOLBAR -->
 
-            </button>
+            <div id="toolbar">
 
-            <button id="validationButton"
-                    class="toolbarButton"
-                    onclick="openValidationModal()">
+                <button id="newRoomBtn">
 
-                ⚠
+                    + Room
 
-            </button>
+                </button>
 
-        </div>
+                <button id="newMobBtn">
 
+                    + Mob
 
+                </button>
 
-        <!-- ================================= -->
-        <!-- TOPBAR ACTIONS -->
-        <!-- ================================= -->
+                <button id="newAreaBtn">
 
-        <div class="topbarActions">
+                    + Area
 
-            <button id="newRoomBtn"
-                    class="toolbarButton">
+                </button>
 
-                + Room
+                <button id="linkModeBtn">
 
-            </button>
+                    Link Mode
 
-            <button id="newMobBtn"
-                    class="toolbarButton">
+                </button>
 
-                + Mob
-
-            </button>
-
-            <button id="newAreaBtn"
-                    class="toolbarButton">
-
-                + Area
-
-            </button>
-
-            <button id="linkModeBtn"
-                    class="toolbarButton">
-
-                Link Mode
-
-            </button>
-
-
-
-            <!-- ============================= -->
-            <!-- Z CONTROLS -->
-            <!-- ============================= -->
-
-            <div id="zControls">
-
-                <button id="zMinusBtn"
-                        class="zButton">
+                <button id="zMinusBtn">
 
                     Z-
 
@@ -110,8 +82,7 @@
 
                 </span>
 
-                <button id="zPlusBtn"
-                        class="zButton">
+                <button id="zPlusBtn">
 
                     Z+
 
@@ -119,663 +90,166 @@
 
             </div>
 
-        </div>
-
-    </header>
-
-
-
-    <!-- ===================================== -->
-    <!-- MAIN LAYOUT -->
-    <!-- ===================================== -->
-
-    <div id="layout">
-
-
+        </header>
 
         <!-- ================================= -->
-        <!-- LEFT SIDEBAR -->
+        <!-- MAIN LAYOUT -->
         <!-- ================================= -->
 
-        <aside id="leftSidebar"
-               class="sidebar">
+        <div id="mainLayout">
 
-            <div class="sidebarSection">
+            <!-- ============================= -->
+            <!-- LEFT SIDEBAR -->
+            <!-- ============================= -->
+
+            <aside id="leftSidebar">
 
                 <h3>
+
                     Areas
+
                 </h3>
 
                 <div id="areasSidebar"></div>
 
-            </div>
+                <h3 style="margin-top:20px;">
 
-        </aside>
+                    Rooms
 
+                </h3>
 
+                <div id="roomList"></div>
 
-        <!-- ================================= -->
-        <!-- WORKSPACE -->
-        <!-- ================================= -->
-
-        <main id="canvasContainer">
-
-            <canvas id="mapCanvas"></canvas>
-
-        </main>
-
-
-
-        <!-- ================================= -->
-        <!-- RIGHT SIDEBAR -->
-        <!-- ================================= -->
-
-        <aside id="rightSidebar"
-               class="sidebar">
-
-
+            </aside>
 
             <!-- ============================= -->
-            <!-- MOBS -->
+            <!-- MAP -->
             <!-- ============================= -->
 
-            <div class="sidebarSection">
+            <main id="canvasContainer">
+
+                <canvas id="mapCanvas"></canvas>
+
+            </main>
+
+            <!-- ============================= -->
+            <!-- RIGHT SIDEBAR -->
+            <!-- ============================= -->
+
+            <aside id="rightSidebar">
 
                 <h3>
+
                     Mobs
+
                 </h3>
 
                 <div id="mobs"></div>
 
-            </div>
+                <h3 style="margin-top:20px;">
 
+                    Regions
 
-
-            <!-- ============================= -->
-            <!-- REGIONS -->
-            <!-- ============================= -->
-
-            <div class="sidebarSection">
-
-                <div class="regionHeader">
-
-                    <h3>
-                        Regions
-                    </h3>
-
-                    <button class="toolbarButton"
-                            onclick="newRegion()">
-
-                        +
-
-                    </button>
-
-                </div>
+                </h3>
 
                 <div id="regions"></div>
 
-            </div>
+            </aside>
 
-        </aside>
+        </div>
 
     </div>
 
-
-
     <!-- ===================================== -->
-    <!-- MAIN MODAL -->
+    <!-- ROOM MODAL -->
     <!-- ===================================== -->
 
-    <div id="modalOverlay">
+    <div id="roomModal"
+         class="modal">
 
-        <div class="modal">
+        <div class="modal-content">
 
+            <h2>
 
+                Room Editor
 
-            <!-- ================================= -->
-            <!-- MODAL HEADER -->
-            <!-- ================================= -->
+            </h2>
 
-            <div id="modalHeader">
+            <!-- VNUM -->
 
-                <div id="modalTitle">
+            <label>
 
-                    Editor
+                VNUM
 
-                </div>
+            </label>
 
-                <button class="toolbarButton"
-                        onclick="closeModal()">
+            <input id="room_vnum"
+                   type="number">
 
-                    ✕
+            <!-- NAME -->
+
+            <label>
+
+                Name
+
+            </label>
+
+            <input id="room_name"
+                   type="text">
+
+            <!-- AREA -->
+
+            <label>
+
+                Area
+
+            </label>
+
+            <input id="room_area"
+                   type="text">
+
+            <!-- REGION -->
+
+            <label>
+
+                Region
+
+            </label>
+
+            <input id="room_region"
+                   type="text">
+
+            <!-- DESCRIPTION -->
+
+            <label>
+
+                Description
+
+            </label>
+
+            <textarea id="room_long_desc"></textarea>
+
+            <!-- BUTTONS -->
+
+            <div class="modal-buttons">
+
+                <button id="saveRoomBtn">
+
+                    Save
 
                 </button>
 
-            </div>
+                <button id="deleteRoomBtn">
 
+                    Delete
 
+                </button>
 
-            <!-- ================================= -->
-            <!-- MODAL BODY -->
-            <!-- ================================= -->
+                <button id="closeRoomBtn">
 
-            <div id="modalBody">
+                    Close
 
-
-
-                <!-- ================================= -->
-                <!-- ROOM EDITOR -->
-                <!-- ================================= -->
-
-                <div id="roomEditor"
-                     class="editorPanel">
-
-                    <div class="editorGrid">
-
-
-
-                        <!-- ========================= -->
-                        <!-- VNUM -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                VNUM
-                            </label>
-
-                            <input id="room_vnum"
-                                   type="number">
-
-                        </div>
-
-
-
-                        <!-- ========================= -->
-                        <!-- NAME -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                Name
-                            </label>
-
-                            <input id="room_name">
-
-                        </div>
-
-
-
-                        <!-- ========================= -->
-                        <!-- AREA -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                Area
-                            </label>
-
-                            <input id="room_area">
-
-                        </div>
-
-
-
-                        <!-- ========================= -->
-                        <!-- REGION -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                Region
-                            </label>
-
-                            <input id="room_region">
-
-                        </div>
-
-
-
-                        <!-- ========================= -->
-                        <!-- SHORT DESC -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                Short Description
-                            </label>
-
-                            <input id="room_short_desc">
-
-                        </div>
-
-
-
-                        <!-- ========================= -->
-                        <!-- LONG DESC -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                Long Description
-                            </label>
-
-                            <textarea id="room_long_desc"></textarea>
-
-                        </div>
-
-
-
-                        <!-- ========================= -->
-                        <!-- X -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                X
-                            </label>
-
-                            <input id="room_x"
-                                   type="number">
-
-                        </div>
-
-
-
-                        <!-- ========================= -->
-                        <!-- Y -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                Y
-                            </label>
-
-                            <input id="room_y"
-                                   type="number">
-
-                        </div>
-
-
-
-                        <!-- ========================= -->
-                        <!-- Z -->
-                        <!-- ========================= -->
-
-                        <div class="formGroup">
-
-                            <label>
-                                Z
-                            </label>
-
-                            <input id="room_z"
-                                   type="number">
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- ================================= -->
-                    <!-- EXITS -->
-                    <!-- ================================= -->
-
-                    <div class="exitEditor">
-
-                        <h3>
-                            Exits
-                        </h3>
-
-                        <div class="exitGrid">
-
-
-
-                            <!-- NORTH -->
-
-                            <div class="exitBlock">
-
-                                <h4>
-                                    North
-                                </h4>
-
-                                <input id="exit_north_to"
-                                       placeholder="To Room">
-
-                                <div class="exitFlagsCompact">
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_north_door">
-                                        Door
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_north_locked">
-                                        Locked
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_north_closed">
-                                        Closed
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_north_secret">
-                                        Secret
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_north_blocked">
-                                        Blocked
-                                    </label>
-
-                                </div>
-
-                                <input id="exit_north_key"
-                                       placeholder="Key ID">
-
-                            </div>
-
-
-
-                            <!-- SOUTH -->
-
-                            <div class="exitBlock">
-
-                                <h4>
-                                    South
-                                </h4>
-
-                                <input id="exit_south_to"
-                                       placeholder="To Room">
-
-                                <div class="exitFlagsCompact">
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_south_door">
-                                        Door
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_south_locked">
-                                        Locked
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_south_closed">
-                                        Closed
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_south_secret">
-                                        Secret
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_south_blocked">
-                                        Blocked
-                                    </label>
-
-                                </div>
-
-                                <input id="exit_south_key"
-                                       placeholder="Key ID">
-
-                            </div>
-
-
-
-                            <!-- EAST -->
-
-                            <div class="exitBlock">
-
-                                <h4>
-                                    East
-                                </h4>
-
-                                <input id="exit_east_to"
-                                       placeholder="To Room">
-
-                                <div class="exitFlagsCompact">
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_east_door">
-                                        Door
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_east_locked">
-                                        Locked
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_east_closed">
-                                        Closed
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_east_secret">
-                                        Secret
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_east_blocked">
-                                        Blocked
-                                    </label>
-
-                                </div>
-
-                                <input id="exit_east_key"
-                                       placeholder="Key ID">
-
-                            </div>
-
-
-
-                            <!-- WEST -->
-
-                            <div class="exitBlock">
-
-                                <h4>
-                                    West
-                                </h4>
-
-                                <input id="exit_west_to"
-                                       placeholder="To Room">
-
-                                <div class="exitFlagsCompact">
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_west_door">
-                                        Door
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_west_locked">
-                                        Locked
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_west_closed">
-                                        Closed
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_west_secret">
-                                        Secret
-                                    </label>
-
-                                    <label>
-                                        <input type="checkbox"
-                                               id="exit_west_blocked">
-                                        Blocked
-                                    </label>
-
-                                </div>
-
-                                <input id="exit_west_key"
-                                       placeholder="Key ID">
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- ================================= -->
-                    <!-- ACTIONS -->
-                    <!-- ================================= -->
-
-                    <div class="modalActions">
-
-                        <button class="saveButton"
-                                onclick="saveRoomForm()">
-
-                            Save Room
-
-                        </button>
-
-                        <button class="deleteButton"
-                                onclick="deleteCurrentRoom()">
-
-                            Delete Room
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- ================================= -->
-                <!-- MOB EDITOR -->
-                <!-- ================================= -->
-
-                <div id="mobEditor"
-                     class="editorPanel"
-                     style="display:none;">
-
-                    <div class="editorGrid">
-
-                        <div class="formGroup">
-
-                            <label>
-                                VNUM
-                            </label>
-
-                            <input id="mob_vnum"
-                                   type="number">
-
-                        </div>
-
-
-
-                        <div class="formGroup">
-
-                            <label>
-                                Name
-                            </label>
-
-                            <input id="mob_name">
-
-                        </div>
-
-
-
-                        <div class="formGroup">
-
-                            <label>
-                                Description
-                            </label>
-
-                            <textarea id="mob_description"></textarea>
-
-                        </div>
-
-
-
-                        <div class="formGroup">
-
-                            <label>
-                                HP
-                            </label>
-
-                            <input id="mob_hp"
-                                   type="number">
-
-                        </div>
-
-
-
-                        <div class="formGroup">
-
-                            <label>
-                                Damage
-                            </label>
-
-                            <input id="mob_damage"
-                                   type="number">
-
-                        </div>
-
-
-
-                        <div class="formGroup">
-
-                            <label>
-                                Defense
-                            </label>
-
-                            <input id="mob_defense"
-                                   type="number">
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="modalActions">
-
-                        <button class="saveButton"
-                                onclick="saveMobForm()">
-
-                            Save Mob
-
-                        </button>
-
-                    </div>
-
-                </div>
+                </button>
 
             </div>
 
@@ -783,163 +257,33 @@
 
     </div>
 
-
-
     <!-- ===================================== -->
-    <!-- HELP MODAL -->
+    <!-- VALIDATION PANEL -->
     <!-- ===================================== -->
 
-    <div id="helpOverlay">
-
-        <div id="helpWindow">
-
-            <div id="helpHeader">
-
-                <h2>
-                    Realm Builder Help
-                </h2>
-
-                <button class="toolbarButton"
-                        onclick="closeHelpModal()">
-
-                    ✕
-
-                </button>
-
-            </div>
-
-            <div id="helpContent">
-
-                <h3>
-                    Basic Controls
-                </h3>
-
-                <ul>
-
-                    <li>
-                        Click Room → Select room
-                    </li>
-
-                    <li>
-                        Double Click Room → Open editor
-                    </li>
-
-                    <li>
-                        Drag Room → Move room
-                    </li>
-
-                    <li>
-                        Drag Empty Space → Move map
-                    </li>
-
-                </ul>
-
-
-
-                <h3>
-                    Link Mode
-                </h3>
-
-                <ul>
-
-                    <li>
-                        Activate Link Mode
-                    </li>
-
-                    <li>
-                        Click first room
-                    </li>
-
-                    <li>
-                        Click second room
-                    </li>
-
-                </ul>
-
-
-
-                <h3>
-                    Z Layers
-                </h3>
-
-                <ul>
-
-                    <li>
-                        Use Z+ / Z-
-                    </li>
-
-                    <li>
-                        Blue exits = UP
-                    </li>
-
-                    <li>
-                        Purple exits = DOWN
-                    </li>
-
-                </ul>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
+    <div id="validationPanel"></div>
 
     <!-- ===================================== -->
-    <!-- VALIDATION MODAL -->
+    <!-- JAVASCRIPT -->
     <!-- ===================================== -->
 
-    <div id="validationOverlay">
+    <script src="/static/js/state.js"></script>
 
-        <div id="validationWindow">
+    <script src="/static/js/renderer.js"></script>
 
-            <div id="validationHeader">
+    <script src="/static/js/spatial_grid.js"></script>
 
-                <h2>
-                    Validation Panel
-                </h2>
+    <script src="/static/js/data_manager.js"></script>
 
-                <button class="toolbarButton"
-                        onclick="closeValidationModal()">
+    <script src="/static/js/sidebar.js"></script>
 
-                    ✕
+    <script src="/static/js/interaction.js"></script>
 
-                </button>
+    <script src="/static/js/modals.js"></script>
 
-            </div>
+    <script src="/static/js/validator.js"></script>
 
-            <div id="validationContent"></div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ===================================== -->
-    <!-- SCRIPTS -->
-    <!-- ===================================== -->
-
-    <script src="js/state.js"></script>
-
-    <script src="js/spatial_grid.js"></script>
-
-    <script src="js/data_manager.js"></script>
-
-    <script src="js/sidebar.js"></script>
-
-    <script src="js/editor.js"></script>
-
-    <script src="js/renderer.js"></script>
-
-    <script src="js/validator.js"></script>
-
-    <script src="js/interaction.js"></script>
-
-    <script src="js/modals.js"></script>
-
-    <script src="js/boot.js"></script>
+    <script src="/static/js/boot.js"></script>
 
 </body>
 

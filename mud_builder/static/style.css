@@ -1,17 +1,124 @@
+* {
+    box-sizing: border-box;
+}
+
 html,
 body {
     width: 100%;
     height: 100%;
     margin: 0;
+    padding: 0;
     overflow: hidden;
     background: #0b1020;
+    font-family: Arial, sans-serif;
+    color: white;
 }
 
-#canvasContainer {
-    position: relative;
+/* ========================================
+   APP
+======================================== */
+
+#app {
     width: 100vw;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========================================
+   TOPBAR
+======================================== */
+
+#topbar {
+    height: 72px;
+    background: linear-gradient( 90deg, #101933, #132044 );
+    border-bottom: 1px solid #263559;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    flex-shrink: 0;
+}
+
+#logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+}
+
+#toolbar {
+    display: flex;
+    gap: 10px;
+}
+
+    #toolbar button {
+        background: #1f2c4f;
+        border: 1px solid #33456f;
+        color: white;
+        border-radius: 10px;
+        padding: 10px 16px;
+        cursor: pointer;
+    }
+
+/* ========================================
+   MAIN LAYOUT
+======================================== */
+
+#mainLayout {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+/* ========================================
+   LEFT SIDEBAR
+======================================== */
+
+#leftSidebar {
+    width: 300px;
+    background: #111933;
+    border-right: 1px solid #263559;
+    overflow-y: auto;
+    padding: 14px;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   ROOM LIST
+======================================== */
+
+#roomList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.room-item {
+    background: #1a2647;
+    border: 1px solid #31456e;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+    .room-item:hover {
+        background: #24345d;
+    }
+
+    .room-item.active {
+        background: #4264d0;
+    }
+
+/* ========================================
+   CANVAS AREA
+======================================== */
+
+#canvasContainer {
+    flex: 1;
+    position: relative;
     overflow: hidden;
+    background: #08111f;
 }
 
 #mapCanvas {
@@ -20,4 +127,59 @@ body {
     width: 100%;
     height: 100%;
     display: block;
+}
+
+/* ========================================
+   RIGHT SIDEBAR
+======================================== */
+
+#rightSidebar {
+    width: 220px;
+    background: #111933;
+    border-left: 1px solid #263559;
+    padding: 14px;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   MODAL
+======================================== */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+    .modal.active {
+        display: flex;
+    }
+
+.modal-content {
+    width: 520px;
+    background: #182341;
+    border: 1px solid #31456e;
+    border-radius: 16px;
+    padding: 24px;
+}
+
+    .modal-content input,
+    .modal-content textarea {
+        width: 100%;
+        background: #111933;
+        border: 1px solid #31456e;
+        color: white;
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 6px;
+        margin-bottom: 14px;
+    }
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
 }

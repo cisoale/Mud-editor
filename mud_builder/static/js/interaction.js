@@ -27,6 +27,11 @@ const InteractionManager = {
             this.onPointerUp.bind(this)
         )
 
+        canvas.addEventListener(
+            'dblclick',
+            this.onDoubleClick.bind(this)
+        )
+
         console.log(
             '[INTERACTION READY]'
         )
@@ -148,5 +153,28 @@ const InteractionManager = {
         this.dragging = false
 
         this.dragRoom = null
+    },
+
+    onDoubleClick(event) {
+
+        const mouse =
+            this.getMouseWorld(event)
+
+        const room =
+            this.getRoomAt(
+                mouse.x,
+                mouse.y
+            )
+
+        if (!room) {
+            return
+        }
+
+        if (
+            typeof RoomEditor !== 'undefined'
+        ) {
+
+            RoomEditor.open(room)
+        }
     }
 }
