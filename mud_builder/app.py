@@ -232,27 +232,15 @@ def api_areas():
 
                 continue
 
-            # =================================
-            # AREA META
-            # =================================
-
             area_data = data.get(
                 "area",
                 {}
             )
 
-            # =================================
-            # ROOMS
-            # =================================
-
             rooms_data = data.get(
                 "rooms",
                 {}
             )
-
-            # =================================
-            # DICT → LIST
-            # =================================
 
             if isinstance(
                 rooms_data,
@@ -266,10 +254,6 @@ def api_areas():
             else:
 
                 rooms = rooms_data
-
-            # =================================
-            # OUTPUT
-            # =================================
 
             result.append({
 
@@ -369,43 +353,6 @@ def api_save_room():
 
         print(
             "[SAVE ROOM ERROR]",
-            e
-        )
-
-        return jsonify({
-            "error": str(e)
-        }), 500
-
-# =========================================
-# SAVE MOB
-# =========================================
-
-@app.route(
-    "/api/mob",
-    methods=["POST"]
-)
-
-def api_save_mob():
-
-    try:
-
-        data = request.json
-
-        save_mob(data)
-
-        print(
-            f"[SAVE MOB] "
-            f"{data.get('vnum')}"
-        )
-
-        return jsonify({
-            "ok": True
-        })
-
-    except Exception as e:
-
-        print(
-            "[SAVE MOB ERROR]",
             e
         )
 
@@ -546,6 +493,43 @@ def delete_room():
 
         print(
             "[DELETE ROOM ERROR]",
+            e
+        )
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+
+# =========================================
+# SAVE MOB
+# =========================================
+
+@app.route(
+    "/api/mob",
+    methods=["POST"]
+)
+
+def api_save_mob():
+
+    try:
+
+        data = request.json
+
+        save_mob(data)
+
+        print(
+            f"[SAVE MOB] "
+            f"{data.get('vnum')}"
+        )
+
+        return jsonify({
+            "ok": True
+        })
+
+    except Exception as e:
+
+        print(
+            "[SAVE MOB ERROR]",
             e
         )
 

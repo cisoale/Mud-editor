@@ -114,6 +114,8 @@ const InteractionManager = {
 
         AppState.selectedRoom = room
 
+        SidebarManager.renderRooms()
+
         MapRenderer.render()
     },
 
@@ -166,15 +168,9 @@ const InteractionManager = {
                 mouse.y
             )
 
-        if (!room) {
+        if (!room)
             return
-        }
 
-        if (
-            typeof RoomEditor !== 'undefined'
-        ) {
-
-            RoomEditor.open(room)
-        }
+        ModalManager.openRoom(room)
     }
 }

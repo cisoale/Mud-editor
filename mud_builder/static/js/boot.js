@@ -71,6 +71,7 @@ async function boot() {
     // ====================================
 
     InteractionManager.init()
+    ModalManager.init()
 
     // ====================================
     // FIRST RENDER

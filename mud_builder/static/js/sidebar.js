@@ -65,7 +65,7 @@ const SidebarManager = {
                 'dblclick',
                 () => {
 
-                    RoomEditor.open(room)
+                    ModalManager.openRoom(room)
                 }
             )
 
