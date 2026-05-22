@@ -54,10 +54,6 @@ def get_rooms():
 
         return rooms
 
-    # =====================================
-    # AREA FILES
-    # =====================================
-
     for filename in os.listdir(
         AREAS_DIR
     ):
@@ -88,10 +84,6 @@ def get_rooms():
             )
 
             continue
-
-        # =================================
-        # ROOMS
-        # =================================
 
         rooms_data = data.get(
             "rooms",
@@ -154,6 +146,11 @@ def save_room(updated_room):
 
         return False
 
+    area_id = updated_room.get(
+        "area_id",
+        "starting_village"
+    )
+
     if not os.path.exists(
         AREAS_DIR
     ):
@@ -199,6 +196,13 @@ def save_room(updated_room):
 
             continue
 
+        current_area_id = area_data.get(
+            "area",
+            {}
+        ).get(
+            "id"
+        )
+
         rooms_data = area_data.get(
             "rooms",
             {}
@@ -221,6 +225,21 @@ def save_room(updated_room):
 
                 updated = True
 
+            # =============================
+            # CREATE NEW
+            # =============================
+
+            elif current_area_id == area_id:
+
+                rooms_data[vnum] = updated_room
+
+                updated = True
+
+                print(
+                    f"[CREATE ROOM] "
+                    f"{vnum}"
+                )
+
         # =================================
         # LIST
         # =================================
@@ -240,6 +259,28 @@ def save_room(updated_room):
                     updated = True
 
                     break
+
+            # =============================
+            # CREATE NEW
+            # =============================
+
+            if (
+
+                not updated and
+
+                current_area_id == area_id
+            ):
+
+                rooms_data.append(
+                    updated_room
+                )
+
+                updated = True
+
+                print(
+                    f"[CREATE ROOM] "
+                    f"{vnum}"
+                )
 
         # =================================
         # SAVE
@@ -274,7 +315,7 @@ def save_room(updated_room):
 
     print(
         f"[SAVE ROOM] "
-        f"room not found: {vnum}"
+        f"area not found for room: {vnum}"
     )
 
     return False

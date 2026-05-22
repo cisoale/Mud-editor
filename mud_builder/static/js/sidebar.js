@@ -1,8 +1,17 @@
-// ========================================
-// SIDEBAR MANAGER
-// ========================================
-
 const SidebarManager = {
+
+    // ====================================
+    // UPDATE
+    // ====================================
+
+    update() {
+
+        this.renderAreas()
+
+        this.renderMobs()
+
+        this.renderRegions()
+    },
 
     // ====================================
     // RENDER AREAS
@@ -20,141 +29,242 @@ const SidebarManager = {
 
         container.innerHTML = ''
 
+        // =================================
+        // GROUP ROOMS BY AREA
+        // =================================
+
+        const groupedAreas = {}
+
+        AppState.rooms.forEach(room => {
+
+            const areaId =
+
+                room.area_id ||
+
+                'unknown'
+
+            if (!groupedAreas[areaId]) {
+
+                groupedAreas[areaId] = []
+            }
+
+            groupedAreas[areaId].push(room)
+        })
+
         console.log(
-            '[AREAS]',
-            AppState.areas
+            '[GROUPED AREAS]',
+            groupedAreas
         )
 
-        AppState.areas.forEach(area => {
+        // =================================
+        // NO AREAS
+        // =================================
 
-            // =============================
-            // AREA BLOCK
-            // =============================
+        const areaKeys =
+            Object.keys(groupedAreas)
 
-            const areaBlock =
-                document.createElement('div')
+        if (areaKeys.length === 0) {
 
-            areaBlock.className =
-                'areaBlock'
+            container.innerHTML = `
 
-            // =============================
-            // HEADER
-            // =============================
+                <div class="emptySidebar">
 
-            const header =
-                document.createElement('div')
-
-            header.className =
-                'areaHeader'
-
-            header.innerHTML = `
-
-                <div>
-
-                    <div class="areaTitle">
-                        ${area.name}
-                    </div>
-
-                    <div class="areaMeta">
-                        ${area.room_count} rooms
-                    </div>
+                    No areas loaded
 
                 </div>
             `
 
-            areaBlock.appendChild(
-                header
-            )
+            return
+        }
 
-            // =============================
-            // ROOM LIST
-            // =============================
+        // =================================
+        // RENDER AREAS
+        // =================================
 
-            const roomList =
-                document.createElement('div')
+        areaKeys
 
-            roomList.className =
-                'areaRooms'
+            .sort()
 
-            // =============================
-            // DEBUG
-            // =============================
+            .forEach(areaId => {
 
-            console.log(
-                '[AREA ROOMS]',
-                area.rooms
-            )
+                const rooms =
+                    groupedAreas[areaId]
 
-            // =============================
-            // NO ROOMS
-            // =============================
+                // =========================
+                // AREA BLOCK
+                // =========================
 
-            if (
-                !area.rooms ||
-                area.rooms.length === 0
-            ) {
-
-                const empty =
+                const areaBlock =
                     document.createElement('div')
 
-                empty.innerText =
-                    'No rooms'
+                areaBlock.className =
+                    'areaBlock'
 
-                empty.style.opacity =
-                    '0.6'
+                // =========================
+                // HEADER
+                // =========================
 
-                empty.style.padding =
-                    '8px'
+                const header =
+                    document.createElement('div')
 
-                roomList.appendChild(
-                    empty
+                header.className =
+                    'areaHeader'
+
+                header.innerHTML = `
+
+                    <div>
+
+                        <div class="areaTitle">
+
+                            ${areaId}
+
+                        </div>
+
+                        <div class="areaMeta">
+
+                            ${rooms.length} rooms
+
+                        </div>
+
+                    </div>
+                `
+
+                areaBlock.appendChild(
+                    header
                 )
-            }
 
-            // =============================
-            // ROOMS
-            // =============================
+                // =========================
+                // ROOM LIST
+                // =========================
 
-            else {
+                const roomList =
+                    document.createElement('div')
 
-                area.rooms.forEach(room => {
+                roomList.className =
+                    'areaRooms'
 
-                    const roomEntry =
-                        document.createElement('div')
+                rooms
 
-                    roomEntry.className =
-                        'areaRoomEntry'
+                    .sort((a, b) => {
 
-                    roomEntry.innerText =
+                        return (
 
-                        `${room.vnum} - ${room.name}`
+                            Number(
+                                a.vnum || a.id
+                            ) -
 
-                    roomEntry.onclick = () => {
-
-                        console.log(
-                            'ROOM CLICK',
-                            room
+                            Number(
+                                b.vnum || b.id
+                            )
                         )
-                    }
+                    })
 
-                    roomList.appendChild(
-                        roomEntry
-                    )
-                })
-            }
+                    .forEach(room => {
 
-            areaBlock.appendChild(
-                roomList
-            )
+                        const roomId =
 
-            container.appendChild(
-                areaBlock
-            )
-        })
+                            room.vnum ||
+
+                            room.id ||
+
+                            '?'
+
+                        const roomEntry =
+                            document.createElement('div')
+
+                        roomEntry.className =
+                            'areaRoomEntry'
+
+                        // =====================
+                        // SELECTED
+                        // =====================
+
+                        if (
+
+                            AppState.selectedRoom &&
+
+                            getRoomId(
+                                AppState.selectedRoom
+                            ) == roomId
+                        ) {
+
+                            roomEntry.classList.add(
+                                'selected'
+                            )
+                        }
+
+                        // =====================
+                        // LABEL
+                        // =====================
+
+                        roomEntry.innerHTML = `
+
+                            <span class="roomVnum">
+
+                                ${roomId}
+
+                            </span>
+
+                            <span class="roomName">
+
+                                ${room.name || 'Unnamed Room'}
+
+                            </span>
+                        `
+
+                        // =====================
+                        // CLICK
+                        // =====================
+
+                        roomEntry.onclick = () => {
+
+                            AppState.selectedRoom =
+                                room
+
+                            AppState.offsetX =
+
+                                400 - room.x
+
+                            AppState.offsetY =
+
+                                300 - room.y
+
+                            MapRenderer.render()
+
+                            SidebarManager.update()
+
+                            console.log(
+                                '[ROOM SELECT]',
+                                roomId
+                            )
+                        }
+
+                        // =====================
+                        // DOUBLE CLICK
+                        // =====================
+
+                        roomEntry.ondblclick = () => {
+
+                            openRoom(room)
+                        }
+
+                        roomList.appendChild(
+                            roomEntry
+                        )
+                    })
+
+                areaBlock.appendChild(
+                    roomList
+                )
+
+                container.appendChild(
+                    areaBlock
+                )
+            })
     },
 
     // ====================================
-    // MOBS
+    // RENDER MOBS
     // ====================================
 
     renderMobs() {
@@ -169,6 +279,25 @@ const SidebarManager = {
 
         container.innerHTML = ''
 
+        if (
+
+            !AppState.mobs ||
+
+            AppState.mobs.length === 0
+        ) {
+
+            container.innerHTML = `
+
+                <div class="emptySidebar">
+
+                    No mobs loaded
+
+                </div>
+            `
+
+            return
+        }
+
         AppState.mobs.forEach(mob => {
 
             const entry =
@@ -177,9 +306,20 @@ const SidebarManager = {
             entry.className =
                 'entry'
 
-            entry.innerText =
+            entry.innerHTML = `
 
-                `${mob.vnum} - ${mob.name}`
+                <span>
+
+                    ${mob.vnum || '?'}
+
+                </span>
+
+                <span>
+
+                    ${mob.name || 'Unnamed Mob'}
+
+                </span>
+            `
 
             container.appendChild(
                 entry
@@ -188,7 +328,7 @@ const SidebarManager = {
     },
 
     // ====================================
-    // REGIONS
+    // RENDER REGIONS
     // ====================================
 
     renderRegions() {
@@ -214,6 +354,8 @@ const SidebarManager = {
         })
 
         Object.keys(regions)
+
+            .sort()
 
             .forEach(region => {
 

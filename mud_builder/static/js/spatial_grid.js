@@ -1,7 +1,3 @@
-// ========================================
-// SPATIAL GRID
-// ========================================
-
 const SpatialGrid = {
 
     // ====================================
@@ -11,6 +7,9 @@ const SpatialGrid = {
     rebuild() {
 
         AppState.spatialGrid = {}
+
+        const grid =
+            MapRenderer.gridSize
 
         AppState.rooms.forEach(room => {
 
@@ -24,68 +23,81 @@ const SpatialGrid = {
             room.coords.y ??= 0
             room.coords.z ??= 0
 
-            room.x = Number(
-                room.coords.x
-            )
-
-            room.y = Number(
-                room.coords.y
-            )
-
-            room.z = Number(
-                room.coords.z
-            )
-
             // =============================
-            // GRID CELL
+            // GRID COORDS
             // =============================
 
-            const cellX = Math.floor(
+            room.gridX =
+                Number(room.coords.x)
 
-                room.x /
+            room.gridY =
+                Number(room.coords.y)
 
-                AppState.gridCellSize
-            )
+            room.z =
+                Number(room.coords.z)
 
-            const cellY = Math.floor(
+            // LEGACY PIXEL COORDS FIX
 
-                room.y /
+            if (room.gridX > 100) {
 
-                AppState.gridCellSize
-            )
+                room.gridX =
+                    Math.round(room.gridX / grid)
+            }
+
+            if (room.gridY > 100) {
+
+                room.gridY =
+                    Math.round(room.gridY / grid)
+            }
+
+            // =============================
+            // PIXEL COORDS
+            // =============================
+
+            room.x =
+                room.gridX * grid
+
+            room.y =
+                room.gridY * grid
+
+            // =============================
+            // SPATIAL CELL
+            // =============================
+
+            const cellX =
+                Math.floor(
+                    room.x /
+                    AppState.gridCellSize
+                )
+
+            const cellY =
+                Math.floor(
+                    room.y /
+                    AppState.gridCellSize
+                )
 
             const key =
                 `${cellX},${cellY}`
 
-            // =============================
-            // CREATE CELL
-            // =============================
-
             if (
-
                 !AppState.spatialGrid[key]
             ) {
 
                 AppState.spatialGrid[key] = []
             }
 
-            // =============================
-            // INSERT
-            // =============================
-
             AppState.spatialGrid[key]
                 .push(room)
         })
 
         console.log(
-
             '[SPATIAL GRID]',
             AppState.spatialGrid
         )
     },
 
     // ====================================
-    // GET VISIBLE ROOMS
+    // GET VISIBLE
     // ====================================
 
     getVisibleRooms() {
@@ -119,10 +131,6 @@ const SpatialGrid = {
         const endY =
             Math.floor(bottom / cellSize)
 
-        // =============================
-        // ITERATE CELLS
-        // =============================
-
         for (
             let x = startX;
             x <= endX;
@@ -146,20 +154,10 @@ const SpatialGrid = {
 
                 cell.forEach(room => {
 
-                    const roomZ =
-                        Number(room.z || 0)
-
-                    const currentZ =
-                        Number(
-                            AppState.currentZ
-                        )
-
-                    // =====================
-                    // Z FILTER
-                    // =====================
-
                     if (
-                        roomZ === currentZ
+                        Number(room.z)
+                        ===
+                        Number(AppState.currentZ)
                     ) {
 
                         visible.push(room)
@@ -167,11 +165,6 @@ const SpatialGrid = {
                 })
             }
         }
-
-        console.log(
-            '[VISIBLE ROOMS]',
-            visible
-        )
 
         return visible
     }

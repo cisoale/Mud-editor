@@ -1,17 +1,12 @@
-// ========================================
-// MAP RENDERER
-// ========================================
-
 const MapRenderer = {
 
-    roomSize: 26,
-
-
-    // ====================================
-    // RENDER
-    // ====================================
+    roomSize: 32,
 
     render() {
+
+        if (!canvas || !ctx) {
+            return
+        }
 
         ctx.clearRect(
             0,
@@ -23,9 +18,7 @@ const MapRenderer = {
         ctx.save()
 
         ctx.translate(
-
             AppState.offsetX,
-
             AppState.offsetY
         )
 
@@ -38,88 +31,55 @@ const MapRenderer = {
         ctx.restore()
     },
 
-
-    // ====================================
-    // GRID
-    // ====================================
-
     drawGrid() {
 
-        if (!AppState.gridEnabled)
-            return
+        const size = 64
 
-        ctx.strokeStyle =
-            '#1f2937'
-
+        ctx.strokeStyle = '#1a2238'
         ctx.lineWidth = 1
 
-        const grid = 50
+        const left = -AppState.offsetX
+        const top = -AppState.offsetY
 
-        const left =
-            -AppState.offsetX
-
-        const top =
-            -AppState.offsetY
-
-        const right =
-            left + canvas.width
-
-        const bottom =
-            top + canvas.height
+        const right = left + canvas.width
+        const bottom = top + canvas.height
 
         for (
-
-            let x =
-                Math.floor(left / grid) * grid;
-
+            let x = Math.floor(left / size) * size;
             x < right;
-
-            x += grid
+            x += size
         ) {
 
             ctx.beginPath()
 
             ctx.moveTo(x, top)
-
             ctx.lineTo(x, bottom)
 
             ctx.stroke()
         }
 
         for (
-
-            let y =
-                Math.floor(top / grid) * grid;
-
+            let y = Math.floor(top / size) * size;
             y < bottom;
-
-            y += grid
+            y += size
         ) {
 
             ctx.beginPath()
 
             ctx.moveTo(left, y)
-
             ctx.lineTo(right, y)
 
             ctx.stroke()
         }
     },
 
-
-    // ====================================
-    // EXITS
-    // ====================================
-
     drawExits() {
 
-        const visibleRooms =
-            SpatialGrid.getVisibleRooms()
+        AppState.rooms.forEach(room => {
 
-        visibleRooms.forEach(room => {
-
-            if (!room.exits)
+            if (!room.exits) {
                 return
+            }
 
             Object.entries(room.exits)
 
@@ -127,162 +87,88 @@ const MapRenderer = {
 
                     const target =
                         AppState.rooms.find(r =>
-
-                            r.vnum == exit.to
+                            Number(r.vnum) === Number(exit.to)
                         )
 
-                    if (!target)
+                    if (!target) {
                         return
+                    }
 
                     ctx.beginPath()
 
-                    // =====================
-                    // SECRET
-                    // =====================
-
-                    if (exit.secret) {
-
-                        ctx.setLineDash([8, 8])
-
-                    } else {
-
-                        ctx.setLineDash([])
-                    }
-
-                    // =====================
-                    // COLORS
-                    // =====================
-
-                    ctx.strokeStyle =
-                        '#888'
-
-                    if (exit.locked) {
-
-                        ctx.strokeStyle =
-                            '#ff5555'
-                    }
-
-                    if (dir === 'up') {
-
-                        ctx.strokeStyle =
-                            '#4fc3f7'
-                    }
-
-                    if (dir === 'down') {
-
-                        ctx.strokeStyle =
-                            '#ba68c8'
-                    }
-
-                    // =====================
-                    // DRAW
-                    // =====================
-
-                    ctx.lineWidth = 3
+                    ctx.strokeStyle = '#666'
+                    ctx.lineWidth = 2
 
                     ctx.moveTo(
-
-                        room.x + 13,
-
-                        room.y + 13
+                        room.x + this.roomSize / 2,
+                        room.y + this.roomSize / 2
                     )
 
                     ctx.lineTo(
-
-                        target.x + 13,
-
-                        target.y + 13
+                        target.x + this.roomSize / 2,
+                        target.y + this.roomSize / 2
                     )
 
                     ctx.stroke()
                 })
         })
-
-        ctx.setLineDash([])
     },
-
-
-    // ====================================
-    // ROOMS
-    // ====================================
 
     drawRooms() {
 
-        const visibleRooms =
-            SpatialGrid.getVisibleRooms()
+        AppState.rooms.forEach(room => {
 
-        visibleRooms.forEach(room => {
+            ctx.fillStyle = '#47d16c'
 
-            // =============================
-            // COLOR
-            // =============================
-
-            ctx.fillStyle =
-
-                REGION_COLORS[
-                room.region
-                ] || '#666'
-
-            // =============================
-            // SELECTION
-            // =============================
-
-            if (
-                AppState.selectedRoom === room
-            ) {
-
-                ctx.strokeStyle =
-                    '#ffffff'
-
-                ctx.lineWidth = 3
-
-            } else {
-
-                ctx.strokeStyle =
-                    '#000000'
-
-                ctx.lineWidth = 1
+            if (AppState.selectedRoom === room) {
+                ctx.fillStyle = '#4d7cff'
             }
 
-            // =============================
-            // ROOM
-            // =============================
-
-            ctx.beginPath()
-
-            ctx.roundRect(
-
+            ctx.fillRect(
                 room.x,
                 room.y,
-
                 this.roomSize,
-                this.roomSize,
-
-                6
+                this.roomSize
             )
 
-            ctx.fill()
+            ctx.strokeStyle = '#000'
 
-            ctx.stroke()
+            ctx.strokeRect(
+                room.x,
+                room.y,
+                this.roomSize,
+                this.roomSize
+            )
 
-            // =============================
-            // LABEL
-            // =============================
+            ctx.fillStyle = '#fff'
 
-            ctx.fillStyle =
-                '#ffffff'
+            ctx.font = '12px Arial'
 
-            ctx.font =
-                '11px Arial'
+            ctx.textAlign = 'center'
 
             ctx.fillText(
-
                 room.vnum,
-
-                room.x - 5,
-
+                room.x + this.roomSize / 2,
                 room.y - 8
             )
         })
+    },
+
+    resizeCanvas() {
+
+        const container =
+            document.getElementById(
+                'canvasContainer'
+            )
+
+        if (!container) {
+            return
+        }
+
+        canvas.width =
+            container.clientWidth
+
+        canvas.height =
+            container.clientHeight
     }
 }
