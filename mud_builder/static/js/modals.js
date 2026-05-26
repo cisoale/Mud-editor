@@ -8,8 +8,6 @@ const ModalManager = {
 
     init() {
 
-        // CLOSE
-
         const closeBtn =
             document.getElementById(
                 'closeRoomBtn'
@@ -22,8 +20,6 @@ const ModalManager = {
                 () => this.closeRoomModal()
             )
         }
-
-        // SAVE
 
         const saveBtn =
             document.getElementById(
@@ -38,8 +34,6 @@ const ModalManager = {
             )
         }
 
-        // DELETE
-
         const deleteBtn =
             document.getElementById(
                 'deleteRoomBtn'
@@ -52,8 +46,6 @@ const ModalManager = {
                 () => this.deleteRoom()
             )
         }
-
-        // NEW ROOM
 
         const newRoomBtn =
             document.getElementById(
@@ -93,40 +85,66 @@ const ModalManager = {
             'active'
         )
 
-        // VNUM
+        // BASIC
 
         document.getElementById(
             'room_vnum'
         ).value =
             room.vnum || ''
 
-        // NAME
-
         document.getElementById(
             'room_name'
         ).value =
             room.name || ''
-
-        // AREA
 
         document.getElementById(
             'room_area'
         ).value =
             room.area_id || ''
 
-        // REGION
-
         document.getElementById(
             'room_region'
         ).value =
             room.region || ''
 
-        // DESC
-
         document.getElementById(
             'room_long_desc'
         ).value =
             room.long_desc || ''
+
+        // EXITS
+
+        const exits =
+            room.exits || {}
+
+        const directions = [
+
+            'north',
+            'south',
+            'east',
+            'west'
+        ]
+
+        directions.forEach(dir => {
+
+            const exit =
+                exits[dir] || {}
+
+            document.getElementById(
+                `exit_${dir}`
+            ).value =
+                exit.to || ''
+
+            document.getElementById(
+                `exit_${dir}_door`
+            ).checked =
+                exit.door || false
+
+            document.getElementById(
+                `exit_${dir}_locked`
+            ).checked =
+                exit.locked || false
+        })
     },
 
     // ====================================
@@ -180,6 +198,48 @@ const ModalManager = {
             document.getElementById(
                 'room_long_desc'
             ).value
+
+        // ====================================
+        // EXITS
+        // ====================================
+
+        this.currentRoom.exits = {}
+
+        const directions = [
+
+            'north',
+            'south',
+            'east',
+            'west'
+        ]
+
+        directions.forEach(dir => {
+
+            const to =
+                document.getElementById(
+                    `exit_${dir}`
+                ).value
+
+            if (!to)
+                return
+
+            this.currentRoom.exits[dir] = {
+
+                to: Number(to),
+
+                door:
+
+                    document.getElementById(
+                        `exit_${dir}_door`
+                    ).checked,
+
+                locked:
+
+                    document.getElementById(
+                        `exit_${dir}_locked`
+                    ).checked
+            }
+        })
 
         await DataManager.saveRoom(
             this.currentRoom

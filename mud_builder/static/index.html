@@ -13,18 +13,12 @@
         Realm Builder
     </title>
 
-    <!-- CSS -->
-
     <link rel="stylesheet"
           href="/static/style.css">
 
 </head>
 
 <body>
-
-    <!-- ===================================== -->
-    <!-- APP -->
-    <!-- ===================================== -->
 
     <div id="app">
 
@@ -34,46 +28,32 @@
 
         <header id="topbar">
 
-            <!-- LOGO -->
-
             <div id="logo">
 
                 REALM BUILDER
 
             </div>
 
-            <!-- TOOLBAR -->
-
             <div id="toolbar">
 
                 <button id="newRoomBtn">
-
                     + Room
-
                 </button>
 
                 <button id="newMobBtn">
-
                     + Mob
-
                 </button>
 
                 <button id="newAreaBtn">
-
                     + Area
-
                 </button>
 
                 <button id="linkModeBtn">
-
                     Link Mode
-
                 </button>
 
                 <button id="zMinusBtn">
-
                     Z-
-
                 </button>
 
                 <span id="zLevel">
@@ -83,9 +63,7 @@
                 </span>
 
                 <button id="zPlusBtn">
-
                     Z+
-
                 </button>
 
             </div>
@@ -93,14 +71,12 @@
         </header>
 
         <!-- ================================= -->
-        <!-- MAIN LAYOUT -->
+        <!-- MAIN -->
         <!-- ================================= -->
 
         <div id="mainLayout">
 
-            <!-- ============================= -->
-            <!-- LEFT SIDEBAR -->
-            <!-- ============================= -->
+            <!-- LEFT -->
 
             <aside id="leftSidebar">
 
@@ -122,9 +98,7 @@
 
             </aside>
 
-            <!-- ============================= -->
             <!-- MAP -->
-            <!-- ============================= -->
 
             <main id="canvasContainer">
 
@@ -132,9 +106,7 @@
 
             </main>
 
-            <!-- ============================= -->
-            <!-- RIGHT SIDEBAR -->
-            <!-- ============================= -->
+            <!-- RIGHT -->
 
             <aside id="rightSidebar">
 
@@ -160,9 +132,9 @@
 
     </div>
 
-    <!-- ===================================== -->
+    <!-- ================================= -->
     <!-- ROOM MODAL -->
-    <!-- ===================================== -->
+    <!-- ================================= -->
 
     <div id="roomModal"
          class="modal">
@@ -229,6 +201,156 @@
 
             <textarea id="room_long_desc"></textarea>
 
+            <!-- ================================= -->
+            <!-- EXITS -->
+            <!-- ================================= -->
+
+            <h3 class="sectionTitle">
+
+                Exits
+
+            </h3>
+
+            <div id="exitEditor">
+
+                <!-- NORTH -->
+
+                <div class="exitRow">
+
+                    <div class="exitDirection">
+
+                        North
+
+                    </div>
+
+                    <input id="exit_north"
+                           type="number"
+                           placeholder="Destination VNUM">
+
+                    <label class="exitFlag">
+
+                        <input id="exit_north_door"
+                               type="checkbox">
+
+                        Door
+
+                    </label>
+
+                    <label class="exitFlag">
+
+                        <input id="exit_north_locked"
+                               type="checkbox">
+
+                        Locked
+
+                    </label>
+
+                </div>
+
+                <!-- SOUTH -->
+
+                <div class="exitRow">
+
+                    <div class="exitDirection">
+
+                        South
+
+                    </div>
+
+                    <input id="exit_south"
+                           type="number"
+                           placeholder="Destination VNUM">
+
+                    <label class="exitFlag">
+
+                        <input id="exit_south_door"
+                               type="checkbox">
+
+                        Door
+
+                    </label>
+
+                    <label class="exitFlag">
+
+                        <input id="exit_south_locked"
+                               type="checkbox">
+
+                        Locked
+
+                    </label>
+
+                </div>
+
+                <!-- EAST -->
+
+                <div class="exitRow">
+
+                    <div class="exitDirection">
+
+                        East
+
+                    </div>
+
+                    <input id="exit_east"
+                           type="number"
+                           placeholder="Destination VNUM">
+
+                    <label class="exitFlag">
+
+                        <input id="exit_east_door"
+                               type="checkbox">
+
+                        Door
+
+                    </label>
+
+                    <label class="exitFlag">
+
+                        <input id="exit_east_locked"
+                               type="checkbox">
+
+                        Locked
+
+                    </label>
+
+                </div>
+
+                <!-- WEST -->
+
+                <div class="exitRow">
+
+                    <div class="exitDirection">
+
+                        West
+
+                    </div>
+
+                    <input id="exit_west"
+                           type="number"
+                           placeholder="Destination VNUM">
+
+                    <label class="exitFlag">
+
+                        <input id="exit_west_door"
+                               type="checkbox">
+
+                        Door
+
+                    </label>
+
+                    <label class="exitFlag">
+
+                        <input id="exit_west_locked"
+                               type="checkbox">
+
+                        Locked
+
+                    </label>
+
+                </div>
+
+            </div>
+
             <!-- BUTTONS -->
 
             <div class="modal-buttons">
@@ -257,32 +379,24 @@
 
     </div>
 
-    <!-- ===================================== -->
-    <!-- VALIDATION PANEL -->
-    <!-- ===================================== -->
+    <!-- ================================= -->
+    <!-- VALIDATION -->
+    <!-- ================================= -->
 
     <div id="validationPanel"></div>
 
-    <!-- ===================================== -->
+    <!-- ================================= -->
     <!-- JAVASCRIPT -->
-    <!-- ===================================== -->
+    <!-- ================================= -->
 
     <script src="/static/js/state.js"></script>
-
     <script src="/static/js/renderer.js"></script>
-
     <script src="/static/js/spatial_grid.js"></script>
-
     <script src="/static/js/data_manager.js"></script>
-
     <script src="/static/js/sidebar.js"></script>
-
     <script src="/static/js/interaction.js"></script>
-
     <script src="/static/js/modals.js"></script>
-
     <script src="/static/js/validator.js"></script>
-
     <script src="/static/js/boot.js"></script>
 
 </body>
