@@ -1,7 +1,3 @@
-// ========================================
-// BOOT
-// ========================================
-
 console.log(
     '=== REALM BUILDER ==='
 )
@@ -10,10 +6,6 @@ let canvas
 let ctx
 
 async function boot() {
-
-    // ====================================
-    // CANVAS
-    // ====================================
 
     canvas =
         document.getElementById(
@@ -43,7 +35,7 @@ async function boot() {
         () => {
 
             MapRenderer.resizeCanvas()
-
+            MapRenderer.centerMap()
             MapRenderer.render()
         }
     )
@@ -71,10 +63,19 @@ async function boot() {
     // ====================================
 
     InteractionManager.init()
+
     ModalManager.init()
 
+    Validator.init()
+
     // ====================================
-    // FIRST RENDER
+    // VALIDATOR
+    // ====================================
+
+    Validator.validateWorld()
+
+    // ====================================
+    // RENDER
     // ====================================
 
     MapRenderer.render()
@@ -83,10 +84,6 @@ async function boot() {
         '[BOOT READY]'
     )
 }
-
-// ========================================
-// START
-// ========================================
 
 window.addEventListener(
     'DOMContentLoaded',

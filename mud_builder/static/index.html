@@ -71,12 +71,14 @@
         </header>
 
         <!-- ================================= -->
-        <!-- MAIN -->
+        <!-- MAIN LAYOUT -->
         <!-- ================================= -->
 
         <div id="mainLayout">
 
-            <!-- LEFT -->
+            <!-- ================================= -->
+            <!-- LEFT SIDEBAR -->
+            <!-- ================================= -->
 
             <aside id="leftSidebar">
 
@@ -98,7 +100,9 @@
 
             </aside>
 
+            <!-- ================================= -->
             <!-- MAP -->
+            <!-- ================================= -->
 
             <main id="canvasContainer">
 
@@ -106,7 +110,9 @@
 
             </main>
 
-            <!-- RIGHT -->
+            <!-- ================================= -->
+            <!-- RIGHT SIDEBAR -->
+            <!-- ================================= -->
 
             <aside id="rightSidebar">
 
@@ -118,13 +124,31 @@
 
                 <div id="mobs"></div>
 
-                <h3 style="margin-top:20px;">
+                <!-- ================================= -->
+                <!-- VALIDATOR -->
+                <!-- ================================= -->
 
-                    Regions
+                <div id="validatorWrapper">
 
-                </h3>
+                    <div id="validatorHeader">
 
-                <div id="regions"></div>
+                        <span>
+
+                            Validation
+
+                        </span>
+
+                        <span id="validatorCount">
+
+                            0
+
+                        </span>
+
+                    </div>
+
+                    <div id="validationPanel"></div>
+
+                </div>
 
             </aside>
 
@@ -147,7 +171,9 @@
 
             </h2>
 
-            <!-- VNUM -->
+            <!-- ================================= -->
+            <!-- BASIC -->
+            <!-- ================================= -->
 
             <label>
 
@@ -158,8 +184,6 @@
             <input id="room_vnum"
                    type="number">
 
-            <!-- NAME -->
-
             <label>
 
                 Name
@@ -168,8 +192,6 @@
 
             <input id="room_name"
                    type="text">
-
-            <!-- AREA -->
 
             <label>
 
@@ -180,8 +202,6 @@
             <input id="room_area"
                    type="text">
 
-            <!-- REGION -->
-
             <label>
 
                 Region
@@ -190,8 +210,6 @@
 
             <input id="room_region"
                    type="text">
-
-            <!-- DESCRIPTION -->
 
             <label>
 
@@ -211,147 +229,11 @@
 
             </h3>
 
-            <div id="exitEditor">
+            <div id="exitEditor"></div>
 
-                <!-- NORTH -->
-
-                <div class="exitRow">
-
-                    <div class="exitDirection">
-
-                        North
-
-                    </div>
-
-                    <input id="exit_north"
-                           type="number"
-                           placeholder="Destination VNUM">
-
-                    <label class="exitFlag">
-
-                        <input id="exit_north_door"
-                               type="checkbox">
-
-                        Door
-
-                    </label>
-
-                    <label class="exitFlag">
-
-                        <input id="exit_north_locked"
-                               type="checkbox">
-
-                        Locked
-
-                    </label>
-
-                </div>
-
-                <!-- SOUTH -->
-
-                <div class="exitRow">
-
-                    <div class="exitDirection">
-
-                        South
-
-                    </div>
-
-                    <input id="exit_south"
-                           type="number"
-                           placeholder="Destination VNUM">
-
-                    <label class="exitFlag">
-
-                        <input id="exit_south_door"
-                               type="checkbox">
-
-                        Door
-
-                    </label>
-
-                    <label class="exitFlag">
-
-                        <input id="exit_south_locked"
-                               type="checkbox">
-
-                        Locked
-
-                    </label>
-
-                </div>
-
-                <!-- EAST -->
-
-                <div class="exitRow">
-
-                    <div class="exitDirection">
-
-                        East
-
-                    </div>
-
-                    <input id="exit_east"
-                           type="number"
-                           placeholder="Destination VNUM">
-
-                    <label class="exitFlag">
-
-                        <input id="exit_east_door"
-                               type="checkbox">
-
-                        Door
-
-                    </label>
-
-                    <label class="exitFlag">
-
-                        <input id="exit_east_locked"
-                               type="checkbox">
-
-                        Locked
-
-                    </label>
-
-                </div>
-
-                <!-- WEST -->
-
-                <div class="exitRow">
-
-                    <div class="exitDirection">
-
-                        West
-
-                    </div>
-
-                    <input id="exit_west"
-                           type="number"
-                           placeholder="Destination VNUM">
-
-                    <label class="exitFlag">
-
-                        <input id="exit_west_door"
-                               type="checkbox">
-
-                        Door
-
-                    </label>
-
-                    <label class="exitFlag">
-
-                        <input id="exit_west_locked"
-                               type="checkbox">
-
-                        Locked
-
-                    </label>
-
-                </div>
-
-            </div>
-
+            <!-- ================================= -->
             <!-- BUTTONS -->
+            <!-- ================================= -->
 
             <div class="modal-buttons">
 
@@ -380,23 +262,25 @@
     </div>
 
     <!-- ================================= -->
-    <!-- VALIDATION -->
-    <!-- ================================= -->
-
-    <div id="validationPanel"></div>
-
-    <!-- ================================= -->
     <!-- JAVASCRIPT -->
     <!-- ================================= -->
 
     <script src="/static/js/state.js"></script>
+
     <script src="/static/js/renderer.js"></script>
+
     <script src="/static/js/spatial_grid.js"></script>
+
     <script src="/static/js/data_manager.js"></script>
+
     <script src="/static/js/sidebar.js"></script>
+
     <script src="/static/js/interaction.js"></script>
+
     <script src="/static/js/modals.js"></script>
+
     <script src="/static/js/validator.js"></script>
+
     <script src="/static/js/boot.js"></script>
 
 </body>

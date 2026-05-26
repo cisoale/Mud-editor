@@ -1,538 +1,223 @@
-﻿const WorldValidator = {
+﻿const Validator = {
 
-    // ====================================
-    // STATE
-    // ====================================
+    collapsed: false,
 
-    errors: [],
+    init() {
 
-    warnings: [],
+        const header =
+            document.getElementById(
+                'validatorHeader'
+            )
 
-    roomIssues: {},
-
-    // ====================================
-    // VALID EXITS
-    // ====================================
-
-    validDirections: [
-
-        'north',
-        'south',
-        'east',
-        'west',
-
-        'up',
-        'down',
-
-        'northeast',
-        'northwest',
-
-        'southeast',
-        'southwest'
-    ],
-
-    // ====================================
-    // VALIDATE ALL
-    // ====================================
-
-    validate() {
-
-        this.errors = []
-
-        this.warnings = []
-
-        this.roomIssues = {}
-
-        if (!AppState.rooms)
+        if (!header)
             return
 
-        const roomIds = new Set()
-
-        const coordsMap = {}
-
-        // =============================
-        // ROOM LOOP
-        // =============================
-
-        AppState.rooms.forEach(room => {
-
-            this.validateRoom(
-                room,
-                roomIds,
-                coordsMap
-            )
-        })
-
-        // =============================
-        // UI
-        // =============================
-
-        this.renderPanel()
-
-        // =============================
-        // RENDER
-        // =============================
-
-        if (MapRenderer.render) {
-
-            MapRenderer.render()
-        }
-
-        console.log(
-
-            `[VALIDATOR] ` +
-
-            `${this.errors.length} errors, ` +
-
-            `${this.warnings.length} warnings`
-        )
-    },
-
-    // ====================================
-    // VALIDATE ROOM
-    // ====================================
-
-    validateRoom(
-        room,
-        roomIds,
-        coordsMap
-    ) {
-
-        const roomId =
-            room.id
-
-        // =============================
-        // ISSUE CONTAINER
-        // =============================
-
-        if (!this.roomIssues[roomId]) {
-
-            this.roomIssues[roomId] = {
-
-                errors: [],
-                warnings: []
-            }
-        }
-
-        // =================================
-        // ID
-        // =================================
-
-        if (
-
-            roomId === undefined ||
-
-            roomId === null
-        ) {
-
-            this.addError(
-
-                room,
-
-                'Room senza ID'
-            )
-        }
-
-        // =================================
-        // DUPLICATE ID
-        // =================================
-
-        if (
-
-            roomIds.has(roomId)
-        ) {
-
-            this.addError(
-
-                room,
-
-                `ID duplicato: ${roomId}`
-            )
-        }
-
-        roomIds.add(roomId)
-
-        // =================================
-        // NAME
-        // =================================
-
-        if (
-
-            !room.name ||
-
-            room.name.trim() === ''
-        ) {
-
-            this.addWarning(
-
-                room,
-
-                'Nome room mancante'
-            )
-        }
-
-        // =================================
-        // DESCRIPTION
-        // =================================
-
-        if (
-
-            !room.description ||
-
-            room.description.trim() === ''
-        ) {
-
-            this.addWarning(
-
-                room,
-
-                'Descrizione mancante'
-            )
-        }
-
-        // =================================
-        // COORDS
-        // =================================
-
-        if (!room.coords) {
-
-            this.addError(
-
-                room,
-
-                'Coords mancanti'
-            )
-
-        } else {
-
-            const x =
-                room.coords.x
-
-            const y =
-                room.coords.y
-
-            const z =
-                room.coords.z
-
-            if (
-
-                x === undefined ||
-
-                y === undefined ||
-
-                z === undefined
-            ) {
-
-                this.addError(
-
-                    room,
-
-                    'Coordinate incomplete'
+        header.addEventListener(
+            'click',
+            () => {
+
+                this.collapsed =
+                    !this.collapsed
+
+                const wrapper =
+                    document.getElementById(
+                        'validatorWrapper'
+                    )
+
+                if (!wrapper)
+                    return
+
+                wrapper.classList.toggle(
+                    'validatorCollapsed'
                 )
             }
+        )
+    },
 
-            const coordKey =
-                `${x}:${y}:${z}`
+    validateWorld() {
 
-            if (
-
-                coordsMap[coordKey]
-            ) {
-
-                this.addWarning(
-
-                    room,
-
-                    `Coordinate duplicate con room ${coordsMap[coordKey]}`
-                )
-
-            } else {
-
-                coordsMap[coordKey] =
-                    room.id
-            }
-        }
-
-        // =================================
-        // REGION
-        // =================================
-
-        if (
-
-            !room.region ||
-
-            room.region.trim() === ''
-        ) {
-
-            this.addWarning(
-
-                room,
-
-                'Region mancante'
+        const panel =
+            document.getElementById(
+                'validationPanel'
             )
-        }
 
-        // =================================
-        // EXITS
-        // =================================
-
-        if (room.exits) {
-
-            Object.entries(
-                room.exits
-            ).forEach(
-
-                ([direction, targetId]) => {
-
-                    // =====================
-                    // INVALID DIRECTION
-                    // =====================
-
-                    if (
-
-                        !this.validDirections.includes(
-                            direction
-                        )
-                    ) {
-
-                        this.addWarning(
-
-                            room,
-
-                            `Exit invalida: ${direction}`
-                        )
-                    }
-
-                    // =====================
-                    // TARGET EXISTS
-                    // =====================
-
-                    const targetRoom =
-                        AppState.rooms.find(
-
-                            r => r.id == targetId
-                        )
-
-                    if (!targetRoom) {
-
-                        this.addError(
-
-                            room,
-
-                            `Exit ${direction} -> ${targetId} inesistente`
-                        )
-                    }
-
-                    // =====================
-                    // SELF LOOP
-                    // =====================
-
-                    if (
-
-                        room.id == targetId
-                    ) {
-
-                        this.addWarning(
-
-                            room,
-
-                            `Exit ${direction} punta a se stessa`
-                        )
-                    }
-                }
+        const count =
+            document.getElementById(
+                'validatorCount'
             )
-        }
-    },
-
-    // ====================================
-    // ADD ERROR
-    // ====================================
-
-    addError(room, message) {
-
-        this.errors.push({
-
-            roomId: room.id,
-
-            message
-        })
-
-        this.roomIssues[room.id]
-            .errors
-            .push(message)
-
-        console.error(
-
-            `[ROOM ${room.id}] ${message}`
-        )
-    },
-
-    // ====================================
-    // ADD WARNING
-    // ====================================
-
-    addWarning(room, message) {
-
-        this.warnings.push({
-
-            roomId: room.id,
-
-            message
-        })
-
-        this.roomIssues[room.id]
-            .warnings
-            .push(message)
-
-        console.warn(
-
-            `[ROOM ${room.id}] ${message}`
-        )
-    },
-
-    // ====================================
-    // ROOM HAS ERROR
-    // ====================================
-
-    roomHasErrors(roomId) {
-
-        const issues =
-            this.roomIssues[roomId]
-
-        if (!issues)
-            return false
-
-        return (
-            issues.errors.length > 0
-        )
-    },
-
-    // ====================================
-    // ROOM HAS WARNINGS
-    // ====================================
-
-    roomHasWarnings(roomId) {
-
-        const issues =
-            this.roomIssues[roomId]
-
-        if (!issues)
-            return false
-
-        return (
-            issues.warnings.length > 0
-        )
-    },
-
-    // ====================================
-    // GET ROOM ISSUES
-    // ====================================
-
-    getRoomIssues(roomId) {
-
-        return this.roomIssues[roomId] || {
-
-            errors: [],
-            warnings: []
-        }
-    },
-
-    // ====================================
-    // RENDER PANEL
-    // ====================================
-
-    renderPanel() {
-
-        const panel = document.getElementById(
-            'validation-panel'
-        )
 
         if (!panel)
             return
 
         panel.innerHTML = ''
 
-        // =============================
-        // HEADER
-        // =============================
+        let issues = 0
 
-        const header =
-            document.createElement('div')
+        const rooms =
+            AppState.rooms || []
 
-        header.className =
-            'validation-header'
+        const roomMap = {}
 
-        header.innerHTML = `
+        rooms.forEach(room => {
 
-            <div class="validation-title">
-                Validation
-            </div>
-
-            <div class="validation-counts">
-
-                <span class="validation-errors">
-                    ❌ ${this.errors.length}
-                </span>
-
-                <span class="validation-warnings">
-                    ⚠ ${this.warnings.length}
-                </span>
-
-            </div>
-        `
-
-        panel.appendChild(header)
-
-        // =============================
-        // ERRORS
-        // =============================
-
-        this.errors.forEach(error => {
-
-            const row =
-                document.createElement('div')
-
-            row.className =
-                'validation-row validation-error'
-
-            row.innerHTML = `
-
-                <strong>
-                    Room ${error.roomId}
-                </strong>
-
-                <div>
-                    ${error.message}
-                </div>
-            `
-
-            panel.appendChild(row)
+            roomMap[
+                room.vnum
+            ] = room
         })
 
-        // =============================
-        // WARNINGS
-        // =============================
+        const reverseMap = {
 
-        this.warnings.forEach(warning => {
+            north: 'south',
+            south: 'north',
 
-            const row =
+            east: 'west',
+            west: 'east',
+
+            up: 'down',
+            down: 'up'
+        }
+
+        const addItem = (
+            type,
+            text,
+            room
+        ) => {
+
+            issues++
+
+            const item =
                 document.createElement('div')
 
-            row.className =
-                'validation-row validation-warning'
+            item.className =
 
-            row.innerHTML = `
+                `validationItem ${type}`
 
-                <strong>
-                    Room ${warning.roomId}
-                </strong>
+            item.innerText = text
 
-                <div>
-                    ${warning.message}
-                </div>
-            `
+            item.addEventListener(
+                'click',
+                () => {
 
-            panel.appendChild(row)
+                    AppState.selectedRoom =
+                        room
+
+                    AppState.offsetX =
+
+                        canvas.width / 2 -
+                        room.x
+
+                    AppState.offsetY =
+
+                        canvas.height / 2 -
+                        room.y
+
+                    SidebarManager.renderRooms()
+
+                    MapRenderer.render()
+
+                    ModalManager.openRoom(
+                        room
+                    )
+                }
+            )
+
+            panel.appendChild(item)
+        }
+
+        rooms.forEach(room => {
+
+            const exits =
+                room.exits || {}
+
+            Object.entries(exits)
+
+                .forEach(([dir, exit]) => {
+
+                    // =============================
+                    // BROKEN EXIT
+                    // =============================
+
+                    if (
+                        !roomMap[exit.to]
+                    ) {
+
+                        addItem(
+
+                            'validationError',
+
+                            `[BROKEN EXIT]
+${room.vnum}
+${dir}
+→
+${exit.to}`,
+
+                            room
+                        )
+
+                        return
+                    }
+
+                    // =============================
+                    // SELF LOOP
+                    // =============================
+
+                    if (
+                        Number(exit.to) ===
+                        Number(room.vnum)
+                    ) {
+
+                        addItem(
+
+                            'validationError',
+
+                            `[SELF LOOP]
+${room.vnum}
+${dir}`,
+
+                            room
+                        )
+                    }
+
+                    // =============================
+                    // REVERSE CHECK
+                    // =============================
+
+                    const target =
+                        roomMap[exit.to]
+
+                    const reverse =
+                        reverseMap[dir]
+
+                    if (!reverse)
+                        return
+
+                    const targetExit =
+                        target.exits?.[
+                        reverse
+                        ]
+
+                    if (!targetExit) {
+
+                        addItem(
+
+                            'validationWarning',
+
+                            `[MISSING REVERSE]
+${room.vnum}
+${dir}
+→
+${target.vnum}`,
+
+                            room
+                        )
+                    }
+                })
         })
+
+        if (count) {
+
+            count.innerText =
+                issues
+        }
     }
 }
