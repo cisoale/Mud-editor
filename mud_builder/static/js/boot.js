@@ -67,6 +67,25 @@ async function boot() {
     ModalManager.init()
 
     Validator.init()
+    // ====================================
+    // CENTER MAP BUTTON
+    // ====================================
+
+    const centerBtn =
+        document.getElementById(
+            'centerMapBtn'
+        )
+
+    if (centerBtn) {
+
+        centerBtn.addEventListener(
+            'click',
+            () => {
+
+                MapRenderer.centerMap()
+            }
+        )
+    }
 
     // ====================================
     // VALIDATOR
