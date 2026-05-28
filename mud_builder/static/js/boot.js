@@ -25,67 +25,99 @@ const ctx =
 
 async function boot() {
 
-    // ====================================
-    // LOAD DATA
-    // ====================================
+    try {
 
-    await DataManager.loadWorld()
+        AppState.loading = true
 
-    // ====================================
-    // INIT SYSTEMS
-    // ====================================
+        // ====================================
+        // LOAD WORLD
+        // ====================================
 
-    ModalManager.init()
+        await DataManager.loadWorld()
 
-    InteractionManager.init()
+        // ====================================
+        // INIT SYSTEMS
+        // ====================================
 
-    SidebarManager.renderRooms()
+        ModalManager.init()
 
-     if(typeof Validator !== 'undefined') {
+        InteractionManager.init()
 
-        Validator.init()
+        SidebarManager.render()
 
-        Validator.validateWorld()
+        // ====================================
+        // VALIDATOR
+        // ====================================
+
+        if (
+            typeof Validator !==
+            'undefined'
+        ) {
+
+            Validator.init()
+
+            Validator.validateWorld()
+
+            console.log(
+                '[VALIDATOR READY]'
+            )
+        }
+
+        // ====================================
+        // CANVAS
+        // ====================================
+
+        MapRenderer.resizeCanvas()
+
+        MapRenderer.centerMap()
+
+        MapRenderer.render()
+
+        // ====================================
+        // TOPBAR
+        // ====================================
+
+        setupTopbar()
+
+        // ====================================
+        // WINDOW RESIZE
+        // ====================================
+
+        window.addEventListener(
+
+            'resize',
+
+            () => {
+
+                MapRenderer.resizeCanvas()
+
+                MapRenderer.render()
+            }
+        )
+
+        // ====================================
+        // INITIALIZED
+        // ====================================
+
+        AppState.initialized = true
 
         console.log(
-            '[VALIDATOR READY]'
+            '[BOOT READY]'
         )
+
+    } catch (error) {
+
+        console.error(
+
+            '[BOOT ERROR]',
+
+            error
+        )
+
+    } finally {
+
+        AppState.loading = false
     }
-    // ====================================
-    // CANVAS
-    // ====================================
-
-    MapRenderer.resizeCanvas()
-
-    MapRenderer.centerMap()
-
-    MapRenderer.render()
-
-    // ====================================
-    // TOPBAR BUTTONS
-    // ====================================
-
-    setupTopbar()
-
-    // ====================================
-    // WINDOW RESIZE
-    // ====================================
-
-    window.addEventListener(
-
-        'resize',
-
-        () => {
-
-            MapRenderer.resizeCanvas()
-
-            MapRenderer.render()
-        }
-    )
-
-    console.log(
-        '[BOOT READY]'
-    )
 }
 
 // ====================================
@@ -117,6 +149,31 @@ function setupTopbar() {
                     120,
                     120
                 )
+            }
+        )
+    }
+
+    // ====================================
+    // NEW AREA
+    // ====================================
+
+    const newAreaBtn =
+
+        document.getElementById(
+            'newAreaBtn'
+        )
+
+    if (newAreaBtn) {
+
+        newAreaBtn.addEventListener(
+
+            'click',
+
+            async () => {
+
+                await DataManager.createArea()
+
+                SidebarManager.renderAreas()
             }
         )
     }
@@ -263,31 +320,6 @@ function setupTopbar() {
             }
         )
     }
-
-    // ====================================
-    // NEW AREA
-    // ====================================
-
-    const newAreaBtn =
-
-        document.getElementById(
-            'newAreaBtn'
-        )
-
-    if (newAreaBtn) {
-
-        newAreaBtn.addEventListener(
-
-            'click',
-
-            () => {
-
-                alert(
-                    'Area editor coming soon'
-                )
-            }
-        )
-    }
 }
 
 // ====================================
@@ -307,7 +339,7 @@ function updateZLabel() {
 
     label.innerText =
 
-        `Z: ${AppState.currentZ}`
+        `Z: ${ AppState.currentZ } `
 }
 
 // ====================================

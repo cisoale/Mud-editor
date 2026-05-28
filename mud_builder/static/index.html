@@ -167,76 +167,261 @@
     <div id="roomModal"
          class="modal">
 
-        <div class="modal-content">
-
-            <h2>
-
-                Room Editor
-
-            </h2>
+        <div class="modal-content roomEditor">
 
             <!-- ================================= -->
-            <!-- BASIC -->
+            <!-- HEADER -->
             <!-- ================================= -->
 
-            <label>
+            <div class="editorHeader">
 
-                VNUM
+                <h2>
 
-            </label>
+                    Room Editor
 
-            <input id="room_vnum"
-                   type="number">
+                </h2>
 
-            <label>
-
-                Name
-
-            </label>
-
-            <input id="room_name"
-                   type="text">
-
-            <label>
-
-                Area
-
-            </label>
-
-            <input id="room_area"
-                   type="text">
-
-            <label>
-
-                Region
-
-            </label>
-
-            <input id="room_region"
-                   type="text">
-
-            <label>
-
-                Description
-
-            </label>
-
-            <textarea id="room_long_desc"></textarea>
+            </div>
 
             <!-- ================================= -->
-            <!-- EXITS -->
+            <!-- TABS -->
             <!-- ================================= -->
 
-            <h3 class="sectionTitle">
+            <div class="editorTabs">
 
-                Exits
+                <button class="editorTab active"
+                        data-tab="generalTab">
 
-            </h3>
+                    General
 
-            <div id="exitEditor"></div>
+                </button>
+
+                <button class="editorTab"
+                        data-tab="exitsTab">
+
+                    Exits
+
+                </button>
+
+                <button class="editorTab"
+                        data-tab="mobsTab">
+
+                    Mobs
+
+                </button>
+
+                <button class="editorTab"
+                        data-tab="itemsTab">
+
+                    Items
+
+                </button>
+
+                <button class="editorTab"
+                        data-tab="scriptsTab">
+
+                    Scripts
+
+                </button>
+
+            </div>
 
             <!-- ================================= -->
-            <!-- BUTTONS -->
+            <!-- GENERAL TAB -->
+            <!-- ================================= -->
+
+            <div id="generalTab"
+                 class="editorPanel active">
+
+                <label>
+
+                    VNUM
+
+                </label>
+
+                <input id="room_vnum"
+                       type="number">
+
+                <label>
+
+                    Name
+
+                </label>
+
+                <input id="room_name"
+                       type="text">
+
+                <label>
+
+                    Area
+
+                </label>
+
+                <input id="room_area"
+                       type="text">
+
+                <label>
+
+                    Region
+
+                </label>
+
+                <input id="room_region"
+                       type="text">
+
+                <label>
+
+                    Short Description
+
+                </label>
+
+                <input id="room_short_desc"
+                       type="text">
+
+                <label>
+
+                    Long Description
+
+                </label>
+
+                <textarea id="room_long_desc"></textarea>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- EXITS TAB -->
+            <!-- ================================= -->
+
+            <div id="exitsTab"
+                 class="editorPanel">
+
+                <div class="panelHeader">
+
+                    <h3>
+
+                        Room Exits
+
+                    </h3>
+
+                    <button id="addExitBtn">
+
+                        + Exit
+
+                    </button>
+
+                </div>
+
+                <div id="exitEditor"></div>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- MOBS TAB -->
+            <!-- ================================= -->
+
+            <div id="mobsTab"
+                 class="editorPanel">
+
+                <div class="panelHeader">
+
+                    <h3>
+
+                        Room Mobs
+
+                    </h3>
+
+                    <button id="addMobToRoomBtn">
+
+                        + Mob
+
+                    </button>
+
+                </div>
+
+                <div id="roomMobEditor">
+
+                    <div class="emptyPanel">
+
+                        No mobs in room
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- ITEMS TAB -->
+            <!-- ================================= -->
+
+            <div id="itemsTab"
+                 class="editorPanel">
+
+                <div class="panelHeader">
+
+                    <h3>
+
+                        Room Items
+
+                    </h3>
+
+                    <button id="addItemToRoomBtn">
+
+                        + Item
+
+                    </button>
+
+                </div>
+
+                <div id="roomItemEditor">
+
+                    <div class="emptyPanel">
+
+                        No items in room
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- SCRIPTS TAB -->
+            <!-- ================================= -->
+
+            <div id="scriptsTab"
+                 class="editorPanel">
+
+                <div class="panelHeader">
+
+                    <h3>
+
+                        Room Scripts
+
+                    </h3>
+
+                    <button id="addScriptBtn">
+
+                        + Script
+
+                    </button>
+
+                </div>
+
+                <div id="roomScriptEditor">
+
+                    <div class="emptyPanel">
+
+                        No scripts attached
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- FOOTER -->
             <!-- ================================= -->
 
             <div class="modal-buttons">

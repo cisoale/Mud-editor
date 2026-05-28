@@ -14,6 +14,16 @@ const InteractionManager = {
     roomStartX: 0,
     roomStartY: 0,
 
+    // ====================================
+    // LINK MODE
+    // ====================================
+
+    linkStartRoom: null,
+
+    // ====================================
+    // INIT
+    // ====================================
+
     init() {
 
         canvas.addEventListener(
@@ -41,6 +51,10 @@ const InteractionManager = {
         )
     },
 
+    // ====================================
+    // MOUSE WORLD
+    // ====================================
+
     getMouseWorld(event) {
 
         const rect =
@@ -59,6 +73,10 @@ const InteractionManager = {
                 AppState.offsetY
         }
     },
+
+    // ====================================
+    // ROOM PICKING
+    // ====================================
 
     getRoomAt(x, y) {
 
@@ -88,7 +106,11 @@ const InteractionManager = {
         return null
     },
 
-    onPointerDown(event) {
+    // ====================================
+    // POINTER DOWN
+    // ====================================
+
+    async onPointerDown(event) {
 
         const mouse =
             this.getMouseWorld(event)
@@ -105,9 +127,45 @@ const InteractionManager = {
         this.startY =
             event.clientY
 
+        // ====================================
+        // NO ROOM
+        // ====================================
+
         if (!room) {
+
+            AppState.selectedRoom = null
+
+            SidebarManager.renderRooms()
+
+            MapRenderer.render()
+
             return
         }
+
+        // ====================================
+        // LINK MODE
+        // ====================================
+
+        if (AppState.linkMode) {
+
+            await this.handleLinkMode(room)
+
+            return
+        }
+
+        // ====================================
+        // SELECT ROOM
+        // ====================================
+
+        AppState.selectedRoom = room
+
+        SidebarManager.renderRooms()
+
+        MapRenderer.render()
+
+        // ====================================
+        // START DRAG
+        // ====================================
 
         this.dragging = true
 
@@ -118,17 +176,223 @@ const InteractionManager = {
 
         this.roomStartY =
             room.coords.y
+    },
 
-        AppState.selectedRoom = room
+    // ====================================
+    // LINK MODE
+    // ====================================
+
+    async handleLinkMode(room) {
+
+        // ====================================
+        // FIRST ROOM
+        // ====================================
+
+        if (!this.linkStartRoom) {
+
+            this.linkStartRoom = room
+
+            AppState.selectedRoom = room
+
+            SidebarManager.renderRooms()
+
+            MapRenderer.render()
+
+            console.log(
+                '[LINK START]',
+                room.vnum
+            )
+
+            return
+        }
+
+        // ====================================
+        // SAME ROOM
+        // ====================================
+
+        if (
+            this.linkStartRoom === room
+        ) {
+
+            return
+        }
+
+        // ====================================
+        // CREATE EXIT
+        // ====================================
+
+        const roomA =
+            this.linkStartRoom
+
+        const roomB =
+            room
+
+        const direction =
+            this.calculateDirection(
+                roomA,
+                roomB
+            )
+
+        if (!direction) {
+
+            alert(
+                'Cannot determine direction.'
+            )
+
+            this.linkStartRoom = null
+
+            return
+        }
+
+        const reverse =
+            this.getReverseDirection(
+                direction
+            )
+
+        roomA.exits ||= {}
+
+        roomB.exits ||= {}
+
+        // ====================================
+        // CREATE BOTH EXITS
+        // ====================================
+
+        roomA.exits[
+            direction
+        ] = {
+
+            to: roomB.vnum,
+
+            closed: false,
+
+            locked: false,
+
+            hidden: false
+        }
+
+        roomB.exits[
+            reverse
+        ] = {
+
+            to: roomA.vnum,
+
+            closed: false,
+
+            locked: false,
+
+            hidden: false
+        }
+
+        // ====================================
+        // SAVE
+        // ====================================
+
+        await DataManager.saveCurrentArea()
+
+        // ====================================
+        // RESET
+        // ====================================
+
+        this.linkStartRoom = null
 
         SidebarManager.renderRooms()
 
         MapRenderer.render()
+
+        if (
+            typeof Validator !==
+            'undefined'
+        ) {
+
+            Validator.validateWorld()
+        }
+
+        console.log(
+
+            '[EXIT CREATED]',
+
+            `${ roomA.vnum } ${ direction } -> ${ roomB.vnum } `
+        )
     },
+
+    // ====================================
+    // DIRECTION
+    // ====================================
+
+    calculateDirection(
+        roomA,
+        roomB
+    ) {
+
+        const dx =
+            roomB.coords.x -
+            roomA.coords.x
+
+        const dy =
+            roomB.coords.y -
+            roomA.coords.y
+
+        // ====================================
+        // HORIZONTAL
+        // ====================================
+
+        if (
+            Math.abs(dx) >
+            Math.abs(dy)
+        ) {
+
+            return dx > 0
+
+                ? 'east'
+
+                : 'west'
+        }
+
+        // ====================================
+        // VERTICAL
+        // ====================================
+
+        return dy > 0
+
+            ? 'south'
+
+            : 'north'
+    },
+
+    // ====================================
+    // REVERSE
+    // ====================================
+
+    getReverseDirection(direction) {
+
+        const reverse = {
+
+            north: 'south',
+            south: 'north',
+
+            east: 'west',
+            west: 'east',
+
+            up: 'down',
+            down: 'up'
+        }
+
+        return reverse[
+            direction
+        ]
+    },
+
+    // ====================================
+    // POINTER MOVE
+    // ====================================
 
     onPointerMove(event) {
 
         if (!this.dragging) {
+            return
+        }
+
+        if (!this.dragRoom) {
             return
         }
 
@@ -138,14 +402,48 @@ const InteractionManager = {
         const dy =
             event.clientY - this.startY
 
-        this.dragRoom.coords.x =
+        let newX =
             this.roomStartX + dx
 
-        this.dragRoom.coords.y =
+        let newY =
             this.roomStartY + dy
+
+        // ====================================
+        // GRID SNAP
+        // ====================================
+
+        if (
+            AppState.snapToGrid
+        ) {
+
+            const grid =
+                AppState.gridSize
+
+            newX =
+
+                Math.round(
+                    newX / grid
+                ) * grid
+
+            newY =
+
+                Math.round(
+                    newY / grid
+                ) * grid
+        }
+
+        this.dragRoom.coords.x =
+            newX
+
+        this.dragRoom.coords.y =
+            newY
 
         MapRenderer.render()
     },
+
+    // ====================================
+    // POINTER UP
+    // ====================================
 
     async onPointerUp() {
 
@@ -154,7 +452,15 @@ const InteractionManager = {
             this.dragRoom
         ) {
 
-            await DataManager.saveArea()
+            await DataManager.saveCurrentArea()
+
+            if (
+                typeof Validator !==
+                'undefined'
+            ) {
+
+                Validator.validateWorld()
+            }
         }
 
         this.dragging = false
@@ -162,7 +468,22 @@ const InteractionManager = {
         this.dragRoom = null
     },
 
+    // ====================================
+    // DOUBLE CLICK
+    // ====================================
+
     onDoubleClick(event) {
+
+        // ====================================
+        // DISABLE IN LINK MODE
+        // ====================================
+
+        if (
+            AppState.linkMode
+        ) {
+
+            return
+        }
 
         const mouse =
             this.getMouseWorld(event)
