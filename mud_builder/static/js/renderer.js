@@ -1,6 +1,32 @@
+// ====================================
+// static/js/renderer.js
+// ====================================
+
 const MapRenderer = {
 
-    roomSize: 32,
+    roomSize: 40,
+
+    // ====================================
+    // RESIZE
+    // ====================================
+
+    resizeCanvas() {
+
+        const container =
+
+            document.getElementById(
+                'canvasContainer'
+            )
+
+        if (!container)
+            return
+
+        canvas.width =
+            container.clientWidth
+
+        canvas.height =
+            container.clientHeight
+    },
 
     // ====================================
     // CENTER MAP
@@ -16,13 +42,17 @@ const MapRenderer = {
         }
 
         const xs =
+
             AppState.rooms.map(
-                r => r.x
+
+                r => r.coords.x
             )
 
         const ys =
+
             AppState.rooms.map(
-                r => r.y
+
+                r => r.coords.y
             )
 
         const minX =
@@ -37,27 +67,27 @@ const MapRenderer = {
         const maxY =
             Math.max(...ys)
 
-        const mapCenterX =
-            (minX + maxX) / 2
+        const mapWidth =
+            maxX - minX
 
-        const mapCenterY =
-            (minY + maxY) / 2
+        const mapHeight =
+            maxY - minY
 
         AppState.offsetX =
 
             canvas.width / 2 -
-            mapCenterX
+
+            (minX + mapWidth / 2)
 
         AppState.offsetY =
 
             canvas.height / 2 -
-            mapCenterY
+
+            (minY + mapHeight / 2)
 
         console.log(
             '[MAP CENTERED]'
         )
-
-        this.render()
     },
 
     // ====================================
@@ -66,24 +96,16 @@ const MapRenderer = {
 
     render() {
 
-        if (!canvas || !ctx) {
+        if (!ctx)
             return
-        }
 
         ctx.clearRect(
+
             0,
             0,
+
             canvas.width,
             canvas.height
-        )
-
-        ctx.save()
-
-        ctx.translate(
-
-            AppState.offsetX,
-
-            AppState.offsetY
         )
 
         this.drawGrid()
@@ -91,8 +113,6 @@ const MapRenderer = {
         this.drawExits()
 
         this.drawRooms()
-
-        ctx.restore()
     },
 
     // ====================================
@@ -104,28 +124,15 @@ const MapRenderer = {
         const size = 64
 
         ctx.strokeStyle =
-            '#1a2238'
+            '#1e293b'
 
         ctx.lineWidth = 1
 
-        const left =
-            -AppState.offsetX
-
-        const top =
-            -AppState.offsetY
-
-        const right =
-            left + canvas.width
-
-        const bottom =
-            top + canvas.height
-
         for (
 
-            let x =
-                Math.floor(left / size) * size;
+            let x = 0;
 
-            x < right;
+            x < canvas.width;
 
             x += size
 
@@ -133,19 +140,21 @@ const MapRenderer = {
 
             ctx.beginPath()
 
-            ctx.moveTo(x, top)
+            ctx.moveTo(x, 0)
 
-            ctx.lineTo(x, bottom)
+            ctx.lineTo(
+                x,
+                canvas.height
+            )
 
             ctx.stroke()
         }
 
         for (
 
-            let y =
-                Math.floor(top / size) * size;
+            let y = 0;
 
-            y < bottom;
+            y < canvas.height;
 
             y += size
 
@@ -153,9 +162,12 @@ const MapRenderer = {
 
             ctx.beginPath()
 
-            ctx.moveTo(left, y)
+            ctx.moveTo(0, y)
 
-            ctx.lineTo(right, y)
+            ctx.lineTo(
+                canvas.width,
+                y
+            )
 
             ctx.stroke()
         }
@@ -177,11 +189,13 @@ const MapRenderer = {
                 .forEach(([dir, exit]) => {
 
                     const target =
+
                         AppState.rooms.find(
 
                             r =>
 
                                 Number(r.vnum) ===
+
                                 Number(exit.to)
                         )
 
@@ -189,45 +203,49 @@ const MapRenderer = {
                         return
 
                     ctx.strokeStyle =
-                        '#666'
+                        '#64748b'
 
                     if (exit.hidden) {
 
                         ctx.strokeStyle =
-                            '#8844cc'
+                            '#a855f7'
                     }
 
                     if (exit.closed) {
 
                         ctx.strokeStyle =
-                            '#cc8844'
+                            '#f59e0b'
                     }
 
                     if (exit.locked) {
 
                         ctx.strokeStyle =
-                            '#cc4444'
+                            '#ef4444'
                     }
 
-                    ctx.lineWidth = 2
+                    ctx.lineWidth = 3
 
                     ctx.beginPath()
 
                     ctx.moveTo(
 
-                        room.x +
+                        room.coords.x +
+                        AppState.offsetX +
                         this.roomSize / 2,
 
-                        room.y +
+                        room.coords.y +
+                        AppState.offsetY +
                         this.roomSize / 2
                     )
 
                     ctx.lineTo(
 
-                        target.x +
+                        target.coords.x +
+                        AppState.offsetX +
                         this.roomSize / 2,
 
-                        target.y +
+                        target.coords.y +
+                        AppState.offsetY +
                         this.roomSize / 2
                     )
 
@@ -244,40 +262,58 @@ const MapRenderer = {
 
         AppState.rooms.forEach(room => {
 
+            const x =
+
+                room.coords.x +
+                AppState.offsetX
+
+            const y =
+
+                room.coords.y +
+                AppState.offsetY
+
+            // ROOM BODY
+
             ctx.fillStyle =
-                '#47d16c'
+                '#22c55e'
 
             if (
                 AppState.selectedRoom === room
             ) {
 
                 ctx.fillStyle =
-                    '#4d7cff'
+                    '#3b82f6'
             }
 
             ctx.fillRect(
 
-                room.x,
-                room.y,
+                x,
+                y,
 
                 this.roomSize,
                 this.roomSize
             )
 
+            // BORDER
+
             ctx.strokeStyle =
-                '#000'
+                '#0f172a'
+
+            ctx.lineWidth = 2
 
             ctx.strokeRect(
 
-                room.x,
-                room.y,
+                x,
+                y,
 
                 this.roomSize,
                 this.roomSize
             )
 
+            // LABEL
+
             ctx.fillStyle =
-                '#fff'
+                '#ffffff'
 
             ctx.font =
                 '12px Arial'
@@ -289,32 +325,11 @@ const MapRenderer = {
 
                 room.vnum,
 
-                room.x +
+                x +
                 this.roomSize / 2,
 
-                room.y - 8
+                y - 8
             )
         })
-    },
-
-    // ====================================
-    // RESIZE
-    // ====================================
-
-    resizeCanvas() {
-
-        const container =
-            document.getElementById(
-                'canvasContainer'
-            )
-
-        if (!container)
-            return
-
-        canvas.width =
-            container.clientWidth
-
-        canvas.height =
-            container.clientHeight
     }
 }

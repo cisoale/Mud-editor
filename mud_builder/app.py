@@ -43,6 +43,11 @@ MOBS_DIR = os.path.join(
     "mobs"
 )
 
+DEFAULT_AREA_FILE = os.path.join(
+    AREAS_DIR,
+    "starting_village.json"
+)
+
 # =========================================
 # SERVICES
 # =========================================
@@ -83,7 +88,310 @@ def index():
     )
 
 # =========================================
-# GET ROOMS
+# LOAD AREA
+# =========================================
+
+@app.route("/api/area")
+def api_load_area():
+
+    try:
+
+        if not os.path.exists(
+            DEFAULT_AREA_FILE
+        ):
+
+            return jsonify({
+
+                "schema_version": 2,
+
+                "area": {
+
+                    "id": "starting_village",
+
+                    "name": "Starting Village",
+
+                    "author": "Ale",
+
+                    "region_id": "starting_zone"
+                },
+
+                "rooms": []
+            })
+
+        with open(
+
+            DEFAULT_AREA_FILE,
+            "r",
+            encoding="utf-8"
+
+        ) as f:
+
+            area_data = json.load(f)
+
+        print(
+
+            f"[LOAD AREA] "
+            f"{len(area_data.get('rooms', []))} rooms"
+        )
+
+        return jsonify(area_data)
+
+    except Exception as e:
+
+        print(
+            "[LOAD AREA ERROR]",
+            e
+        )
+
+        return jsonify({
+
+            "error": str(e)
+
+        }), 500
+
+# =========================================
+# SAVE AREA
+# =========================================
+
+@app.route(
+    "/api/save_area",
+    methods=["POST"]
+)
+
+def api_save_area():
+
+    try:
+
+        area_data = request.json
+
+        area_data.setdefault(
+            "schema_version",
+            2
+        )
+
+        area_data.setdefault(
+            "area",
+            {}
+        )
+
+        area_data.setdefault(
+            "rooms",
+            []
+        )
+
+        # =====================================
+        # CLEAN ROOMS
+        # =====================================
+
+        clean_rooms = []
+
+        for room in area_data["rooms"]:
+
+            room.setdefault(
+                "name",
+                "Unnamed Room"
+            )
+
+            room.setdefault(
+                "short_desc",
+                ""
+            )
+
+            room.setdefault(
+                "long_desc",
+                ""
+            )
+
+            room.setdefault(
+                "region_id",
+                "starting_zone"
+            )
+
+            room.setdefault(
+                "items",
+                []
+            )
+
+            room.setdefault(
+                "mobs",
+                []
+            )
+
+            room.setdefault(
+                "flags",
+                []
+            )
+
+            room.setdefault(
+                "scripts",
+                []
+            )
+
+            room.setdefault(
+                "exits",
+                {}
+            )
+
+            room.setdefault(
+                "coords",
+                {}
+            )
+
+            room["coords"].setdefault(
+                "x",
+                0
+            )
+
+            room["coords"].setdefault(
+                "y",
+                0
+            )
+
+            room["coords"].setdefault(
+                "z",
+                0
+            )
+
+            # =====================================
+            # REMOVE OLD X/Y
+            # =====================================
+
+            room.pop("x", None)
+            room.pop("y", None)
+            room.pop("z", None)
+
+            # =====================================
+            # NORMALIZE EXITS
+            # =====================================
+
+            normalized_exits = {}
+
+            for direction, exit_data in room["exits"].items():
+
+                if isinstance(
+                    exit_data,
+                    int
+                ):
+
+                    normalized_exits[direction] = {
+
+                        "to": exit_data,
+
+                        "door": False,
+
+                        "closed": False,
+
+                        "locked": False,
+
+                        "hidden": False,
+
+                        "blocked": False,
+
+                        "key": None
+                    }
+
+                else:
+
+                    normalized_exits[direction] = {
+
+                        "to":
+                            exit_data.get("to"),
+
+                        "door":
+                            exit_data.get(
+                                "door",
+                                False
+                            ),
+
+                        "closed":
+                            exit_data.get(
+                                "closed",
+                                False
+                            ),
+
+                        "locked":
+                            exit_data.get(
+                                "locked",
+                                False
+                            ),
+
+                        "hidden":
+                            exit_data.get(
+                                "hidden",
+                                False
+                            ),
+
+                        "blocked":
+                            exit_data.get(
+                                "blocked",
+                                False
+                            ),
+
+                        "key":
+                            exit_data.get(
+                                "key",
+                                None
+                            )
+                    }
+
+            room["exits"] = normalized_exits
+
+            clean_rooms.append(room)
+
+        area_data["rooms"] = clean_rooms
+
+        # =====================================
+        # SAVE FILE
+        # =====================================
+
+        with open(
+
+            DEFAULT_AREA_FILE,
+            "w",
+            encoding="utf-8"
+
+        ) as f:
+
+            json.dump(
+
+                area_data,
+                f,
+
+                indent=4,
+
+                ensure_ascii=False
+            )
+
+        print(
+
+            f"[SAVE AREA] "
+            f"{len(clean_rooms)} rooms"
+        )
+
+        return jsonify({
+
+            "success": True,
+
+            "rooms": len(clean_rooms)
+        })
+
+    except Exception as e:
+
+        print(
+            "[SAVE AREA ERROR]",
+            e
+        )
+
+        return jsonify({
+
+            "success": False,
+
+            "error": str(e)
+
+        }), 500
+
+# =========================================
+# GET ROOMS (LEGACY)
 # =========================================
 
 @app.route("/api/rooms")
@@ -195,10 +503,6 @@ def api_areas():
             AREAS_DIR
         ):
 
-            print(
-                "[API] Nessuna cartella areas"
-            )
-
             return jsonify([])
 
         for filename in sorted(
@@ -213,47 +517,23 @@ def api_areas():
                 filename
             )
 
-            try:
+            with open(
+                path,
+                "r",
+                encoding="utf-8"
+            ) as f:
 
-                with open(
-                    path,
-                    "r",
-                    encoding="utf-8"
-                ) as f:
-
-                    data = json.load(f)
-
-            except Exception as e:
-
-                print(
-                    f"[AREA READ ERROR] "
-                    f"{filename}: {e}"
-                )
-
-                continue
+                data = json.load(f)
 
             area_data = data.get(
                 "area",
                 {}
             )
 
-            rooms_data = data.get(
+            rooms = data.get(
                 "rooms",
-                {}
+                []
             )
-
-            if isinstance(
-                rooms_data,
-                dict
-            ):
-
-                rooms = list(
-                    rooms_data.values()
-                )
-
-            else:
-
-                rooms = rooms_data
 
             result.append({
 
@@ -275,226 +555,13 @@ def api_areas():
                         "Unknown"
                     ),
 
-                "recommended_level":
-                    area_data.get(
-                        "recommended_level",
-                        [1, 1]
-                    ),
-
                 "room_count":
-                    len(rooms),
-
-                "rooms": [
-
-                    {
-
-                        "vnum":
-                            room.get(
-                                "vnum"
-                            ),
-
-                        "name":
-                            room.get(
-                                "name",
-                                "Unnamed"
-                            )
-
-                    }
-
-                    for room in rooms
-                ]
+                    len(rooms)
             })
-
-        print(
-            f"[API] Areas: "
-            f"{len(result)}"
-        )
 
         return jsonify(result)
 
     except Exception as e:
-
-        print(
-            "[API AREAS ERROR]",
-            e
-        )
-
-        return jsonify({
-            "error": str(e)
-        }), 500
-
-# =========================================
-# SAVE ROOM
-# =========================================
-
-@app.route(
-    "/api/room",
-    methods=["POST"]
-)
-
-def api_save_room():
-
-    try:
-
-        data = request.json
-
-        save_room(data)
-
-        print(
-            f"[SAVE ROOM] "
-            f"{data.get('vnum')}"
-        )
-
-        return jsonify({
-            "ok": True
-        })
-
-    except Exception as e:
-
-        print(
-            "[SAVE ROOM ERROR]",
-            e
-        )
-
-        return jsonify({
-            "error": str(e)
-        }), 500
-
-# =========================================
-# DELETE ROOM
-# =========================================
-
-@app.route(
-    "/api/delete_room",
-    methods=["POST"]
-)
-
-def delete_room():
-
-    try:
-
-        data = request.json
-
-        vnum = str(
-            data.get("vnum")
-        )
-
-        deleted = False
-
-        if not os.path.exists(
-            AREAS_DIR
-        ):
-
-            return jsonify({
-
-                "ok": False,
-
-                "error":
-                    "areas dir missing"
-            })
-
-        # =================================
-        # SEARCH AREAS
-        # =================================
-
-        for filename in os.listdir(
-            AREAS_DIR
-        ):
-
-            if not filename.endswith(".json"):
-                continue
-
-            path = os.path.join(
-                AREAS_DIR,
-                filename
-            )
-
-            with open(
-                path,
-                "r",
-                encoding="utf-8"
-            ) as f:
-
-                area_data = json.load(f)
-
-            rooms_data = area_data.get(
-                "rooms",
-                {}
-            )
-
-            # =============================
-            # DICT
-            # =============================
-
-            if isinstance(
-                rooms_data,
-                dict
-            ):
-
-                if vnum in rooms_data:
-
-                    del rooms_data[vnum]
-
-                    deleted = True
-
-            # =============================
-            # LIST
-            # =============================
-
-            else:
-
-                new_rooms = []
-
-                for room in rooms_data:
-
-                    if str(
-                        room.get("vnum")
-                    ) == vnum:
-
-                        deleted = True
-
-                        continue
-
-                    new_rooms.append(room)
-
-                rooms_data = new_rooms
-
-            area_data["rooms"] = rooms_data
-
-            with open(
-                path,
-                "w",
-                encoding="utf-8"
-            ) as f:
-
-                json.dump(
-
-                    area_data,
-                    f,
-
-                    indent=4,
-
-                    ensure_ascii=False
-                )
-
-        print(
-            f"[DELETE ROOM] "
-            f"{vnum}"
-        )
-
-        return jsonify({
-
-            "ok": True,
-
-            "deleted": deleted
-        })
-
-    except Exception as e:
-
-        print(
-            "[DELETE ROOM ERROR]",
-            e
-        )
 
         return jsonify({
             "error": str(e)

@@ -1,3 +1,7 @@
+// ====================================
+// static/js/data_manager.js
+// ====================================
+
 const DataManager = {
 
     // ====================================
@@ -6,90 +10,187 @@ const DataManager = {
 
     async loadWorld() {
 
-        await this.loadRooms()
+        await this.loadArea()
     },
 
     // ====================================
-    // LOAD ROOMS
+    // LOAD AREA
     // ====================================
 
-    async loadRooms() {
-
-        const response =
-            await fetch('/api/rooms')
-
-        const data =
-            await response.json()
-
-        AppState.rooms =
-
-            Array.isArray(data)
-
-                ? data
-
-                : Object.values(data)
-
-        AppState.rooms.forEach((room, index) => {
-
-            room.exits ??= {}
-
-            room.coords ??= {
-
-                x: 0,
-                y: 0,
-                z: 0
-            }
-
-            room.x =
-                Number(room.coords.x || 0)
-
-            room.y =
-                Number(room.coords.y || 0)
-
-            // AUTO POSITION
-
-            if (
-                room.x === 0 &&
-                room.y === 0
-            ) {
-
-                room.x =
-                    120 + (index % 8) * 120
-
-                room.y =
-                    120 + Math.floor(index / 8) * 120
-            }
-        })
-
-        console.log(
-            '[ROOMS]',
-            AppState.rooms.length
-        )
-
-        MapRenderer.render()
-    },
-
-    // ====================================
-    // SAVE ROOM
-    // ====================================
-
-    async saveRoom(room) {
-
-        room.coords = {
-
-            x: room.x,
-            y: room.y,
-            z: 0
-        }
+    async loadArea() {
 
         try {
 
             const response =
+                await fetch('/api/area')
+
+            const area =
+                await response.json()
+
+            AppState.currentArea =
+                area
+
+            AppState.rooms =
+
+                Array.isArray(area.rooms)
+
+                    ? area.rooms
+
+                    : []
+
+            // ====================================
+            // NORMALIZE ROOMS
+            // ====================================
+
+            AppState.rooms.forEach((room, index) => {
+
+                // EXITS
+
+                if (
+                    !room.exits ||
+                    typeof room.exits !== 'object'
+                ) {
+
+                    room.exits = {}
+                }
+
+                // COORDS
+
+                if (
+
+                    !room.coords ||
+
+                    typeof room.coords !== 'object'
+                ) {
+
+                    room.coords = {}
+                }
+
+                room.coords.x =
+
+                    Number(
+                        room.coords.x ?? 0
+                    )
+
+                room.coords.y =
+
+                    Number(
+                        room.coords.y ?? 0
+                    )
+
+                room.coords.z =
+
+                    Number(
+                        room.coords.z ?? 0
+                    )
+
+                // ====================================
+                // AUTO POSITION
+                // ====================================
+
+                if (
+
+                    room.coords.x === 0 &&
+
+                    room.coords.y === 0
+                ) {
+
+                    room.coords.x =
+
+                        120 +
+
+                        (index % 8) * 120
+
+                    room.coords.y =
+
+                        120 +
+
+                        Math.floor(index / 8) * 120
+                }
+            })
+
+            console.log(
+
+                '[AREA LOADED]',
+
+                AppState.rooms.length,
+
+                'rooms'
+            )
+
+            // ====================================
+            // FORCE RENDER
+            // ====================================
+
+            setTimeout(() => {
+
+                MapRenderer.resizeCanvas()
+
+                MapRenderer.centerMap()
+
+                MapRenderer.render()
+
+            }, 50)
+
+        } catch (error) {
+
+            console.error(
+
+                '[LOAD AREA ERROR]',
+
+                error
+            )
+        }
+    },
+
+    // ====================================
+    // SAVE AREA
+    // ====================================
+
+    async saveArea() {
+
+        try {
+
+            AppState.currentArea.rooms =
+
+                AppState.rooms.map(room => {
+
+                    // NORMALIZE COORDS
+
+                    if (
+                        !room.coords ||
+                        typeof room.coords !== 'object'
+                    ) {
+
+                        room.coords = {}
+                    }
+
+                    room.coords = {
+
+                        x: Number(
+                            room.coords.x ?? 0
+                        ),
+
+                        y: Number(
+                            room.coords.y ?? 0
+                        ),
+
+                        z: Number(
+                            room.coords.z ?? 0
+                        )
+                    }
+
+                    return room
+                })
+
+            const response =
+
                 await fetch(
 
-                    '/api/room',
+                    '/api/save_area',
 
                     {
+
                         method: 'POST',
 
                         headers: {
@@ -99,16 +200,28 @@ const DataManager = {
                         },
 
                         body:
-                            JSON.stringify(room)
+
+                            JSON.stringify(
+
+                                AppState.currentArea
+                            )
                     }
                 )
 
-            return await response.json()
+            const result =
+                await response.json()
+
+            console.log(
+                '[AREA SAVED]',
+                result
+            )
+
+            return result
 
         } catch (error) {
 
             console.error(
-                '[SAVE ERROR]',
+                '[SAVE AREA ERROR]',
                 error
             )
         }
@@ -120,47 +233,15 @@ const DataManager = {
 
     async deleteRoom(vnum) {
 
-        try {
+        AppState.rooms =
 
-            const response =
+            AppState.rooms.filter(
 
-                await fetch(
+                room =>
 
-                    '/api/delete_room',
-
-                    {
-
-                        method: 'POST',
-
-                        headers: {
-
-                            'Content-Type':
-                                'application/json'
-                        },
-
-                        body: JSON.stringify({
-
-                            vnum: vnum
-                        })
-                    }
-                )
-
-            const result =
-                await response.json()
-
-            console.log(
-                '[ROOM DELETED]',
-                result
+                    room.vnum !== vnum
             )
 
-            return result
-
-        } catch (error) {
-
-            console.error(
-                '[DELETE ERROR]',
-                error
-            )
-        }
+        return await this.saveArea()
     }
 }

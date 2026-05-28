@@ -1,3 +1,7 @@
+// ====================================
+// static/js/editor.js
+// ====================================
+
 const RoomEditor = {
 
     currentRoom: null,
@@ -97,13 +101,12 @@ const RoomEditor = {
                 'roomDesc'
             ).value
 
-        await DataManager.saveRoom(
-            this.currentRoom
-        )
+        await DataManager.saveArea()
 
         this.close()
 
         MapRenderer.render()
+
         SidebarManager.renderRooms()
     }
 }

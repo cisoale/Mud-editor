@@ -1,68 +1,62 @@
-const EXIT_DIRECTIONS = [
-
-    'north',
-    'south',
-    'east',
-    'west',
-    'up',
-    'down'
-]
+﻿// ====================================
+// static/js/modals.js
+// ====================================
 
 const ModalManager = {
 
     currentRoom: null,
 
+    // ====================================
+    // INIT
+    // ====================================
+
     init() {
 
+        const saveBtn =
+
+            document.getElementById(
+                'saveRoomBtn'
+            )
+
         const closeBtn =
+
             document.getElementById(
                 'closeRoomBtn'
             )
 
-        if (closeBtn) {
+        const deleteBtn =
 
-            closeBtn.addEventListener(
-                'click',
-                () => this.closeRoomModal()
-            )
-        }
-
-        const saveBtn =
             document.getElementById(
-                'saveRoomBtn'
+                'deleteRoomBtn'
             )
 
         if (saveBtn) {
 
             saveBtn.addEventListener(
+
                 'click',
+
                 () => this.saveRoom()
             )
         }
 
-        const deleteBtn =
-            document.getElementById(
-                'deleteRoomBtn'
+        if (closeBtn) {
+
+            closeBtn.addEventListener(
+
+                'click',
+
+                () => this.closeRoom()
             )
+        }
 
         if (deleteBtn) {
 
             deleteBtn.addEventListener(
+
                 'click',
-                () => this.deleteRoom()
-            )
-        }
 
-        const newRoomBtn =
-            document.getElementById(
-                'newRoomBtn'
-            )
-
-        if (newRoomBtn) {
-
-            newRoomBtn.addEventListener(
-                'click',
-                () => this.createRoom()
+                () => this.deleteCurrentRoom()
             )
         }
 
@@ -71,122 +65,19 @@ const ModalManager = {
         )
     },
 
-    buildExitEditor(room) {
-
-        const container =
-            document.getElementById(
-                'exitEditor'
-            )
-
-        container.innerHTML = ''
-
-        const exits =
-            room.exits || {}
-
-        EXIT_DIRECTIONS.forEach(dir => {
-
-            const exit =
-                exits[dir] || {}
-
-            const row =
-                document.createElement('div')
-
-            row.className =
-                'exitRow'
-
-            row.innerHTML = `
-
-                <div class="exitTop">
-
-                    <div class="exitDirection">
-
-                        ${dir}
-
-                    </div>
-
-                    <input
-                        id="exit_${dir}"
-                        type="number"
-                        placeholder="Destination VNUM"
-                        value="${exit.to || ''}"
-                    >
-
-                    <input
-                        id="exit_${dir}_key"
-                        class="exitKey"
-                        type="number"
-                        placeholder="Key ID"
-                        value="${exit.key || ''}"
-                    >
-
-                </div>
-
-                <div class="exitFlags">
-
-                    <label class="exitFlag">
-
-                        <input
-                            id="exit_${dir}_door"
-                            type="checkbox"
-                            ${exit.door ? 'checked' : ''}
-
-                        >
-
-                        Door
-
-                    </label>
-
-                    <label class="exitFlag">
-
-                        <input
-                            id="exit_${dir}_closed"
-                            type="checkbox"
-                            ${exit.closed ? 'checked' : ''}
-
-                        >
-
-                        Closed
-
-                    </label>
-
-                    <label class="exitFlag">
-
-                        <input
-                            id="exit_${dir}_locked"
-                            type="checkbox"
-                            ${exit.locked ? 'checked' : ''}
-
-                        >
-
-                        Locked
-
-                    </label>
-
-                    <label class="exitFlag">
-
-                        <input
-                            id="exit_${dir}_hidden"
-                            type="checkbox"
-                            ${exit.hidden ? 'checked' : ''}
-
-                        >
-
-                        Hidden
-
-                    </label>
-
-                </div>
-            `
-
-            container.appendChild(row)
-        })
-    },
+    // ====================================
+    // OPEN ROOM
+    // ====================================
 
     openRoom(room) {
+
+        if (!room)
+            return
 
         this.currentRoom = room
 
         const modal =
+
             document.getElementById(
                 'roomModal'
             )
@@ -194,41 +85,62 @@ const ModalManager = {
         if (!modal)
             return
 
-        modal.classList.add(
-            'active'
-        )
+        modal.classList.add('active')
+
+        // ====================================
+        // BASIC
+        // ====================================
 
         document.getElementById(
             'room_vnum'
         ).value =
+
             room.vnum || ''
 
         document.getElementById(
             'room_name'
         ).value =
+
             room.name || ''
 
         document.getElementById(
             'room_area'
         ).value =
+
             room.area_id || ''
 
         document.getElementById(
             'room_region'
         ).value =
-            room.region || ''
+
+            room.region_id || ''
 
         document.getElementById(
             'room_long_desc'
         ).value =
+
             room.long_desc || ''
 
-        this.buildExitEditor(room)
+        // ====================================
+        // EXITS
+        // ====================================
+
+        this.renderExits(room)
+
+        console.log(
+            '[ROOM OPENED]',
+            room.vnum
+        )
     },
 
-    closeRoomModal() {
+    // ====================================
+    // CLOSE ROOM
+    // ====================================
+
+    closeRoom() {
 
         const modal =
+
             document.getElementById(
                 'roomModal'
             )
@@ -241,21 +153,27 @@ const ModalManager = {
         )
     },
 
+    // ====================================
+    // SAVE ROOM
+    // ====================================
+
     async saveRoom() {
 
         if (!this.currentRoom)
             return
 
         // ====================================
-        // VNUM
+        // BASIC
         // ====================================
 
-        this.currentRoom.vnum = Number(
+        this.currentRoom.vnum =
 
-            document.getElementById(
-                'room_vnum'
-            ).value
-        )
+            Number(
+
+                document.getElementById(
+                    'room_vnum'
+                ).value
+            )
 
         this.currentRoom.name =
 
@@ -269,7 +187,7 @@ const ModalManager = {
                 'room_area'
             ).value
 
-        this.currentRoom.region =
+        this.currentRoom.region_id =
 
             document.getElementById(
                 'room_region'
@@ -281,158 +199,188 @@ const ModalManager = {
                 'room_long_desc'
             ).value
 
-        this.currentRoom.exits = {}
+        // ====================================
+        // SAVE AREA
+        // ====================================
 
-        EXIT_DIRECTIONS.forEach(dir => {
-
-            const to =
-                document.getElementById(
-                    `exit_${dir}`
-                ).value
-
-            if (!to)
-                return
-
-            this.currentRoom.exits[dir] = {
-
-                to: Number(to),
-
-                key: Number(
-
-                    document.getElementById(
-                        `exit_${dir}_key`
-                    ).value || 0
-                ),
-
-                door:
-
-                    document.getElementById(
-                        `exit_${dir}_door`
-                    ).checked,
-
-                closed:
-
-                    document.getElementById(
-                        `exit_${dir}_closed`
-                    ).checked,
-
-                locked:
-
-                    document.getElementById(
-                        `exit_${dir}_locked`
-                    ).checked,
-
-                hidden:
-
-                    document.getElementById(
-                        `exit_${dir}_hidden`
-                    ).checked
-            }
-        })
-
-        await DataManager.saveRoom(
-            this.currentRoom
-        )
+        await DataManager.saveArea()
 
         SidebarManager.renderRooms()
 
-        Validator.validateWorld()
-
         MapRenderer.render()
 
-        this.closeRoomModal()
+        console.log(
+            '[ROOM SAVED]',
+            this.currentRoom.vnum
+        )
+
+        this.closeRoom()
     },
 
-    async deleteRoom() {
+    // ====================================
+    // DELETE ROOM
+    // ====================================
+
+    async deleteCurrentRoom() {
 
         if (!this.currentRoom)
             return
 
-        const confirmDelete =
-            confirm(
-                'Delete this room?'
-            )
+        const confirmed = confirm(
 
-        if (!confirmDelete)
-            return
-
-        await DataManager.deleteRoom(
-            this.currentRoom.vnum
+            `Delete room ${this.currentRoom.vnum}?`
         )
 
+        if (!confirmed)
+            return
+
+        const vnum =
+            this.currentRoom.vnum
+
         AppState.rooms =
+
             AppState.rooms.filter(
-                r => r !== this.currentRoom
+
+                room =>
+                    room.vnum !== vnum
             )
+
+        await DataManager.saveArea()
 
         SidebarManager.renderRooms()
 
-        Validator.validateWorld()
-
         MapRenderer.render()
 
-        this.closeRoomModal()
+        this.closeRoom()
+
+        console.log(
+            '[ROOM DELETED]',
+            vnum
+        )
     },
 
-    async createRoom() {
+    // ====================================
+    // CREATE ROOM
+    // ====================================
 
-        const maxVnum = Math.max(
+    async createRoom(x = 120, y = 120) {
 
-            ...AppState.rooms.map(
+        const highestVnum =
 
-                r =>
-                    Number(
-                        r.vnum || 0
-                    )
-            ),
+            Math.max(
 
-            1000
-        )
+                0,
 
-        const room = {
+                ...AppState.rooms.map(
 
-            vnum: maxVnum + 1,
+                    r => Number(r.vnum)
+                )
+            )
 
-            name: 'New Room',
+        const newRoom = {
 
-            area_id: 'default',
+            vnum:
+                highestVnum + 1,
 
-            region: '',
+            name:
+                'Nuova Room',
 
-            long_desc: '',
+            area_id:
+                'starting_village',
 
-            exits: {},
+            region_id:
+                'starting_zone',
+
+            short_desc:
+                '',
+
+            long_desc:
+                '',
 
             coords: {
 
-                x: 0,
-                y: 0,
+                x,
+                y,
                 z: 0
             },
 
-            x:
-                300 +
-                Math.random() * 200,
+            exits: {},
 
-            y:
-                300 +
-                Math.random() * 200
+            mobs: [],
+
+            items: [],
+
+            flags: [],
+
+            scripts: []
         }
 
-        await DataManager.saveRoom(
-            room
+        AppState.rooms.push(
+            newRoom
         )
 
-        AppState.rooms.push(room)
+        await DataManager.saveArea()
+        if (typeof Validator !== 'undefined') {
 
-        AppState.selectedRoom = room
+            Validator.validateWorld()
+        }
 
         SidebarManager.renderRooms()
 
-        Validator.validateWorld()
-
         MapRenderer.render()
 
-        this.openRoom(room)
+        this.openRoom(newRoom)
+
+        console.log(
+            '[ROOM CREATED]',
+            newRoom.vnum
+        )
+    },
+
+    // ====================================
+    // RENDER EXITS
+    // ====================================
+
+    renderExits(room) {
+
+        const container =
+
+            document.getElementById(
+                'exitEditor'
+            )
+
+        if (!container)
+            return
+
+        container.innerHTML = ''
+
+        const exits =
+            room.exits || {}
+
+        Object.entries(exits)
+
+            .forEach(([dir, exit]) => {
+
+                const row =
+                    document.createElement('div')
+
+                row.className =
+                    'exitRow'
+
+                row.innerHTML = `
+
+                    <strong>${dir}</strong>
+
+                    → ${exit.to}
+
+                    ${exit.locked ? '🔒' : ''}
+
+                    ${exit.closed ? '🚪' : ''}
+
+                    ${exit.hidden ? '👁️' : ''}
+                `
+
+                container.appendChild(row)
+            })
     }
 }

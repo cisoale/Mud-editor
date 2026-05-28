@@ -1,3 +1,7 @@
+// ====================================
+// static/js/interaction.js
+// ====================================
+
 const InteractionManager = {
 
     dragging: false,
@@ -71,10 +75,10 @@ const InteractionManager = {
                 AppState.rooms[i]
 
             if (
-                x >= room.x &&
-                x <= room.x + size &&
-                y >= room.y &&
-                y <= room.y + size
+                x >= room.coords.x &&
+                x <= room.coords.x + size &&
+                y >= room.coords.y &&
+                y <= room.coords.y + size
             ) {
 
                 return room
@@ -109,8 +113,11 @@ const InteractionManager = {
 
         this.dragRoom = room
 
-        this.roomStartX = room.x
-        this.roomStartY = room.y
+        this.roomStartX =
+            room.coords.x
+
+        this.roomStartY =
+            room.coords.y
 
         AppState.selectedRoom = room
 
@@ -131,10 +138,10 @@ const InteractionManager = {
         const dy =
             event.clientY - this.startY
 
-        this.dragRoom.x =
+        this.dragRoom.coords.x =
             this.roomStartX + dx
 
-        this.dragRoom.y =
+        this.dragRoom.coords.y =
             this.roomStartY + dy
 
         MapRenderer.render()
@@ -147,9 +154,7 @@ const InteractionManager = {
             this.dragRoom
         ) {
 
-            await DataManager.saveRoom(
-                this.dragRoom
-            )
+            await DataManager.saveArea()
         }
 
         this.dragging = false

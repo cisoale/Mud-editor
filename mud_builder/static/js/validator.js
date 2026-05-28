@@ -104,12 +104,12 @@
                     AppState.offsetX =
 
                         canvas.width / 2 -
-                        room.x
+                        room.coords.x
 
                     AppState.offsetY =
 
                         canvas.height / 2 -
-                        room.y
+                        room.coords.y
 
                     SidebarManager.renderRooms()
 
