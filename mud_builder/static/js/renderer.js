@@ -4,8 +4,14 @@
 
 const MapRenderer = {
 
-    roomSize: 40,
+    baseRoomSize: 40,
+    getRoomSize() {
 
+        return (
+            this.baseRoomSize *
+            AppState.zoom
+        )
+    },
     // ====================================
     // RESIZE
     // ====================================
@@ -179,6 +185,9 @@ const MapRenderer = {
 
     drawExits() {
 
+        const size =
+            this.getRoomSize()
+
         AppState.rooms.forEach(room => {
 
             const exits =
@@ -231,22 +240,22 @@ const MapRenderer = {
 
                         room.coords.x +
                         AppState.offsetX +
-                        this.roomSize / 2,
+                        size / 2,
 
                         room.coords.y +
                         AppState.offsetY +
-                        this.roomSize / 2
+                        size / 2
                     )
 
                     ctx.lineTo(
 
                         target.coords.x +
                         AppState.offsetX +
-                        this.roomSize / 2,
+                        size / 2,
 
                         target.coords.y +
                         AppState.offsetY +
-                        this.roomSize / 2
+                        size / 2
                     )
 
                     ctx.stroke()
@@ -262,14 +271,17 @@ const MapRenderer = {
 
         AppState.rooms.forEach(room => {
 
-            const x =
+            const size =
+                this.getRoomSize()
 
-                room.coords.x +
+            const x =
+                room.coords.x *
+                AppState.zoom +
                 AppState.offsetX
 
             const y =
-
-                room.coords.y +
+                room.coords.y *
+                AppState.zoom +
                 AppState.offsetY
 
             // ROOM BODY
@@ -290,8 +302,8 @@ const MapRenderer = {
                 x,
                 y,
 
-                this.roomSize,
-                this.roomSize
+                size,
+                size
             )
 
             // BORDER
@@ -306,8 +318,8 @@ const MapRenderer = {
                 x,
                 y,
 
-                this.roomSize,
-                this.roomSize
+                size,
+                size
             )
 
             // LABEL
@@ -316,7 +328,10 @@ const MapRenderer = {
                 '#ffffff'
 
             ctx.font =
-                '12px Arial'
+                `${Math.max(
+                    10,
+                    12 * AppState.zoom
+                )}px Arial`
 
             ctx.textAlign =
                 'center'
@@ -326,7 +341,7 @@ const MapRenderer = {
                 room.vnum,
 
                 x +
-                this.roomSize / 2,
+                size / 2,
 
                 y - 8
             )

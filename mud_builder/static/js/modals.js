@@ -749,11 +749,11 @@ const ModalManager = {
 
             container.innerHTML = `
 
-    < div class="emptyPanel" >
+    <div class="emptyPanel">
 
         No exits in room
 
-                </div >
+                </div>
     `
 
             return
@@ -771,7 +771,7 @@ const ModalManager = {
 
                 card.innerHTML = `
 
-    < div class="exitCardHeader" >
+    <div class="exitCardHeader">
 
                         <div class="exitBadge">
 
@@ -785,7 +785,7 @@ const ModalManager = {
 
                         </button>
 
-                    </div >
+                    </div>
 
                     <div class="exitTarget">
 
@@ -993,11 +993,11 @@ const ModalManager = {
 
             container.innerHTML = `
 
-    < div class="emptyPanel" >
+    <div class="emptyPanel">
 
         No mobs in room
 
-                </div >
+                </div>
     `
 
             return
@@ -1009,11 +1009,11 @@ const ModalManager = {
 
                 return `
 
-    < div class="mobRow" >
+    <div class="mobRow">
 
         ${ mob }
 
-                    </div >
+                    </div>
     `
             })
 
@@ -1042,11 +1042,11 @@ const ModalManager = {
 
             container.innerHTML = `
 
-    < div class="emptyPanel" >
+    <div class="emptyPanel">
 
         No items in room
 
-                </div >
+                </div>
     `
 
             return
@@ -1058,11 +1058,11 @@ const ModalManager = {
 
                 return `
 
-    < div class="itemRow" >
+    <div class="itemRow">
 
         ${ item }
 
-                    </div >
+                    </div>
     `
             })
 
@@ -1091,11 +1091,11 @@ const ModalManager = {
 
             container.innerHTML = `
 
-    < div class="emptyPanel" >
+    <div class="emptyPanel">
 
         No scripts attached
 
-                </div >
+                </div>
     `
 
             return
@@ -1107,11 +1107,11 @@ const ModalManager = {
 
                 return `
 
-    < div class="scriptRow" >
+    <div class="scriptRow">
 
         ${ script }
 
-                    </div >
+                    </div>
     `
             })
 

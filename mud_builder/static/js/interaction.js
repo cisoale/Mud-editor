@@ -46,7 +46,13 @@ const InteractionManager = {
             this.onDoubleClick.bind(this)
         )
 
-        console.log(
+        canvas.addEventListener(
+            'wheel',
+            this.onWheel.bind(this),
+            { passive: false }
+        )
+
+           console.log(
             '[INTERACTION READY]'
         )
     },
@@ -63,14 +69,20 @@ const InteractionManager = {
         return {
 
             x:
-                event.clientX -
-                rect.left -
-                AppState.offsetX,
+                (
+                    event.clientX -
+                    rect.left -
+                    AppState.offsetX
+                ) /
+                AppState.zoom,
 
             y:
-                event.clientY -
-                rect.top -
-                AppState.offsetY
+                (
+                    event.clientY -
+                    rect.top -
+                    AppState.offsetY
+                ) /
+                AppState.zoom
         }
     },
 
@@ -81,7 +93,7 @@ const InteractionManager = {
     getRoomAt(x, y) {
 
         const size =
-            MapRenderer.roomSize
+            MapRenderer.BaseRoomSize
 
         for (
             let i = AppState.rooms.length - 1;
@@ -498,5 +510,37 @@ const InteractionManager = {
             return
 
         ModalManager.openRoom(room)
+    },
+
+    // ====================================
+    // ZOOM
+    // ====================================
+
+    onWheel(event) {
+
+        event.preventDefault()
+
+        if (event.deltaY < 0) {
+
+            AppState.zoom +=
+                AppState.zoomStep
+
+        } else {
+
+            AppState.zoom -=
+                AppState.zoomStep
+        }
+
+        AppState.zoom = Math.max(
+
+            AppState.minZoom,
+
+            Math.min(
+                AppState.maxZoom,
+                AppState.zoom
+            )
+        )
+
+        MapRenderer.render()
     }
 }

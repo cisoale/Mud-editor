@@ -1,4 +1,3 @@
-
 // ====================================
 // static/js/state.js
 // ====================================
@@ -29,6 +28,8 @@ const AppState = {
 
     selectedExit: null,
 
+    multiSelection: [],
+
     // ====================================
     // UI STATE
     // ====================================
@@ -40,6 +41,8 @@ const AppState = {
     draggingRoom: false,
 
     draggingCanvas: false,
+
+    resizing: false,
 
     // ====================================
     // DRAG DATA
@@ -63,6 +66,14 @@ const AppState = {
 
     zoom: 1,
 
+    minZoom: 0.4,
+
+    maxZoom: 2.5,
+
+    zoomStep: 0.1,
+
+    smoothCamera: true,
+
     // ====================================
     // GRID
     // ====================================
@@ -71,11 +82,21 @@ const AppState = {
 
     snapToGrid: true,
 
+    showGrid: true,
+
     // ====================================
     // Z LEVEL
     // ====================================
 
     currentZ: 0,
+
+    // ====================================
+    // TOOL STATE
+    // ====================================
+
+    activeTool: 'select',
+
+    currentBrush: null,
 
     // ====================================
     // RUNTIME
@@ -90,12 +111,18 @@ const AppState = {
     initialized: false,
 
     // ====================================
+    // PERFORMANCE
+    // ====================================
+
+    spatialGridEnabled: true,
+
+    viewportCulling: true,
+
+    // ====================================
     // DEBUG
     // ====================================
 
     debug: {
-
-        showGrid: true,
 
         showCoords: false,
 
@@ -103,6 +130,10 @@ const AppState = {
 
         showExitLines: true,
 
-        showValidator: true
+        showValidator: true,
+
+        showFPS: false,
+
+        showBounds: false
     }
 }

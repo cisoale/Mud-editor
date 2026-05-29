@@ -10,7 +10,9 @@
           content="width=device-width, initial-scale=1.0">
 
     <title>
+
         Realm Builder
+
     </title>
 
     <link rel="stylesheet"
@@ -37,27 +39,39 @@
             <div id="toolbar">
 
                 <button id="newRoomBtn">
+
                     + Room
+
                 </button>
 
                 <button id="newMobBtn">
+
                     + Mob
+
                 </button>
 
                 <button id="newAreaBtn">
+
                     + Area
+
                 </button>
 
                 <button id="linkModeBtn">
+
                     Link Mode
+
                 </button>
 
                 <button id="centerMapBtn">
-                    Center Map
+
+                    Center
+
                 </button>
 
                 <button id="zMinusBtn">
+
                     Z-
+
                 </button>
 
                 <span id="zLevel">
@@ -67,7 +81,9 @@
                 </span>
 
                 <button id="zPlusBtn">
+
                     Z+
+
                 </button>
 
             </div>
@@ -86,21 +102,55 @@
 
             <aside id="leftSidebar">
 
-                <h3>
+                <!-- ================================= -->
+                <!-- AREAS -->
+                <!-- ================================= -->
 
-                    Areas
+                <div class="sidebarSection">
 
-                </h3>
+                    <div class="sidebarSectionHeader"
+                         onclick="this.parentElement.classList.toggle('collapsed')">
 
-                <div id="areasSidebar"></div>
+                        <span>
 
-                <h3 style="margin-top:20px;">
+                            ▼ Areas
 
-                    Rooms
+                        </span>
 
-                </h3>
+                    </div>
 
-                <div id="roomList"></div>
+                    <div class="sidebarSectionContent">
+
+                        <div id="areasSidebar"></div>
+
+                    </div>
+
+                </div>
+
+                <!-- ================================= -->
+                <!-- ROOMS -->
+                <!-- ================================= -->
+
+                <div class="sidebarSection">
+
+                    <div class="sidebarSectionHeader"
+                         onclick="this.parentElement.classList.toggle('collapsed')">
+
+                        <span>
+
+                            ▼ Rooms
+
+                        </span>
+
+                    </div>
+
+                    <div class="sidebarSectionContent">
+
+                        <div id="roomList"></div>
+
+                    </div>
+
+                </div>
 
             </aside>
 
@@ -120,25 +170,83 @@
 
             <aside id="rightSidebar">
 
-                <h3>
+                <!-- ================================= -->
+                <!-- INSPECTOR -->
+                <!-- ================================= -->
 
-                    Mobs
+                <div class="sidebarSection">
 
-                </h3>
+                    <div class="sidebarSectionHeader">
 
-                <div id="mobs"></div>
+                        <span>
+
+                            Inspector
+
+                        </span>
+
+                    </div>
+
+                    <div class="sidebarSectionContent">
+
+                        <div id="inspectorPanel">
+
+                            <div class="emptyPanel">
+
+                                No room selected
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ================================= -->
+                <!-- WORLD INFO -->
+                <!-- ================================= -->
+
+                <div class="sidebarSection">
+
+                    <div class="sidebarSectionHeader"
+                         onclick="this.parentElement.classList.toggle('collapsed')">
+
+                        <span>
+
+                            ▼ World
+
+                        </span>
+
+                    </div>
+
+                    <div class="sidebarSectionContent">
+
+                        <div id="worldInfo">
+
+                            <div class="emptyPanel">
+
+                                Multi-area world loaded
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
                 <!-- ================================= -->
                 <!-- VALIDATOR -->
                 <!-- ================================= -->
 
-                <div id="validatorWrapper">
+                <div class="sidebarSection">
 
-                    <div id="validatorHeader">
+                    <div class="sidebarSectionHeader"
+                         onclick="this.parentElement.classList.toggle('collapsed')">
 
                         <span>
 
-                            Validation
+                            ▼ Validator
 
                         </span>
 
@@ -150,7 +258,11 @@
 
                     </div>
 
-                    <div id="validationPanel"></div>
+                    <div class="sidebarSectionContent">
+
+                        <div id="validationPanel"></div>
+
+                    </div>
 
                 </div>
 
@@ -299,7 +411,7 @@
 
                     <h3>
 
-                        Room Exits
+                        Exits
 
                     </h3>
 
@@ -326,7 +438,7 @@
 
                     <h3>
 
-                        Room Mobs
+                        Mobs
 
                     </h3>
 
@@ -361,7 +473,7 @@
 
                     <h3>
 
-                        Room Items
+                        Items
 
                     </h3>
 
@@ -396,7 +508,7 @@
 
                     <h3>
 
-                        Room Scripts
+                        Scripts
 
                     </h3>
 
