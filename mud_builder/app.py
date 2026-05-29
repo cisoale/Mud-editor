@@ -112,6 +112,11 @@ def normalize_room(room):
     )
 
     room.setdefault(
+        "static_npcs",
+        []
+    )
+
+    room.setdefault(
         "flags",
         []
     )

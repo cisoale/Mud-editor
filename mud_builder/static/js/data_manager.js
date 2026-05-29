@@ -236,6 +236,8 @@ const DataManager = {
                     room.flags ||= []
 
                     room.scripts ||= []
+
+                    room.static_npcs ||= []
                 }
             )
 
@@ -339,6 +341,8 @@ const DataManager = {
                     room.flags ||= []
 
                     room.scripts ||= []
+
+                    room.static_npcs ||= []
 
                     return room
                 })

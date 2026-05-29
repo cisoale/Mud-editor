@@ -419,6 +419,8 @@ const ModalManager = {
 
         this.renderScripts(room)
 
+        this.renderStaticNpcs(room)
+
         console.log(
             '[ROOM OPENED]',
             room.vnum
@@ -485,7 +487,7 @@ const ModalManager = {
 
         const confirmed = confirm(
 
-            `Delete room ${ this.currentRoom.vnum }?`
+            `Delete room ${this.currentRoom.vnum}?`
         )
 
         if (!confirmed)
@@ -612,7 +614,7 @@ const ModalManager = {
 
         const dir = prompt(
 
-            `Direction ?\n\n${ available.join(', ') } `
+            `Direction ?\n\n${available.join(', ')} `
         )
 
         if (!dir)
@@ -940,7 +942,7 @@ const ModalManager = {
                         const confirmed =
                             confirm(
 
-                                `Delete ${ dir } exit ? `
+                                `Delete ${dir} exit ? `
                             )
 
                         if (!confirmed)
@@ -1011,7 +1013,7 @@ const ModalManager = {
 
     <div class="mobRow">
 
-        ${ mob }
+        ${mob}
 
                     </div>
     `
@@ -1060,7 +1062,7 @@ const ModalManager = {
 
     <div class="itemRow">
 
-        ${ item }
+        ${item}
 
                     </div>
     `
@@ -1095,7 +1097,7 @@ const ModalManager = {
 
         No scripts attached
 
-                </div>
+    </div>
     `
 
             return
@@ -1109,11 +1111,54 @@ const ModalManager = {
 
     <div class="scriptRow">
 
-        ${ script }
+        ${script}
 
-                    </div>
+    </div>
     `
             })
+
+            .join('')
+    },
+
+
+    renderStaticNpcs(room) {
+
+        const container =
+            document.getElementById(
+                'staticNpcEditor'
+            )
+
+        if (!container)
+            return
+
+        const npcs =
+            room.static_npcs || []
+
+        if (!npcs.length) {
+
+            container.innerHTML = `
+
+    <div class="emptyPanel">
+
+        No static NPCs
+
+            </div>
+    `
+
+            return
+        }
+
+        container.innerHTML = npcs
+
+            .map(npc => `
+
+    <div class="mobRow">
+
+       ${npc}
+
+     </div>
+
+    `)
 
             .join('')
     }
