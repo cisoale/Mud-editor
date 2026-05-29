@@ -64,6 +64,11 @@ const ModalManager = {
                 'addExitBtn'
             )
 
+        const addStaticNpcBtn =
+
+            document.getElementById(
+                'addStaticNpcBtn'
+            )
         // ====================================
         // BUTTONS
         // ====================================
@@ -105,6 +110,42 @@ const ModalManager = {
                 'click',
 
                 () => this.showAddExitDialog()
+            )
+        }
+
+        if (addStaticNpcBtn) {
+
+            addStaticNpcBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    const npc = prompt(
+                        'Nome NPC statico:'
+                    )
+
+                    if (!npc)
+                        return
+
+                    this.currentRoom.static_npcs ||= []
+
+                    this.currentRoom.static_npcs.push(
+                        npc.trim()
+                    )
+
+                    console.log(
+                        '[STATIC NPC ADDED]',
+                        npc
+                    )
+
+                    this.renderStaticNpcs(
+                        this.currentRoom
+                    )
+
+                    this.queueAutoSave()
+
+                }
             )
         }
 
@@ -1150,16 +1191,66 @@ const ModalManager = {
 
         container.innerHTML = npcs
 
-            .map(npc => `
+            .map((npc, index) => `
 
-    <div class="mobRow">
+<div class="mobRow">
 
-       ${npc}
+    <span>
 
-     </div>
+        ${npc}
 
-    `)
+    </span>
+
+    <button
+        class="removeStaticNpcBtn"
+        data-index="${index}">
+
+        Remove
+
+    </button>
+
+</div>
+
+`)
 
             .join('')
-    }
-}
+
+        container
+
+            .querySelectorAll(
+                '.removeStaticNpcBtn'
+            )
+
+            .forEach(btn => {
+
+                btn.addEventListener(
+
+                    'click',
+
+                    () => {
+
+                        const index =
+
+                            Number(
+                                btn.dataset.index
+                            )
+
+                        room.static_npcs.splice(
+                            index,
+                            1
+                        )
+
+                        this.renderStaticNpcs(
+                            room
+                        )
+
+                        this.queueAutoSave()
+
+                        console.log(
+                            '[STATIC NPC REMOVED]'
+                        )
+                    }
+                )
+            })
+    },
+};
