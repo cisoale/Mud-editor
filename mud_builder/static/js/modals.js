@@ -64,6 +64,24 @@ const ModalManager = {
                 'addExitBtn'
             )
 
+        const newMobBtn =
+
+            document.getElementById(
+                'newMobBtn'
+            )
+
+        const saveMobBtn =
+
+            document.getElementById(
+                'saveMobBtn'
+            )
+
+        const closeMobBtn =
+
+            document.getElementById(
+                'closeMobBtn'
+            )
+
         const addStaticNpcBtn =
 
             document.getElementById(
@@ -91,6 +109,151 @@ const ModalManager = {
 
                 () => this.closeRoom()
             )
+        }
+
+        if (closeMobBtn) {
+
+            closeMobBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    document
+                        .getElementById(
+                            'mobModal'
+                        )
+                        .classList.remove(
+                            'active'
+                        )
+
+                }
+            )
+        }
+
+        if (saveMobBtn) {
+
+            saveMobBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    const mobId =
+
+                        document
+                            .getElementById(
+                                'mob_id'
+                            )
+                            .value
+                            .trim()
+
+                    const mobName =
+
+                        document
+                            .getElementById(
+                                'mob_name'
+                            )
+                            .value
+                            .trim()
+
+                    const mobLevel =
+
+                        Number(
+
+                            document
+                                .getElementById(
+                                    'mob_level'
+                                )
+                                .value
+                        )
+
+                    if (!mobId || !mobName) {
+
+                        alert(
+                            'ID e Nome obbligatori'
+                        )
+
+                        return
+                    }
+
+                    fetch(
+
+                        '/api/mob',
+
+                        {
+
+                            method: 'POST',
+
+                            headers: {
+
+                                'Content-Type':
+                                    'application/json'
+                            },
+
+                            body: JSON.stringify({
+
+                                vnum: mobId,
+
+                                id: mobId,
+
+                                name: mobName,
+
+                                short_desc: mobName,
+
+                                long_desc: mobName,
+
+                                level: mobLevel,
+
+                                hp: 100,
+
+                                xp_reward: 0
+                            })
+                        }
+
+                    )
+
+                        .then(response => response.json())
+
+                        .then(data => {
+
+                            if (data.error) {
+
+                                alert(
+                                    data.error
+                                )
+
+                                return
+                            }
+
+                            alert(
+                                `Mob ${mobId} creato`
+                            )
+                            document.getElementById('mob_id').value = ''
+                            document.getElementById('mob_name').value = ''
+                            document.getElementById('mob_level').value = 1
+                            document
+                                .getElementById(
+                                    'mobModal'
+                                )
+                                .classList.remove(
+                                    'active'
+                                )
+
+                        })
+
+                        .catch(error => {
+
+                            console.error(
+                                error
+                            )
+
+                        })
+
+                }
+
+            )
+
         }
 
         if (deleteBtn) {
@@ -146,6 +309,28 @@ const ModalManager = {
                     this.queueAutoSave()
 
                 }
+            )
+        }
+        if (newMobBtn) {
+
+            newMobBtn.addEventListener(
+
+                    'click',
+
+                () => {
+
+                    document
+                        .getElementById(
+                            'mobModal'
+                        )
+                        .classList.add(
+                            'active'
+                        )
+
+                    
+
+                 }
+                
             )
         }
 

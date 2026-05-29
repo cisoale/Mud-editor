@@ -700,16 +700,18 @@ def api_save_mob():
 
         data = request.json
 
-        save_mob(data)
+        result = save_mob(data)
+
+        if result.get("error"):
+
+            return jsonify(result)
 
         print(
             f"[SAVE MOB] "
             f"{data.get('vnum')}"
         )
 
-        return jsonify({
-            "ok": True
-        })
+        return jsonify(result)
 
     except Exception as e:
 

@@ -61,13 +61,31 @@ def save_mob(mob):
     vnum = mob.get("vnum")
 
     if vnum is None:
-        return False
+        return {
+            "error": "Missing vnum"
+        }
 
     path = os.path.join(
         MOBS_DIR,
         f"{vnum}.json"
     )
 
+    # =========================
+    # DUPLICATE CHECK
+    # =========================
+
+    if os.path.exists(path):
+
+        return {
+            "error": f"Mob '{vnum}' already exists"
+        }
+    if os.path.exists(path):
+
+      return {
+        "error":
+        f"Mob '{vnum}' already exists"
+      }
+    
     with open(path, "w", encoding="utf-8") as f:
 
         json.dump(
@@ -77,4 +95,6 @@ def save_mob(mob):
             ensure_ascii=False
         )
 
-    return True
+    return {
+        "success": True
+    }

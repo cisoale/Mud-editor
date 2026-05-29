@@ -6,6 +6,7 @@ PROJECT_DIR = os.path.dirname(BASE_DIR)
 
 DATA_DIR = os.path.join(
     PROJECT_DIR,
+    "mud_server",
     "data"
 )
 
