@@ -294,6 +294,8 @@ const SidebarManager = {
                     AppState.selectedRoom =
                         room
 
+                    // Focus camera temporaneamente disattivato
+
                     this.renderRooms()
 
                     this.renderInspector()

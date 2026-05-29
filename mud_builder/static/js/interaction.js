@@ -8,11 +8,18 @@ const InteractionManager = {
 
     dragRoom: null,
 
+    draggingCanvas: false,
+
+    canvasStartX: 0,
+    canvasStartY: 0,
+
     startX: 0,
     startY: 0,
 
     roomStartX: 0,
     roomStartY: 0,
+    dragOffsetX: 0,
+    dragOffsetY: 0,
 
     // ====================================
     // LINK MODE
@@ -93,7 +100,7 @@ const InteractionManager = {
     getRoomAt(x, y) {
 
         const size =
-            MapRenderer.BaseRoomSize
+            MapRenderer.baseRoomSize
 
         for (
             let i = AppState.rooms.length - 1;
@@ -147,6 +154,14 @@ const InteractionManager = {
 
             AppState.selectedRoom = null
 
+            this.draggingCanvas = true
+
+            this.canvasStartX =
+                event.clientX
+
+            this.canvasStartY =
+                event.clientY
+
             SidebarManager.renderRooms()
 
             MapRenderer.render()
@@ -182,6 +197,14 @@ const InteractionManager = {
         this.dragging = true
 
         this.dragRoom = room
+
+        this.dragOffsetX =
+            mouse.x -
+            room.coords.x
+
+        this.dragOffsetY =
+            mouse.y -
+            room.coords.y
 
         this.roomStartX =
             room.coords.x
@@ -394,76 +417,105 @@ const InteractionManager = {
         ]
     },
 
+   
+// ====================================
+// POINTER MOVE
+// ====================================
+
+onPointerMove(event) {
+
     // ====================================
-    // POINTER MOVE
+    // PAN CAMERA
     // ====================================
 
-    onPointerMove(event) {
-
-        if (!this.dragging) {
-            return
-        }
-
-        if (!this.dragRoom) {
-            return
-        }
+    if (this.draggingCanvas) {
 
         const dx =
-            event.clientX - this.startX
+            event.clientX -
+            this.canvasStartX
 
         const dy =
-            event.clientY - this.startY
+            event.clientY -
+            this.canvasStartY
 
-        let newX =
-            this.roomStartX + dx
+        AppState.offsetX += dx
 
-        let newY =
-            this.roomStartY + dy
+        AppState.offsetY += dy
 
-        // ====================================
-        // GRID SNAP
-        // ====================================
+        this.canvasStartX =
+            event.clientX
 
-        if (
-            AppState.snapToGrid
-        ) {
-
-            const grid =
-                AppState.gridSize
-
-            newX =
-
-                Math.round(
-                    newX / grid
-                ) * grid
-
-            newY =
-
-                Math.round(
-                    newY / grid
-                ) * grid
-        }
-
-        this.dragRoom.coords.x =
-            newX
-
-        this.dragRoom.coords.y =
-            newY
+        this.canvasStartY =
+            event.clientY
 
         MapRenderer.render()
-    },
+
+        return
+    }
 
     // ====================================
-    // POINTER UP
+    // NO DRAG
     // ====================================
 
-    async onPointerUp() {
+    if (!this.dragging) {
+        return
+    }
+
+    if (!this.dragRoom) {
+        return
+    }
+
+    // ====================================
+    // SMOOTH ROOM DRAG
+    // ====================================
+
+    const mouse =
+        this.getMouseWorld(event)
+
+    this.dragRoom.coords.x =
+
+        mouse.x -
+        this.dragOffsetX
+
+    this.dragRoom.coords.y =
+
+        mouse.y -
+        this.dragOffsetY
+
+    MapRenderer.render()
+},
+
+// ====================================
+// POINTER UP
+// ====================================
+
+async onPointerUp() {
 
         if (
             this.dragging &&
             this.dragRoom
         ) {
+            if (
+                AppState.snapToGrid
+            ) {
 
+                const grid =
+                    AppState.gridSize
+
+                this.dragRoom.coords.x =
+
+                    Math.round(
+                        this.dragRoom.coords.x /
+                        grid
+                    ) * grid
+
+                this.dragRoom.coords.y =
+
+                    Math.round(
+                        this.dragRoom.coords.y /
+                        grid
+                    ) * grid
+            }
             await DataManager.saveCurrentArea()
 
             if (
@@ -474,6 +526,8 @@ const InteractionManager = {
                 Validator.validateWorld()
             }
         }
+
+        this.draggingCanvas = false
 
         this.dragging = false
 
