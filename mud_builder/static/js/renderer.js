@@ -185,83 +185,107 @@ const MapRenderer = {
 
     drawExits() {
 
-        const size =
-            this.getRoomSize()
+    const size =
+        this.getRoomSize()
 
-        AppState.rooms.forEach(room => {
+    AppState.rooms.forEach(room => {
 
-            const exits =
-                room.exits || {}
+        const exits =
+            room.exits || {}
 
-            Object.entries(exits)
+        Object.entries(exits)
 
-                .forEach(([dir, exit]) => {
+            .forEach(([dir, exit]) => {
 
-                    const target =
+                const target =
 
-                        AppState.rooms.find(
+                    AppState.rooms.find(
 
-                            r =>
+                        r =>
 
-                                Number(r.vnum) ===
+                            Number(r.vnum) ===
 
-                                Number(exit.to)
-                        )
+                            Number(exit.to)
+                    )
 
-                    if (!target)
-                        return
+                if (!target)
+                    return
+
+                ctx.strokeStyle =
+                    '#64748b'
+
+                if (exit.hidden) {
 
                     ctx.strokeStyle =
-                        '#64748b'
+                        '#a855f7'
+                }
 
-                    if (exit.hidden) {
+                if (exit.closed) {
 
-                        ctx.strokeStyle =
-                            '#a855f7'
-                    }
+                    ctx.strokeStyle =
+                        '#f59e0b'
+                }
 
-                    if (exit.closed) {
+                if (exit.locked) {
 
-                        ctx.strokeStyle =
-                            '#f59e0b'
-                    }
+                    ctx.strokeStyle =
+                        '#ef4444'
+                }
 
-                    if (exit.locked) {
+                const roomX =
 
-                        ctx.strokeStyle =
-                            '#ef4444'
-                    }
+                    room.coords.x *
+                    AppState.zoom +
 
-                    ctx.lineWidth = 3
+                    AppState.offsetX
 
-                    ctx.beginPath()
+                const roomY =
 
-                    ctx.moveTo(
+                    room.coords.y *
+                    AppState.zoom +
 
-                        room.coords.x +
-                        AppState.offsetX +
-                        size / 2,
+                    AppState.offsetY
 
-                        room.coords.y +
-                        AppState.offsetY +
-                        size / 2
-                    )
+                const targetX =
 
-                    ctx.lineTo(
+                    target.coords.x *
+                    AppState.zoom +
 
-                        target.coords.x +
-                        AppState.offsetX +
-                        size / 2,
+                    AppState.offsetX
 
-                        target.coords.y +
-                        AppState.offsetY +
-                        size / 2
-                    )
+                const targetY =
 
-                    ctx.stroke()
-                })
-        })
-    },
+                    target.coords.y *
+                    AppState.zoom +
+
+                    AppState.offsetY
+
+                ctx.lineWidth = 3
+
+                ctx.beginPath()
+
+                ctx.moveTo(
+
+                    roomX +
+                    size / 2,
+
+                    roomY +
+                    size / 2
+                )
+
+                ctx.lineTo(
+
+                    targetX +
+                    size / 2,
+
+                    targetY +
+                    size / 2
+                )
+
+                ctx.stroke()
+            })
+    })
+},
 
     // ====================================
     // ROOMS
