@@ -256,6 +256,141 @@ const ModalManager = {
 
         }
 
+        if (saveMobBtn) {
+
+            saveMobBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    const mobId =
+
+                        document
+                            .getElementById(
+                                'mob_id'
+                            )
+                            .value
+                            .trim()
+
+                    const mobName =
+
+                        document
+                            .getElementById(
+                                'mob_name'
+                            )
+                            .value
+                            .trim()
+
+                    const mobLevel =
+
+                        Number(
+
+                            document
+                                .getElementById(
+                                    'mob_level'
+                                )
+                                .value
+                        )
+
+                    cfetch(
+
+                        '/api/mob',
+
+                        {
+
+                            method: 'POST',
+
+                            headers: {
+
+                                'Content-Type':
+                                    'application/json'
+                            },
+
+                            body: JSON.stringify({
+
+                                vnum: mobId,
+
+                                id: mobId,
+
+                                name: mobName,
+
+                                short_desc: mobName,
+
+                                long_desc: mobName,
+
+                                level: mobLevel,
+
+                                hp: 100,
+
+                                xp_reward: 0,
+
+                                gold: 0
+                            })
+                        }
+
+                    )
+
+                        .then(response => response.json())
+
+                        .then(data => {
+
+                            if (data.error) {
+
+                                alert(
+                                    data.error
+                                )
+
+                                return
+                            }
+
+                            alert(
+                                `Mob ${mobId} creato`
+                            )
+
+                            document
+                                .getElementById(
+                                    'mobModal'
+                                )
+                                .classList.remove(
+                                    'active'
+                                )
+
+                            document
+                                .getElementById(
+                                    'mob_id'
+                                )
+                                .value = ''
+
+                            document
+                                .getElementById(
+                                    'mob_name'
+                                )
+                                .value = ''
+
+                            document
+                                .getElementById(
+                                    'mob_level'
+                                )
+                                .value = 1
+
+                        })
+
+                        .catch(error => {
+
+                            console.error(
+                                error
+                            )
+
+                        })
+                    
+
+                }
+
+            )
+
+        }
+
         if (deleteBtn) {
 
             deleteBtn.addEventListener(
