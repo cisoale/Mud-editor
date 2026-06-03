@@ -49,6 +49,7 @@ os.makedirs(
 
 from services.mob_service import (
     get_mobs,
+    get_mob,
     save_mob
 )
 
@@ -685,6 +686,40 @@ def api_mobs():
             "error": str(e)
         }), 500
 
+
+# =========================================
+# GET MOB
+# =========================================
+
+@app.route(
+    "/api/mob/<vnum>",
+    methods=["GET"]
+)
+
+def api_get_mob(vnum):
+
+    try:
+
+        mob = get_mob(vnum)
+
+        if not mob:
+
+            return jsonify({
+                "error": "Mob not found"
+            }), 404
+
+        return jsonify(mob)
+
+    except Exception as e:
+
+        print(
+            "[GET MOB ERROR]",
+            e
+        )
+
+        return jsonify({
+            "error": str(e)
+        }), 500
 # =========================================
 # SAVE MOB
 # =========================================

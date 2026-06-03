@@ -47,11 +47,21 @@ def get_mobs():
 
                 print(e)
 
-    mobs.sort(
-        key=lambda m: int(
-            m.get("vnum", 0) or 0
+    try:
+
+        mobs.sort(
+          key=lambda m: str(
+              m.get("vnum", "")
+          ).lower()
         )
+
+    except Exception as e:
+
+          print(
+            "[MOB SORT ERROR]",
+            e
     )
+    
 
     return mobs
 
@@ -98,3 +108,21 @@ def save_mob(mob):
     return {
         "success": True
     }
+
+# =========================================
+# GET MOB
+# =========================================
+
+def get_mob(vnum):
+
+    mobs = get_mobs()
+
+    for mob in mobs:
+
+        if str(
+            mob.get("vnum")
+        ) == str(vnum):
+
+            return mob
+
+    return None

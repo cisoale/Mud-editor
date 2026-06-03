@@ -50,6 +50,12 @@
 
                 </button>
 
+                <button id="mobBrowserBtn">
+
+                    Mob Browser
+
+                </button>
+
                 <button id="newAreaBtn">
 
                     + Area
@@ -638,7 +644,30 @@
 
                 <input id="mob_name"
                        type="text">
+                <input id="mob_short_desc"
+                       type="text">
 
+                <label>Long Description</label>
+
+                <textarea id="mob_long_desc"></textarea>
+
+                <label>HP</label>
+
+                <input id="mob_hp"
+                       type="number"
+                       value="100">
+
+                <label>XP Reward</label>
+
+                <input id="mob_xp_reward"
+                       type="number"
+                       value="0">
+
+                <label>Gold</label>
+
+                <input id="mob_gold"
+                       type="number"
+                       value="0">
                 <label>Level</label>
 
                 <input id="mob_level"
@@ -658,6 +687,44 @@
                 <button id="closeMobBtn">
 
                     Cancel
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- MOB BROWSER -->
+    <!-- ================================= -->
+
+    <div id="mobBrowserModal"
+         class="modalOverlay">
+
+        <div class="modalWindow">
+
+            <div class="modalHeader">
+
+                <h2>
+
+                    Mob Browser
+
+                </h2>
+
+            </div>
+
+            <div id="mobBrowserList"
+                 class="modalBody">
+
+            </div>
+
+            <div class="modalFooter">
+
+                <button id="closeMobBrowserBtn">
+
+                    Close
 
                 </button>
 
