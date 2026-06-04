@@ -949,12 +949,13 @@ const ModalManager = {
     ${mob.name || 'Unnamed Mob'}
 
     <button
-        class="editMobBtn"
-        data-vnum="${mob.vnum}">
+    class="editMobBtn"
+    data-vnum="${mob.vnum}"
+    data-name="${mob.name || ''}">
 
-        Edit
+    Edit
 
-    </button>
+</button>
 
     <button
     class="deleteMobBtn"
@@ -992,6 +993,8 @@ const ModalManager = {
                             this.currentRoom.mobs.push({
 
                                 vnum: btn.dataset.vnum,
+
+                                name: btn.dataset.name,
 
                                 max: 1,
 
@@ -1593,9 +1596,17 @@ const ModalManager = {
 
         <strong>
 
-            ${mob.vnum}
+    ${mob.name || mob.vnum}
 
-        </strong>
+</strong>
+
+<br>
+
+<small>
+
+    (${mob.vnum})
+
+</small>
 
         <br>
 
