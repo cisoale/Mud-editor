@@ -132,3 +132,26 @@ def get_mob(vnum):
             return mob
 
     return None
+
+# =========================================
+# DELETE MOB
+# =========================================
+
+def delete_mob(vnum):
+
+    path = os.path.join(
+        MOBS_DIR,
+        f"{vnum}.json"
+    )
+
+    if not os.path.exists(path):
+
+        return {
+            "error": f"Mob '{vnum}' not found"
+        }
+
+    os.remove(path)
+
+    return {
+        "success": True
+    }

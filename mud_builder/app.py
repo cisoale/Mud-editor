@@ -50,7 +50,8 @@ os.makedirs(
 from services.mob_service import (
     get_mobs,
     get_mob,
-    save_mob
+    save_mob,
+    delete_mob
 )
 
 # =========================================
@@ -758,6 +759,44 @@ def api_save_mob():
         return jsonify({
             "error": str(e)
         }), 500
+
+
+# =========================================
+# DELETE MOB
+# =========================================
+
+@app.route(
+    "/api/mob/<vnum>",
+    methods=["DELETE"]
+)
+
+def api_delete_mob(vnum):
+
+    try:
+
+        result = delete_mob(vnum)
+
+        if result.get("error"):
+
+            return jsonify(result), 404
+
+        print(
+            f"[DELETE MOB] {vnum}"
+        )
+
+        return jsonify(result)
+
+    except Exception as e:
+
+        print(
+            "[DELETE MOB ERROR]",
+            e
+        )
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+    
 
 # =========================================
 # STATIC FILES

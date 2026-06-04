@@ -922,6 +922,14 @@ const ModalManager = {
 
     </button>
 
+    <button
+    class="deleteMobBtn"
+    data-vnum="${mob.vnum}">
+
+    Delete
+
+</button>
+
 </div>
 
 `).join('')
@@ -997,6 +1005,76 @@ const ModalManager = {
                             '[EDIT MOB]',
                             vnum
                         )
+
+                    }
+
+                )
+                
+            })
+
+        container
+
+            .querySelectorAll(
+                '.deleteMobBtn'
+            )
+
+            .forEach(btn => {
+
+                btn.addEventListener(
+
+                    'click',
+
+                    async () => {
+
+                        console.log(
+                            '[DELETE CLICK]',
+                            btn.dataset.vnum
+                        )
+
+                        const vnum =
+
+                            btn.dataset.vnum
+
+                        const confirmed =
+
+                            confirm(
+
+                                `Delete mob ${vnum}?`
+                            )
+
+                        if (!confirmed)
+                            return
+
+                        const response =
+
+                            await fetch(
+
+                                `/api/mob/${vnum}`,
+
+                                {
+                                    method: 'DELETE'
+                                }
+                            )
+
+                        const data =
+
+                            await response.json()
+
+                        if (data.error) {
+
+                            alert(
+                                data.error
+                            )
+
+                            return
+                        }
+
+                        console.log(
+                            '[MOB DELETED]',
+                            vnum
+                        )
+
+                        await this.loadMobBrowser()
 
                     }
 
