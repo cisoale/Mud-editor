@@ -14,6 +14,10 @@ const ModalManager = {
 
     selectingMobForRoom: false,
 
+    editingItem: null,
+
+    selectingItemForRoom: false,
+
     directions: [
 
         'north',
@@ -74,6 +78,30 @@ const ModalManager = {
                 'newMobBtn'
             )
 
+        const newItemBtn =
+
+            document.getElementById(
+                'newItemBtn'
+            )
+
+        const itemBrowserBtn =
+
+            document.getElementById(
+                'itemBrowserBtn'
+            )
+
+        const closeItemBtn =
+
+            document.getElementById(
+                'closeItemBtn'
+            )
+
+        const closeItemBrowserBtn =
+
+            document.getElementById(
+                'closeItemBrowserBtn'
+            )
+
         const mobBrowserBtn =
 
             document.getElementById(
@@ -108,6 +136,12 @@ const ModalManager = {
 
             document.getElementById(
                 'addMobToRoomBtn'
+            )
+
+        const addItemToRoomBtn =
+
+            document.getElementById(
+                'addItemToRoomBtn'
             )
         // ====================================
         // BUTTONS
@@ -365,6 +399,25 @@ const ModalManager = {
             )
 
         }
+
+        if (addItemToRoomBtn) {
+
+            addItemToRoomBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    alert(
+                        'Item Browser Coming Soon'
+                    )
+
+                }
+
+            )
+
+        }
+
         if (newMobBtn) {
 
             newMobBtn.addEventListener(
@@ -387,6 +440,97 @@ const ModalManager = {
                 
             )
         }
+
+        if (newItemBtn) {
+
+            newItemBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    this.editingItem = null
+
+                    document
+                        .getElementById(
+                            'itemModal'
+                        )
+                        .classList.add(
+                            'active'
+                        )
+
+                }
+
+            )
+
+        }
+
+        if (closeItemBtn) {
+
+            closeItemBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    document
+                        .getElementById(
+                            'itemModal'
+                        )
+                        .classList.remove(
+                            'active'
+                        )
+
+                }
+
+            )
+
+        }
+
+        if (itemBrowserBtn) {
+
+            itemBrowserBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    document
+                        .getElementById(
+                            'itemBrowserModal'
+                        )
+                        .classList.add(
+                            'active'
+                        )
+
+                }
+
+            )
+
+        }
+
+        if (closeItemBrowserBtn) {
+
+            closeItemBrowserBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    document
+                        .getElementById(
+                            'itemBrowserModal'
+                        )
+                        .classList.remove(
+                            'active'
+                        )
+
+                }
+
+            )
+
+        }
+
         if (mobBrowserBtn) {
 
             mobBrowserBtn.addEventListener(

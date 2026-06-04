@@ -56,6 +56,18 @@
 
                 </button>
 
+                <button id="newItemBtn">
+
+                    + Item
+
+                </button>
+
+                <button id="itemBrowserBtn">
+
+                    Item Browser
+
+                </button>
+
                 <button id="newAreaBtn">
 
                     + Area
@@ -695,6 +707,61 @@
         </div>
 
     </div>
+    <!-- ITEM MODAL -->
+    <div id="itemModal"
+         class="modalOverlay">
+
+        <div class="modalWindow">
+
+            <div class="modalHeader">
+
+                <h2>Create Item</h2>
+
+            </div>
+
+            <div class="modalBody">
+
+                <label>Item ID</label>
+
+                <input id="item_id"
+                       type="text">
+
+                <label>Name</label>
+
+                <input id="item_name"
+                       type="text">
+
+                <label>Description</label>
+
+                <textarea id="item_desc"></textarea>
+
+                <label>Type</label>
+
+                <input id="item_type"
+                       type="text"
+                       value="generic">
+
+            </div>
+
+            <div class="modalFooter">
+
+                <button id="saveItemBtn">
+
+                    Save
+
+                </button>
+
+                <button id="closeItemBtn">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <!-- ================================= -->
     <!-- MOB BROWSER -->
@@ -723,6 +790,40 @@
             <div class="modalFooter">
 
                 <button id="closeMobBrowserBtn">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="itemBrowserModal"
+         class="modalOverlay">
+
+        <div class="modalWindow">
+
+            <div class="modalHeader">
+
+                <h2>
+
+                    Item Browser
+
+                </h2>
+
+            </div>
+
+            <div id="itemBrowserList"
+                 class="modalBody">
+
+            </div>
+
+            <div class="modalFooter">
+
+                <button id="closeItemBrowserBtn">
 
                     Close
 
