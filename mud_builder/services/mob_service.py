@@ -80,6 +80,18 @@ def save_mob(mob):
         f"{vnum}.json"
     )
 
+    with open(path, "w", encoding="utf-8") as f:
+
+        json.dump(
+            mob,
+            f,
+            indent=4,
+            ensure_ascii=False
+        )
+
+    return {
+        "success": True
+    }
     # =========================
     # DUPLICATE CHECK
     # =========================
@@ -89,13 +101,7 @@ def save_mob(mob):
         return {
             "error": f"Mob '{vnum}' already exists"
         }
-    if os.path.exists(path):
-
-      return {
-        "error":
-        f"Mob '{vnum}' already exists"
-      }
-    
+        
     with open(path, "w", encoding="utf-8") as f:
 
         json.dump(

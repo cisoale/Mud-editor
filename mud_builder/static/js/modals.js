@@ -10,6 +10,8 @@ const ModalManager = {
 
     autoSaveTimer: null,
 
+    editingMob: null,
+
     directions: [
 
         'north',
@@ -68,6 +70,18 @@ const ModalManager = {
 
             document.getElementById(
                 'newMobBtn'
+            )
+
+        const mobBrowserBtn =
+
+            document.getElementById(
+                'mobBrowserBtn'
+            )
+
+        const closeMobBrowserBtn =
+
+            document.getElementById(
+                'closeMobBrowserBtn'
             )
 
         const saveMobBtn =
@@ -138,6 +152,11 @@ const ModalManager = {
                 'click',
 
                 () => {
+
+                    console.log(
+                        '[SAVE MOB]',
+                        this.editingMob
+                    )
 
                     const mobId =
 
@@ -256,141 +275,7 @@ const ModalManager = {
 
         }
 
-        if (saveMobBtn) {
-
-            saveMobBtn.addEventListener(
-
-                'click',
-
-                () => {
-
-                    const mobId =
-
-                        document
-                            .getElementById(
-                                'mob_id'
-                            )
-                            .value
-                            .trim()
-
-                    const mobName =
-
-                        document
-                            .getElementById(
-                                'mob_name'
-                            )
-                            .value
-                            .trim()
-
-                    const mobLevel =
-
-                        Number(
-
-                            document
-                                .getElementById(
-                                    'mob_level'
-                                )
-                                .value
-                        )
-
-                    cfetch(
-
-                        '/api/mob',
-
-                        {
-
-                            method: 'POST',
-
-                            headers: {
-
-                                'Content-Type':
-                                    'application/json'
-                            },
-
-                            body: JSON.stringify({
-
-                                vnum: mobId,
-
-                                id: mobId,
-
-                                name: mobName,
-
-                                short_desc: mobName,
-
-                                long_desc: mobName,
-
-                                level: mobLevel,
-
-                                hp: 100,
-
-                                xp_reward: 0,
-
-                                gold: 0
-                            })
-                        }
-
-                    )
-
-                        .then(response => response.json())
-
-                        .then(data => {
-
-                            if (data.error) {
-
-                                alert(
-                                    data.error
-                                )
-
-                                return
-                            }
-
-                            alert(
-                                `Mob ${mobId} creato`
-                            )
-
-                            document
-                                .getElementById(
-                                    'mobModal'
-                                )
-                                .classList.remove(
-                                    'active'
-                                )
-
-                            document
-                                .getElementById(
-                                    'mob_id'
-                                )
-                                .value = ''
-
-                            document
-                                .getElementById(
-                                    'mob_name'
-                                )
-                                .value = ''
-
-                            document
-                                .getElementById(
-                                    'mob_level'
-                                )
-                                .value = 1
-
-                        })
-
-                        .catch(error => {
-
-                            console.error(
-                                error
-                            )
-
-                        })
-                    
-
-                }
-
-            )
-
-        }
-
+        
         if (deleteBtn) {
 
             deleteBtn.addEventListener(
@@ -454,6 +339,8 @@ const ModalManager = {
 
                 () => {
 
+                    this.editingMob = null
+
                     document
                         .getElementById(
                             'mobModal'
@@ -462,11 +349,53 @@ const ModalManager = {
                             'active'
                         )
 
-                    
-
-                 }
+                }
                 
             )
+        }
+        if (mobBrowserBtn) {
+
+            mobBrowserBtn.addEventListener(
+
+                'click',
+
+                async () => {
+
+                    await this.loadMobBrowser()
+
+                    document
+                        .getElementById(
+                            'mobBrowserModal'
+                        )
+                        .classList.add(
+                            'active'
+                        )
+
+                }
+
+            )
+
+        }
+        if (closeMobBrowserBtn) {
+
+            closeMobBrowserBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    document
+                        .getElementById(
+                            'mobBrowserModal'
+                        )
+                        .classList.remove(
+                            'active'
+                        )
+
+                }
+
+            )
+
         }
 
         // ====================================
@@ -943,6 +872,137 @@ const ModalManager = {
             '[ROOM CREATED]',
             newRoom.vnum
         )
+    },
+
+    // ====================================
+    // MOB BROWSER
+    // ====================================
+
+    async loadMobBrowser() {
+
+        const response =
+
+            await fetch(
+                '/api/mobs'
+            )
+
+        const mobs =
+            await response.json()
+
+        const container =
+
+            document.getElementById(
+                'mobBrowserList'
+            )
+
+        if (!container)
+            return
+
+        container.innerHTML =
+
+            mobs.map(mob => `
+
+<div class="mobBrowserRow">
+
+    <strong>
+
+        ${mob.vnum}
+
+    </strong>
+
+    -
+
+    ${mob.name || 'Unnamed Mob'}
+
+    <button
+        class="editMobBtn"
+        data-vnum="${mob.vnum}">
+
+        Edit
+
+    </button>
+
+</div>
+
+`).join('')
+
+        container
+
+            .querySelectorAll(
+                '.editMobBtn'
+            )
+
+            .forEach(btn => {
+
+                btn.addEventListener(
+
+                    'click',
+
+                    async () => {
+
+                        const vnum =
+
+                            btn.dataset.vnum
+
+                        const response =
+
+                            await fetch(
+                                `/api/mob/${vnum}`
+                            )
+
+                        const mob =
+
+                            await response.json()
+                        this.editingMob =
+                            mob.vnum
+
+                        document
+                            .getElementById(
+                                'mob_id'
+                            )
+                            .value =
+                            mob.vnum || ''
+
+                        document
+                            .getElementById(
+                                'mob_name'
+                            )
+                            .value =
+                            mob.name || ''
+
+                        document
+                            .getElementById(
+                                'mob_level'
+                            )
+                            .value =
+                            mob.level || 1
+
+                        document
+                            .getElementById(
+                                'mobBrowserModal'
+                            )
+                            .classList.remove(
+                                'active'
+                            )
+
+                        document
+                            .getElementById(
+                                'mobModal'
+                            )
+                            .classList.add(
+                                'active'
+                            )
+
+                        console.log(
+                            '[EDIT MOB]',
+                            vnum
+                        )
+
+                    }
+
+                )
+
+            })
     },
 
     // ====================================
