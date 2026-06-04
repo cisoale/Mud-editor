@@ -12,6 +12,8 @@ const ModalManager = {
 
     editingMob: null,
 
+    selectingMobForRoom: false,
+
     directions: [
 
         'north',
@@ -100,6 +102,12 @@ const ModalManager = {
 
             document.getElementById(
                 'addStaticNpcBtn'
+            )
+
+        const addMobToRoomBtn =
+
+            document.getElementById(
+                'addMobToRoomBtn'
             )
         // ====================================
         // BUTTONS
@@ -330,6 +338,32 @@ const ModalManager = {
 
                 }
             )
+        }
+
+        if (addMobToRoomBtn) {
+
+            addMobToRoomBtn.addEventListener(
+
+                'click',
+
+                async () => {
+
+                    this.selectingMobForRoom = true
+
+                    await this.loadMobBrowser()
+
+                    document
+                        .getElementById(
+                            'mobBrowserModal'
+                        )
+                        .classList.add(
+                            'active'
+                        )
+
+                }
+
+            )
+
         }
         if (newMobBtn) {
 
@@ -948,6 +982,48 @@ const ModalManager = {
 
                     async () => {
 
+                        if (this.selectingMobForRoom) {
+
+                            if (!this.currentRoom)
+                                return
+
+                            this.currentRoom.mobs ||= []
+
+                            this.currentRoom.mobs.push({
+
+                                vnum: btn.dataset.vnum,
+
+                                max: 1,
+
+                                respawn: 300
+
+                            })
+
+                            this.renderMobs(
+                                this.currentRoom
+                            )
+
+                            this.queueAutoSave()
+
+                            document
+                                .getElementById(
+                                    'mobBrowserModal'
+                                )
+                                .classList.remove(
+                                    'active'
+                                )
+
+                            this.selectingMobForRoom =
+                                false
+
+                            console.log(
+                                '[ROOM MOB ADDED]',
+                                btn.dataset.vnum
+                            )
+
+                            return
+                        }
+
                         const vnum =
 
                             btn.dataset.vnum
@@ -1494,31 +1570,100 @@ const ModalManager = {
 
             container.innerHTML = `
 
-    <div class="emptyPanel">
+<div class="emptyPanel">
 
-        No mobs in room
+    No mobs in room
 
-                </div>
-    `
+</div>
+
+`
 
             return
         }
 
         container.innerHTML = mobs
 
-            .map(mob => {
+            .map((mob, index) => {
 
                 return `
 
-    <div class="mobRow">
+<div class="mobRow">
 
-        ${mob}
+    <div>
 
-                    </div>
-    `
+        <strong>
+
+            ${mob.vnum}
+
+        </strong>
+
+        <br>
+
+        Max:
+        ${mob.max || 1}
+
+        |
+
+        Respawn:
+        ${mob.respawn || 300}
+
+    </div>
+
+    <button
+        class="removeRoomMobBtn"
+        data-index="${index}">
+
+        Remove
+
+    </button>
+
+</div>
+
+`
             })
 
             .join('')
+
+        container
+
+            .querySelectorAll(
+                '.removeRoomMobBtn'
+            )
+
+            .forEach(btn => {
+
+                btn.addEventListener(
+
+                    'click',
+
+                    () => {
+
+                        const index =
+
+                            Number(
+                                btn.dataset.index
+                            )
+
+                        room.mobs.splice(
+                            index,
+                            1
+                        )
+
+                        this.renderMobs(
+                            room
+                        )
+
+                        this.queueAutoSave()
+
+                        console.log(
+                            '[ROOM MOB REMOVED]'
+                        )
+
+                    }
+
+                )
+
+            })
     },
 
     // ====================================
