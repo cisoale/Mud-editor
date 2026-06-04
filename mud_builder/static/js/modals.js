@@ -1610,13 +1610,25 @@ const ModalManager = {
 
         <br>
 
-        Max:
-        ${mob.max || 1}
+        Max Spawn:
 
-        |
+<input
+    type="number"
+    class="mobMaxInput"
+    data-index="${index}"
+    value="${mob.max || 1}"
+>
 
-        Respawn:
-        ${mob.respawn || 300}
+<br>
+
+Respawn:
+
+<input
+    type="number"
+    class="mobRespawnInput"
+    data-index="${index}"
+    value="${mob.respawn || 300}"
+>
 
     </div>
 
@@ -1668,6 +1680,84 @@ const ModalManager = {
 
                         console.log(
                             '[ROOM MOB REMOVED]'
+                        )
+
+                    }
+
+                )
+
+            })
+
+        container
+
+            .querySelectorAll(
+                '.mobMaxInput'
+            )
+
+            .forEach(input => {
+
+                input.addEventListener(
+
+                    'change',
+
+                    () => {
+
+                        const index =
+
+                            Number(
+                                input.dataset.index
+                            )
+
+                        room.mobs[index].max =
+
+                            Number(
+                                input.value
+                            ) || 1
+
+                        this.queueAutoSave()
+
+                        console.log(
+                            '[MOB MAX UPDATED]',
+                            room.mobs[index].max
+                        )
+
+                    }
+
+                )
+
+            })
+
+        container
+
+            .querySelectorAll(
+                '.mobRespawnInput'
+            )
+
+            .forEach(input => {
+
+                input.addEventListener(
+
+                    'change',
+
+                    () => {
+
+                        const index =
+
+                            Number(
+                                input.dataset.index
+                            )
+
+                        room.mobs[index].respawn =
+
+                            Number(
+                                input.value
+                            ) || 300
+
+                        this.queueAutoSave()
+
+                        console.log(
+                            '[MOB RESPAWN UPDATED]',
+                            room.mobs[index].respawn
                         )
 
                     }
