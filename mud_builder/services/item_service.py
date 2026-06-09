@@ -114,3 +114,27 @@ def save_item(item):
     return {
         "success": True
     }
+
+# =========================================
+# DELETE ITEM
+# =========================================
+
+def delete_item(item_id):
+
+    path = os.path.join(
+        ITEMS_DIR,
+        f"{item_id}.json"
+    )
+
+    if not os.path.exists(path):
+
+        return {
+            "error":
+            "Item not found"
+        }
+
+    os.remove(path)
+
+    return {
+        "success": True
+    }

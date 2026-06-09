@@ -57,7 +57,8 @@ from services.mob_service import (
 from services.item_service import (
     get_items,
     get_item,
-    save_item
+    save_item,
+    delete_item
 )
 
 # =========================================
@@ -893,6 +894,39 @@ def api_save_item():
 
         print(
             "[SAVE ITEM ERROR]",
+            e
+        )
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+    
+
+# =================
+# DELETE ITEM
+# =================
+
+@app.route(
+    "/api/item/<item_id>",
+    methods=["DELETE"]
+)
+
+def api_delete_item(item_id):
+
+    try:
+
+        result = delete_item(
+            item_id
+        )
+
+        return jsonify(
+            result
+        )
+
+    except Exception as e:
+
+        print(
+            "[DELETE ITEM ERROR]",
             e
         )
 

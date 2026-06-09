@@ -1469,12 +1469,20 @@ const ModalManager = {
     ${item.name || 'Unnamed Item'}
 
     <button
-        class="editItemBtn"
-        data-id="${item.id}">
+    class="editItemBtn"
+    data-id="${item.id}">
 
-        Edit
+    Edit
 
-    </button>
+</button>
+
+<button
+    class="deleteItemBtn"
+    data-id="${item.id}">
+
+    Delete
+
+</button>
 
 </div>
 
@@ -1494,29 +1502,9 @@ const ModalManager = {
 
                     async () => {
 
-                        console.log(
-                            '[ITEM BUTTON]',
-                            btn
-                        )
-
-                        console.log(
-                            '[ITEM DATASET]',
-                            btn.dataset
-                        )
-
                         const itemId =
 
                             btn.dataset.id
-
-                        console.log(
-                            '[ITEM ID]',
-                            itemId
-                        )
-
-                        console.log(
-                            '[ITEM FETCH]',
-                            `/api/item/${itemId}`
-                        )
 
                         const response =
 
@@ -1527,26 +1515,6 @@ const ModalManager = {
                         const item =
 
                             await response.json()
-
-                        
-                        console.log(
-                            '[ITEM LOADED]',
-                            item
-                        )
-
-                        console.log(
-                            '[ITEM MODAL]',
-                            document.getElementById(
-                                'itemModal'
-                            )
-                        )
-
-                        console.log(
-                            '[ITEM ID FIELD]',
-                            document.getElementById(
-                                'item_id'
-                            )
-                        )
 
                         this.editingItem =
                             item.id
@@ -1583,7 +1551,7 @@ const ModalManager = {
                             .getElementById(
                                 'itemBrowserModal'
                             )
-                            .classList.add(
+                            .classList.remove(
                                 'active'
                             )
 
@@ -1601,6 +1569,65 @@ const ModalManager = {
 
             })
 
+        container
+
+            .querySelectorAll(
+                '.deleteItemBtn'
+            )
+
+            .forEach(btn => {
+
+                btn.addEventListener(
+
+                    'click',
+
+                    async () => {
+
+                        const itemId =
+
+                            btn.dataset.id
+
+                        const confirmed =
+
+                            confirm(
+                                `Delete item ${itemId}?`
+                            )
+
+                        if (!confirmed)
+                            return
+
+                        const response =
+
+                            await fetch(
+
+                                `/api/item/${itemId}`,
+
+                                {
+                                    method: 'DELETE'
+                                }
+
+                            )
+
+                        const data =
+
+                            await response.json()
+
+                        if (data.error) {
+
+                            alert(
+                                data.error
+                            )
+
+                            return
+                        }
+
+                        await this.loadItemBrowser()
+
+                    }
+
+                )
+
+            })
     },
 
 
