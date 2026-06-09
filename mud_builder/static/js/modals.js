@@ -149,6 +149,43 @@ const ModalManager = {
             document.getElementById(
                 'addItemToRoomBtn'
             )
+
+        const itemTypeField =
+
+            document.getElementById(
+                'item_type'
+            )
+
+        if (itemTypeField) {
+
+            itemTypeField.addEventListener(
+
+                'change',
+
+                () => {
+
+                    const container =
+
+                        document.getElementById(
+                            'itemSlotContainer'
+                        )
+
+                    if (!container)
+                        return
+
+                    container.style.display =
+
+                        itemTypeField.value === 'armor'
+
+                            ? 'block'
+
+                            : 'none'
+
+                }
+
+            )
+
+        }
         // ====================================
         // BUTTONS
         // ====================================
@@ -387,7 +424,15 @@ const ModalManager = {
                                         )
                                         .value,
 
-                                type: itemType
+                                type: itemType,
+
+                                slot:
+
+                                    document
+                                        .getElementById(
+                                            'item_slot'
+                                        )
+                                        .value
 
                             })
 
@@ -1545,7 +1590,26 @@ const ModalManager = {
                                 'item_type'
                             )
                             .value =
-                            item.type || 'generic'
+                            item.type || 'misc'
+
+                        document
+                            .getElementById(
+                                'item_slot'
+                            )
+                            .value =
+                            item.slot || ''
+
+                        document
+                            .getElementById(
+                                'itemSlotContainer'
+                            )
+                            .style.display =
+
+                            item.type === 'armor'
+
+                                ? 'block'
+
+                                : 'none'
 
                         document
                             .getElementById(

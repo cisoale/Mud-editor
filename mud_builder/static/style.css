@@ -732,3 +732,7 @@ textarea {
     border-radius: 8px;
     min-width: 400px;
 }
+
+#itemSlotContainer {
+    display: none;
+}
