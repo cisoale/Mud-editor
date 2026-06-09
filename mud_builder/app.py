@@ -54,6 +54,12 @@ from services.mob_service import (
     delete_mob
 )
 
+from services.item_service import (
+    get_items,
+    get_item,
+    save_item
+)
+
 # =========================================
 # FLASK
 # =========================================
@@ -798,6 +804,101 @@ def api_delete_mob(vnum):
         }), 500
     
 
+# =========================================
+# GET ITEMS
+# =========================================
+
+@app.route("/api/items")
+
+def api_items():
+
+    try:
+
+        return jsonify(
+            get_items()
+        )
+
+    except Exception as e:
+
+        print(
+            "[API ITEMS ERROR]",
+            e
+        )
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+    
+
+# =========================================
+# GET ITEM
+# =========================================
+
+@app.route(
+    "/api/item/<item_id>"
+)
+
+def api_item(item_id):
+
+    try:
+
+        item = get_item(
+            item_id
+        )
+
+        if not item:
+
+            return jsonify({
+                "error":
+                "Item not found"
+            }), 404
+
+        return jsonify(item)
+
+    except Exception as e:
+
+        print(
+            "[API ITEM ERROR]",
+            e
+        )
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+    
+# =========================================
+# SAVE ITEM
+# =========================================
+
+@app.route(
+    "/api/item",
+    methods=["POST"]
+)
+
+def api_save_item():
+
+    try:
+
+        data = request.json
+
+        result = save_item(
+            data
+        )
+
+        return jsonify(
+            result
+        )
+
+    except Exception as e:
+
+        print(
+            "[SAVE ITEM ERROR]",
+            e
+        )
+
+        return jsonify({
+            "error": str(e)
+        }), 500
 # =========================================
 # STATIC FILES
 # =========================================

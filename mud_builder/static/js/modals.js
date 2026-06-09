@@ -120,6 +120,12 @@ const ModalManager = {
                 'saveMobBtn'
             )
 
+        const saveItemBtn =
+
+            document.getElementById(
+                'saveItemBtn'
+            )
+
         const closeMobBtn =
 
             document.getElementById(
@@ -296,6 +302,119 @@ const ModalManager = {
                             document
                                 .getElementById(
                                     'mobModal'
+                                )
+                                .classList.remove(
+                                    'active'
+                                )
+
+                        })
+
+                        .catch(error => {
+
+                            console.error(
+                                error
+                            )
+
+                        })
+
+                }
+
+            )
+
+        }
+
+        if (saveItemBtn) {
+
+            saveItemBtn.addEventListener(
+
+                'click',
+
+                () => {
+
+                    const itemId =
+
+                        document
+                            .getElementById(
+                                'item_id'
+                            )
+                            .value
+                            .trim()
+
+                    const itemName =
+
+                        document
+                            .getElementById(
+                                'item_name'
+                            )
+                            .value
+                            .trim()
+
+                    const itemType =
+
+                        document
+                            .getElementById(
+                                'item_type'
+                            )
+                            .value
+                            .trim()
+
+                    fetch(
+
+                        '/api/item',
+
+                        {
+
+                            method: 'POST',
+
+                            headers: {
+
+                                'Content-Type':
+                                    'application/json'
+
+                            },
+
+                            body: JSON.stringify({
+
+                                id: itemId,
+
+                                name: itemName,
+
+                                description:
+
+                                    document
+                                        .getElementById(
+                                            'item_desc'
+                                        )
+                                        .value,
+
+                                type: itemType
+
+                            })
+
+                        }
+
+                    )
+
+                        .then(response => response.json())
+
+                        .then(data => {
+
+                            if (data.error) {
+
+                                alert(
+                                    data.error
+                                )
+
+                                return
+                            }
+
+                            alert(
+                                `Item ${itemId} salvato`
+                            )
+
+                            document
+                                .getElementById(
+                                    'itemModal'
                                 )
                                 .classList.remove(
                                     'active'
