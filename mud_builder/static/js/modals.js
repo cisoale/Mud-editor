@@ -612,7 +612,9 @@ const ModalManager = {
 
                 'click',
 
-                () => {
+                async () => {
+
+                    await this.loadItemBrowser()
 
                     document
                         .getElementById(
@@ -1424,6 +1426,183 @@ const ModalManager = {
 
             })
     },
+
+
+    // ====================================
+    // ITEM BROWSER
+    // ====================================
+    async loadItemBrowser() {
+
+        const response =
+
+            await fetch(
+                '/api/items'
+            )
+
+        const items =
+
+            await response.json()
+
+        const container =
+
+            document.getElementById(
+                'itemBrowserList'
+            )
+
+        if (!container)
+            return
+
+        container.innerHTML =
+
+            items.map(item => `
+
+<div class="mobBrowserRow">
+
+    <strong>
+
+        ${item.id}
+
+    </strong>
+
+    -
+
+    ${item.name || 'Unnamed Item'}
+
+    <button
+        class="editItemBtn"
+        data-id="${item.id}">
+
+        Edit
+
+    </button>
+
+</div>
+
+`).join('')
+
+        container
+
+            .querySelectorAll(
+                '.editItemBtn'
+            )
+
+            .forEach(btn => {
+
+                btn.addEventListener(
+
+                    'click',
+
+                    async () => {
+
+                        console.log(
+                            '[ITEM BUTTON]',
+                            btn
+                        )
+
+                        console.log(
+                            '[ITEM DATASET]',
+                            btn.dataset
+                        )
+
+                        const itemId =
+
+                            btn.dataset.id
+
+                        console.log(
+                            '[ITEM ID]',
+                            itemId
+                        )
+
+                        console.log(
+                            '[ITEM FETCH]',
+                            `/api/item/${itemId}`
+                        )
+
+                        const response =
+
+                            await fetch(
+                                `/api/item/${itemId}`
+                            )
+
+                        const item =
+
+                            await response.json()
+
+                        
+                        console.log(
+                            '[ITEM LOADED]',
+                            item
+                        )
+
+                        console.log(
+                            '[ITEM MODAL]',
+                            document.getElementById(
+                                'itemModal'
+                            )
+                        )
+
+                        console.log(
+                            '[ITEM ID FIELD]',
+                            document.getElementById(
+                                'item_id'
+                            )
+                        )
+
+                        this.editingItem =
+                            item.id
+
+                        document
+                            .getElementById(
+                                'item_id'
+                            )
+                            .value =
+                            item.id || ''
+
+                        document
+                            .getElementById(
+                                'item_name'
+                            )
+                            .value =
+                            item.name || ''
+
+                        document
+                            .getElementById(
+                                'item_desc'
+                            )
+                            .value =
+                            item.description || ''
+
+                        document
+                            .getElementById(
+                                'item_type'
+                            )
+                            .value =
+                            item.type || 'generic'
+
+                        document
+                            .getElementById(
+                                'itemBrowserModal'
+                            )
+                            .classList.add(
+                                'active'
+                            )
+
+                        document
+                            .getElementById(
+                                'itemModal'
+                            )
+                            .classList.add(
+                                'active'
+                            )
+
+                    }
+
+                )
+
+            })
+
+    },
+
 
     // ====================================
     // ADD EXIT
