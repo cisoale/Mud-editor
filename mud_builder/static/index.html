@@ -653,11 +653,10 @@
                        type="text">
 
                 <label>Name</label>
+                <input id="mob_name" type="text">
 
-                <input id="mob_name"
-                       type="text">
-                <input id="mob_short_desc"
-                       type="text">
+                <label>Short Description</label>
+                <input id="mob_short_desc" type="text">
 
                 <label>Long Description</label>
 
@@ -685,6 +684,25 @@
                 <input id="mob_level"
                        type="number"
                        value="1">
+                <hr>
+
+                <h3>Loot Table</h3>
+
+                <div id="mobLootEditor">
+
+                    <div class="emptyPanel">
+
+                        No loot configured
+
+                    </div>
+
+                </div>
+
+                <button id="addLootBtn">
+
+                    + Loot
+
+                </button>
 
             </div>
 
@@ -707,11 +725,11 @@
         </div>
 
     </div>
-    <!-- ITEM MODAL -->
+     <!-- ITEM MODAL -->
     <div id="itemModal"
          class="modalOverlay">
 
-        <div class="modalWindow">
+        <div class="modalWindow itemWindow">
 
             <div class="modalHeader">
 
@@ -721,115 +739,159 @@
 
             <div class="modalBody">
 
-                <label>Item ID</label>
+                <h3>General</h3>
 
-                <input id="item_id"
-                       type="text">
+                <label>Item ID</label>
+                <input id="item_id" type="text">
 
                 <label>Name</label>
+                <input id="item_name" type="text">
 
-                <input id="item_name"
-                       type="text">
+                <label>Short Description</label>
+                <input id="item_short_desc" type="text">
 
-                <label>Description</label>
-
-                <textarea id="item_desc"></textarea>
+                <label>Long Description</label>
+                <textarea id="item_long_desc"></textarea>
 
                 <label>Type</label>
-
                 <select id="item_type">
 
-                    <option value="weapon">
-                        Weapon
-                    </option>
-
-                    <option value="armor">
-                        Armor
-                    </option>
-
-                    <option value="consumable">
-                        Consumable
-                    </option>
-
-                    <option value="key">
-                        Key
-                    </option>
-
-                    <option value="container">
-                        Container
-                    </option>
-
-                    <option value="quest">
-                        Quest Item
-                    </option>
-
-                    <option value="misc">
-                        Miscellaneous
-                    </option>
+                    <option value="weapon">Weapon</option>
+                    <option value="armor">Armor</option>
+                    <option value="consumable">Consumable</option>
+                    <option value="resource">Resource</option>
+                    <option value="container">Container</option>
+                    <option value="key">Key</option>
+                    <option value="quest">Quest</option>
+                    <option value="tool">Tool</option>
+                    <option value="book">Book</option>
+                    <option value="treasure">Treasure</option>
+                    <option value="misc">Misc</option>
 
                 </select>
 
-                <div id="itemSlotContainer">
+                <label>Rarity</label>
 
-                    <label>
-                        Armor Slot
-                    </label>
+                <select id="item_rarity">
 
-                    <select id="item_slot">
+                    <option value="common">Common</option>
+                    <option value="uncommon">Uncommon</option>
+                    <option value="rare">Rare</option>
+                    <option value="epic">Epic</option>
+                    <option value="legendary">Legendary</option>
+                    <option value="artifact">Artifact</option>
 
-                        <option value="">
-                            None
-                        </option>
+                </select>
 
-                        <option value="head">
-                            Head
-                        </option>
+                <label>Level</label>
+                <input id="item_level" type="number" value="1">
 
-                        <option value="neck">
-                            Neck
-                        </option>
+                <label>Value</label>
+                <input id="item_value" type="number" value="0">
 
-                        <option value="shoulders">
-                            Shoulders
-                        </option>
+                <label>Weight</label>
+                <input id="item_weight" type="number" step="0.1" value="0">
 
-                        <option value="chest">
-                            Chest
-                        </option>
+                <hr>
 
-                        <option value="arms">
-                            Arms
-                        </option>
+                <h3>Equipment</h3>
 
-                        <option value="hands">
-                            Hands
-                        </option>
+                <label>Slot</label>
 
-                        <option value="finger">
-                            Finger
-                        </option>
+                <select id="item_slot">
 
-                        <option value="waist">
-                            Waist
-                        </option>
+                    <option value="">None</option>
 
-                        <option value="legs">
-                            Legs
-                        </option>
+                    <option value="head">Head</option>
+                    <option value="neck">Neck</option>
+                    <option value="shoulders">Shoulders</option>
+                    <option value="chest">Chest</option>
+                    <option value="back">Back</option>
+                    <option value="arms">Arms</option>
+                    <option value="hands">Hands</option>
+                    <option value="finger">Finger</option>
+                    <option value="waist">Waist</option>
+                    <option value="legs">Legs</option>
+                    <option value="feet">Feet</option>
 
-                        <option value="feet">
-                            Feet
-                        </option>
+                    <option value="main_hand">Main Hand</option>
+                    <option value="off_hand">Off Hand</option>
+                    <option value="two_handed">Two Handed</option>
 
-                        <option value="shield">
-                            Shield
-                        </option>
+                    <option value="shield">Shield</option>
 
-                    </select>
+                </select>
 
-                </div>
+                <label>Required Level</label>
+
+                <input id="item_required_level"
+                       type="number"
+                       value="1">
+
+                <hr>
+
+                <h3>Combat</h3>
+
+                <label>Damage Min</label>
+                <input id="item_damage_min"
+                       type="number"
+                       value="0">
+
+                <label>Damage Max</label>
+                <input id="item_damage_max"
+                       type="number"
+                       value="0">
+
+                <label>Armor</label>
+                <input id="item_armor"
+                       type="number"
+                       value="0">
+
+                <label>Heal HP</label>
+                <input id="item_heal_hp"
+                       type="number"
+                       value="0">
+
+                <label>Heal Mana</label>
+                <input id="item_heal_mana"
+                       type="number"
+                       value="0">
+
+                <hr>
+
+                <h3>Modifiers</h3>
+
+                <label>Strength</label>
+                <input id="item_str" type="number" value="0">
+
+                <label>Dexterity</label>
+                <input id="item_dex" type="number" value="0">
+
+                <label>Constitution</label>
+                <input id="item_con" type="number" value="0">
+
+                <label>Intelligence</label>
+                <input id="item_int" type="number" value="0">
+
+                <label>Wisdom</label>
+                <input id="item_wis" type="number" value="0">
+
+                <label>Charisma</label>
+                <input id="item_cha" type="number" value="0">
+
+                <label>HP Bonus</label>
+                <input id="item_hp_bonus"
+                       type="number"
+                       value="0">
+
+                <label>Mana Bonus</label>
+                <input id="item_mana_bonus"
+                       type="number"
+                       value="0">
 
             </div>
+
+
 
             <div class="modalFooter">
 
@@ -844,79 +906,78 @@
             </div>
 
         </div>
+        </div> <!-- CHIUSURA itemModal -->
+        <!-- ================================= -->
+        <!-- MOB BROWSER -->
+        <!-- ================================= -->
 
-    </div>
-    <!-- ================================= -->
-    <!-- MOB BROWSER -->
-    <!-- ================================= -->
+        <div id="mobBrowserModal"
+             class="modalOverlay">
 
-    <div id="mobBrowserModal"
-         class="modalOverlay">
+            <div class="modalWindow">
 
-        <div class="modalWindow">
+                <div class="modalHeader">
 
-            <div class="modalHeader">
+                    <h2>
 
-                <h2>
+                        Mob Browser
 
-                    Mob Browser
+                    </h2>
 
-                </h2>
+                </div>
 
-            </div>
+                <div id="mobBrowserList"
+                     class="modalBody">
 
-            <div id="mobBrowserList"
-                 class="modalBody">
+                </div>
 
-            </div>
+                <div class="modalFooter">
 
-            <div class="modalFooter">
+                    <button id="closeMobBrowserBtn">
 
-                <button id="closeMobBrowserBtn">
+                        Close
 
-                    Close
+                    </button>
 
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div id="itemBrowserModal"
-         class="modalOverlay">
-
-        <div class="modalWindow">
-
-            <div class="modalHeader">
-
-                <h2>
-
-                    Item Browser
-
-                </h2>
-
-            </div>
-
-            <div id="itemBrowserList"
-                 class="modalBody">
-
-            </div>
-
-            <div class="modalFooter">
-
-                <button id="closeItemBrowserBtn">
-
-                    Close
-
-                </button>
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+        <div id="itemBrowserModal"
+             class="modalOverlay">
+
+            <div class="modalWindow">
+
+                <div class="modalHeader">
+
+                    <h2>
+
+                        Item Browser
+
+                    </h2>
+
+                </div>
+
+                <div id="itemBrowserList"
+                     class="modalBody">
+
+                </div>
+
+                <div class="modalFooter">
+
+                    <button id="closeItemBrowserBtn">
+
+                        Close
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
 </body>
 
 </html>

@@ -14,6 +14,10 @@ const ModalManager = {
 
     selectingMobForRoom: false,
 
+    selectingLootForMob: false,
+
+    currentLootMob: null,
+
     editingItem: null,
 
     selectingItemForRoom: false,
@@ -150,42 +154,12 @@ const ModalManager = {
                 'addItemToRoomBtn'
             )
 
-        const itemTypeField =
+        const addLootBtn =
 
             document.getElementById(
-                'item_type'
+                'addLootBtn'
             )
 
-        if (itemTypeField) {
-
-            itemTypeField.addEventListener(
-
-                'change',
-
-                () => {
-
-                    const container =
-
-                        document.getElementById(
-                            'itemSlotContainer'
-                        )
-
-                    if (!container)
-                        return
-
-                    container.style.display =
-
-                        itemTypeField.value === 'armor'
-
-                            ? 'block'
-
-                            : 'none'
-
-                }
-
-            )
-
-        }
         // ====================================
         // BUTTONS
         // ====================================
@@ -311,7 +285,13 @@ const ModalManager = {
 
                                 hp: 100,
 
-                                xp_reward: 0
+                                xp_reward: 0,
+
+                                loot_table:
+
+                                    this.currentLootMob
+                                        ?.loot_table || []
+
                             })
                         }
 
@@ -319,7 +299,7 @@ const ModalManager = {
 
                         .then(response => response.json())
 
-                        .then(data => {
+                        .then(async data => {
 
                             if (data.error) {
 
@@ -332,7 +312,10 @@ const ModalManager = {
 
                             alert(
                                 `Mob ${mobId} creato`
+
                             )
+
+                            await this.loadMobBrowser()
                             document.getElementById('mob_id').value = ''
                             document.getElementById('mob_name').value = ''
                             document.getElementById('mob_level').value = 1
@@ -368,32 +351,184 @@ const ModalManager = {
 
                 () => {
 
-                    const itemId =
+                    const itemData = {
 
-                        document
-                            .getElementById(
+                        id:
+                            document.getElementById(
                                 'item_id'
-                            )
-                            .value
-                            .trim()
+                            ).value.trim(),
 
-                    const itemName =
-
-                        document
-                            .getElementById(
+                        name:
+                            document.getElementById(
                                 'item_name'
-                            )
-                            .value
-                            .trim()
+                            ).value.trim(),
 
-                    const itemType =
+                        short_desc:
+                            document.getElementById(
+                                'item_short_desc'
+                            ).value,
 
-                        document
-                            .getElementById(
+                        long_desc:
+                            document.getElementById(
+                                'item_long_desc'
+                            ).value,
+
+                        type:
+                            document.getElementById(
                                 'item_type'
-                            )
-                            .value
-                            .trim()
+                            ).value,
+
+                        rarity:
+                            document.getElementById(
+                                'item_rarity'
+                            ).value,
+
+                        level:
+                            Number(
+                                document.getElementById(
+                                    'item_level'
+                                ).value
+                            ),
+
+                        value:
+                            Number(
+                                document.getElementById(
+                                    'item_value'
+                                ).value
+                            ),
+
+                        weight:
+                            Number(
+                                document.getElementById(
+                                    'item_weight'
+                                ).value
+                            ),
+
+                        slot:
+                            document.getElementById(
+                                'item_slot'
+                            ).value,
+
+                        requirements: {
+
+                            level:
+                                Number(
+                                    document.getElementById(
+                                        'item_required_level'
+                                    ).value
+                                )
+
+                        },
+
+                        stats: {
+
+                            damage_min:
+                                Number(
+                                    document.getElementById(
+                                        'item_damage_min'
+                                    ).value
+                                ),
+
+                            damage_max:
+                                Number(
+                                    document.getElementById(
+                                        'item_damage_max'
+                                    ).value
+                                ),
+
+                            armor:
+                                Number(
+                                    document.getElementById(
+                                        'item_armor'
+                                    ).value
+                                ),
+
+                            heal_hp:
+                                Number(
+                                    document.getElementById(
+                                        'item_heal_hp'
+                                    ).value
+                                ),
+
+                            heal_mana:
+                                Number(
+                                    document.getElementById(
+                                        'item_heal_mana'
+                                    ).value
+                                )
+
+                        },
+
+                        modifiers: {
+
+                            strength:
+                                Number(
+                                    document.getElementById(
+                                        'item_str'
+                                    ).value
+                                ),
+
+                            dexterity:
+                                Number(
+                                    document.getElementById(
+                                        'item_dex'
+                                    ).value
+                                ),
+
+                            constitution:
+                                Number(
+                                    document.getElementById(
+                                        'item_con'
+                                    ).value
+                                ),
+
+                            intelligence:
+                                Number(
+                                    document.getElementById(
+                                        'item_int'
+                                    ).value
+                                ),
+
+                            wisdom:
+                                Number(
+                                    document.getElementById(
+                                        'item_wis'
+                                    ).value
+                                ),
+
+                            charisma:
+                                Number(
+                                    document.getElementById(
+                                        'item_cha'
+                                    ).value
+                                ),
+
+                            hp:
+                                Number(
+                                    document.getElementById(
+                                        'item_hp_bonus'
+                                    ).value
+                                ),
+
+                            mana:
+                                Number(
+                                    document.getElementById(
+                                        'item_mana_bonus'
+                                    ).value
+                                )
+
+                        }
+
+                    }
+
+                    if (!itemData.id || !itemData.name) {
+
+                        alert(
+                            'ID e Nome obbligatori'
+                        )
+
+                        return
+                    }
 
                     fetch(
 
@@ -410,39 +545,17 @@ const ModalManager = {
 
                             },
 
-                            body: JSON.stringify({
-
-                                id: itemId,
-
-                                name: itemName,
-
-                                description:
-
-                                    document
-                                        .getElementById(
-                                            'item_desc'
-                                        )
-                                        .value,
-
-                                type: itemType,
-
-                                slot:
-
-                                    document
-                                        .getElementById(
-                                            'item_slot'
-                                        )
-                                        .value
-
-                            })
-
+                            body: JSON.stringify(
+                                itemData
+                            )
+                                                                
                         }
 
                     )
 
                         .then(response => response.json())
 
-                        .then(data => {
+                        .then(async data => {
 
                             if (data.error) {
 
@@ -453,8 +566,24 @@ const ModalManager = {
                                 return
                             }
 
+                            const browser =
+
+                                document.getElementById(
+                                    'itemBrowserModal'
+                                )
+
+                            if (
+                                browser &&
+                                browser.classList.contains(
+                                    'active'
+                                )
+                            ) {
+
+                                await this.loadItemBrowser()
+                            }
+
                             alert(
-                                `Item ${itemId} salvato`
+                                `Item ${itemData.id} salvato`
                             )
 
                             document
@@ -570,11 +699,48 @@ const ModalManager = {
 
                 'click',
 
-                () => {
+                async () => {
 
-                    alert(
-                        'Item Browser Coming Soon'
-                    )
+                    this.selectingItemForRoom = true
+
+                    await this.loadItemBrowser()
+
+                    document
+                        .getElementById(
+                            'itemBrowserModal'
+                        )
+                        .classList.add(
+                            'active'
+                        )
+
+                }
+
+            )
+
+        }
+
+        if (addLootBtn) {
+
+            addLootBtn.addEventListener(
+
+                'click',
+
+                async () => {
+
+                    if (!this.currentLootMob)
+                        return
+
+                    this.selectingLootForMob = true
+
+                    await this.loadItemBrowser()
+
+                    document
+                        .getElementById(
+                            'itemBrowserModal'
+                        )
+                        .classList.add(
+                            'active'
+                        )
 
                 }
 
@@ -614,6 +780,8 @@ const ModalManager = {
                 () => {
 
                     this.editingItem = null
+
+                    this.resetItemForm()
 
                     document
                         .getElementById(
@@ -1353,6 +1521,13 @@ const ModalManager = {
                         this.editingMob =
                             mob.vnum
 
+                        this.currentLootMob =
+                            mob
+
+                        this.renderLootTable(
+                            mob
+                        )
+
                         document
                             .getElementById(
                                 'mob_id'
@@ -1547,6 +1722,108 @@ const ModalManager = {
 
                     async () => {
 
+                        if (this.selectingLootForMob) {
+
+                            const itemId =
+                                btn.dataset.id
+
+                            if (!this.currentLootMob)
+                                return
+
+                            this.currentLootMob.loot_table ||= []
+
+                            this.currentLootMob.loot_table.push({
+
+                                item_id: itemId,
+
+                                chance: 100,
+
+                                min: 1,
+
+                                max: 1
+
+                            })
+
+                            this.renderLootTable(
+                                this.currentLootMob
+                            )
+
+                            document
+                                .getElementById(
+                                    'itemBrowserModal'
+                                )
+                                .classList.remove(
+                                    'active'
+                                )
+
+                            this.selectingLootForMob =
+                                false
+
+                            this.queueAutoSave()
+
+                            console.log(
+                                '[LOOT ADDED]',
+                                itemId
+                            )
+
+                            return
+                        }
+
+                        if (this.selectingItemForRoom) {
+
+                            if (!this.currentRoom)
+                                return
+
+                            const itemId =
+                                btn.dataset.id
+
+                            const response =
+
+                                await fetch(
+                                    `/api/item/${itemId}`
+                                )
+
+                            const item =
+                                await response.json()
+
+                            this.currentRoom.items ||= []
+
+                            this.currentRoom.items.push({
+
+                                id: item.id,
+
+                                name: item.name,
+
+                                quantity: 1,
+
+                                respawn: 300
+
+                            })
+
+                            this.renderItems(
+                                this.currentRoom
+                            )
+
+                            this.queueAutoSave()
+
+                            document
+                                .getElementById(
+                                    'itemBrowserModal'
+                                )
+                                .classList.remove(
+                                    'active'
+                                )
+
+                            this.selectingItemForRoom =
+                                false
+
+                            console.log(
+                                '[ROOM ITEM ADDED]',
+                                item.id
+                            )
+
+                            return
+                        }
                         const itemId =
 
                             btn.dataset.id
@@ -1564,52 +1841,125 @@ const ModalManager = {
                         this.editingItem =
                             item.id
 
-                        document
-                            .getElementById(
-                                'item_id'
-                            )
-                            .value =
+                        document.getElementById(
+                            'item_id'
+                        ).value =
                             item.id || ''
 
-                        document
-                            .getElementById(
-                                'item_name'
-                            )
-                            .value =
+                        document.getElementById(
+                            'item_name'
+                        ).value =
                             item.name || ''
 
-                        document
-                            .getElementById(
-                                'item_desc'
-                            )
-                            .value =
-                            item.description || ''
+                        document.getElementById(
+                            'item_short_desc'
+                        ).value =
+                            item.short_desc || ''
 
-                        document
-                            .getElementById(
-                                'item_type'
-                            )
-                            .value =
+                        document.getElementById(
+                            'item_long_desc'
+                        ).value =
+                            item.long_desc || ''
+
+                        document.getElementById(
+                            'item_type'
+                        ).value =
                             item.type || 'misc'
 
-                        document
-                            .getElementById(
-                                'item_slot'
-                            )
-                            .value =
+                        document.getElementById(
+                            'item_rarity'
+                        ).value =
+                            item.rarity || 'common'
+
+                        document.getElementById(
+                            'item_level'
+                        ).value =
+                            item.level || 1
+
+                        document.getElementById(
+                            'item_value'
+                        ).value =
+                            item.value || 0
+
+                        document.getElementById(
+                            'item_weight'
+                        ).value =
+                            item.weight || 0
+
+                        document.getElementById(
+                            'item_slot'
+                        ).value =
                             item.slot || ''
 
-                        document
-                            .getElementById(
-                                'itemSlotContainer'
-                            )
-                            .style.display =
+                        document.getElementById(
+                            'item_required_level'
+                        ).value =
+                            item.requirements?.level || 1
 
-                            item.type === 'armor'
+                        document.getElementById(
+                            'item_damage_min'
+                        ).value =
+                            item.stats?.damage_min || 0
 
-                                ? 'block'
+                        document.getElementById(
+                            'item_damage_max'
+                        ).value =
+                            item.stats?.damage_max || 0
 
-                                : 'none'
+                        document.getElementById(
+                            'item_armor'
+                        ).value =
+                            item.stats?.armor || 0
+
+                        document.getElementById(
+                            'item_heal_hp'
+                        ).value =
+                            item.stats?.heal_hp || 0
+
+                        document.getElementById(
+                            'item_heal_mana'
+                        ).value =
+                            item.stats?.heal_mana || 0
+
+                        document.getElementById(
+                            'item_str'
+                        ).value =
+                            item.modifiers?.strength || 0
+
+                        document.getElementById(
+                            'item_dex'
+                        ).value =
+                            item.modifiers?.dexterity || 0
+
+                        document.getElementById(
+                            'item_con'
+                        ).value =
+                            item.modifiers?.constitution || 0
+
+                        document.getElementById(
+                            'item_int'
+                        ).value =
+                            item.modifiers?.intelligence || 0
+
+                        document.getElementById(
+                            'item_wis'
+                        ).value =
+                            item.modifiers?.wisdom || 0
+
+                        document.getElementById(
+                            'item_cha'
+                        ).value =
+                            item.modifiers?.charisma || 0
+
+                        document.getElementById(
+                            'item_hp_bonus'
+                        ).value =
+                            item.modifiers?.hp || 0
+
+                        document.getElementById(
+                            'item_mana_bonus'
+                        ).value =
+                            item.modifiers?.mana || 0
 
                         document
                             .getElementById(
@@ -1694,7 +2044,109 @@ const ModalManager = {
             })
     },
 
+    // ====================================
+    // RESET ITEM FORM
+    // ====================================
 
+    resetItemForm() {
+
+        document.getElementById(
+            'item_id'
+        ).value = ''
+
+        document.getElementById(
+            'item_name'
+        ).value = ''
+
+        document.getElementById(
+            'item_short_desc'
+        ).value = ''
+
+        document.getElementById(
+            'item_long_desc'
+        ).value = ''
+
+        document.getElementById(
+            'item_type'
+        ).value = 'misc'
+
+        document.getElementById(
+            'item_rarity'
+        ).value = 'common'
+
+        document.getElementById(
+            'item_level'
+        ).value = 1
+
+        document.getElementById(
+            'item_value'
+        ).value = 0
+
+        document.getElementById(
+            'item_weight'
+        ).value = 0
+
+        document.getElementById(
+            'item_slot'
+        ).value = ''
+
+        document.getElementById(
+            'item_required_level'
+        ).value = 1
+
+        document.getElementById(
+            'item_damage_min'
+        ).value = 0
+
+        document.getElementById(
+            'item_damage_max'
+        ).value = 0
+
+        document.getElementById(
+            'item_armor'
+        ).value = 0
+
+        document.getElementById(
+            'item_heal_hp'
+        ).value = 0
+
+        document.getElementById(
+            'item_heal_mana'
+        ).value = 0
+
+        document.getElementById(
+            'item_str'
+        ).value = 0
+
+        document.getElementById(
+            'item_dex'
+        ).value = 0
+
+        document.getElementById(
+            'item_con'
+        ).value = 0
+
+        document.getElementById(
+            'item_int'
+        ).value = 0
+
+        document.getElementById(
+            'item_wis'
+        ).value = 0
+
+        document.getElementById(
+            'item_cha'
+        ).value = 0
+
+        document.getElementById(
+            'item_hp_bonus'
+        ).value = 0
+
+        document.getElementById(
+            'item_mana_bonus'
+        ).value = 0
+
+    },
     // ====================================
     // ADD EXIT
     // ====================================
@@ -2307,7 +2759,6 @@ Respawn:
     renderItems(room) {
 
         const container =
-
             document.getElementById(
                 'roomItemEditor'
             )
@@ -2321,34 +2772,352 @@ Respawn:
         if (!items.length) {
 
             container.innerHTML = `
-
-    <div class="emptyPanel">
-
-        No items in room
-
-                </div>
-    `
-
+<div class="emptyPanel">
+    No items in room
+</div>
+`
             return
         }
 
         container.innerHTML = items
 
-            .map(item => {
+            .map((item, index) => {
 
                 return `
 
-    <div class="itemRow">
+<div class="mobRow">
 
-        ${item}
+    <div>
 
-                    </div>
-    `
+        <strong>
+            ${item.name || item.id}
+        </strong>
+
+        <br>
+
+        <small>
+            (${item.id})
+        </small>
+
+        <br>
+
+        Quantity:
+
+        <input
+            type="number"
+            class="itemQuantityInput"
+            data-index="${index}"
+            value="${item.quantity || 1}"
+        >
+
+        <br>
+
+        Respawn:
+
+        <input
+            type="number"
+            class="itemRespawnInput"
+            data-index="${index}"
+            value="${item.respawn || 300}"
+        >
+
+    </div>
+
+    <button
+        class="removeRoomItemBtn"
+        data-index="${index}">
+        Remove
+    </button>
+
+</div>
+`
             })
 
             .join('')
+
+        container
+            .querySelectorAll(
+                '.removeRoomItemBtn'
+            )
+            .forEach(btn => {
+
+                btn.addEventListener(
+                    'click',
+                    () => {
+
+                        const index =
+                            Number(
+                                btn.dataset.index
+                            )
+
+                        room.items.splice(
+                            index,
+                            1
+                        )
+
+                        this.renderItems(
+                            room
+                        )
+
+                        this.queueAutoSave()
+                    }
+                )
+
+            })
+
+        container
+            .querySelectorAll(
+                '.itemQuantityInput'
+            )
+            .forEach(input => {
+
+                input.addEventListener(
+                    'change',
+                    () => {
+
+                        const index =
+                            Number(
+                                input.dataset.index
+                            )
+
+                        room.items[index].quantity =
+                            Number(
+                                input.value
+                            ) || 1
+
+                        this.queueAutoSave()
+                    }
+                )
+
+            })
+
+        container
+            .querySelectorAll(
+                '.itemRespawnInput'
+            )
+            .forEach(input => {
+
+                input.addEventListener(
+                    'change',
+                    () => {
+
+                        const index =
+                            Number(
+                                input.dataset.index
+                            )
+
+                        room.items[index].respawn =
+                            Number(
+                                input.value
+                            ) || 300
+
+                        this.queueAutoSave()
+                    }
+                )
+
+            })
     },
 
+    // ====================================
+    // RENDER LOOT TABLE
+    // ====================================
+
+    renderLootTable(mob) {
+
+        const container =
+            document.getElementById(
+                'mobLootEditor'
+            )
+
+        if (!container)
+            return
+
+        const loot =
+            mob.loot_table || []
+
+        if (!loot.length) {
+
+            container.innerHTML = `
+<div class="emptyPanel">
+    No loot configured
+</div>
+`
+            return
+        }
+
+        container.innerHTML = loot
+
+            .map((entry, index) => {
+
+                return `
+
+<div class="mobRow">
+
+    <div>
+
+        <strong>
+            ${entry.item_id}
+        </strong>
+
+        <br>
+
+        Chance:
+
+        <input
+            class="lootChanceInput"
+            data-index="${index}"
+            type="number"
+            min="0"
+            max="100"
+            value="${entry.chance || 0}"
+        >
+
+        <br>
+
+        Min:
+
+        <input
+            class="lootMinInput"
+            data-index="${index}"
+            type="number"
+            value="${entry.min || 1}"
+        >
+
+        Max:
+
+        <input
+            class="lootMaxInput"
+            data-index="${index}"
+            type="number"
+            value="${entry.max || 1}"
+        >
+
+    </div>
+
+    <button
+        class="removeLootBtn"
+        data-index="${index}">
+        Remove
+    </button>
+
+</div>
+`
+            })
+
+            .join('')
+
+        container
+            .querySelectorAll(
+                '.removeLootBtn'
+            )
+            .forEach(btn => {
+
+                btn.addEventListener(
+                    'click',
+                    () => {
+
+                        const index =
+                            Number(
+                                btn.dataset.index
+                            )
+
+                        mob.loot_table.splice(
+                            index,
+                            1
+                        )
+
+                        this.renderLootTable(
+                            mob
+                        )
+
+                        this.queueAutoSave()
+
+                    }
+                )
+
+            })
+
+        container
+            .querySelectorAll(
+                '.lootChanceInput'
+            )
+            .forEach(input => {
+
+                input.addEventListener(
+                    'change',
+                    () => {
+
+                        const index =
+                            Number(
+                                input.dataset.index
+                            )
+
+                        mob.loot_table[index].chance =
+                            Number(
+                                input.value
+                            ) || 0
+
+                        this.queueAutoSave()
+
+                    }
+                )
+
+            })
+
+        container
+            .querySelectorAll(
+                '.lootMinInput'
+            )
+            .forEach(input => {
+
+                input.addEventListener(
+                    'change',
+                    () => {
+
+                        const index =
+                            Number(
+                                input.dataset.index
+                            )
+
+                        mob.loot_table[index].min =
+                            Number(
+                                input.value
+                            ) || 1
+
+                        this.queueAutoSave()
+
+                    }
+                )
+
+            })
+
+        container
+            .querySelectorAll(
+                '.lootMaxInput'
+            )
+            .forEach(input => {
+
+                input.addEventListener(
+                    'change',
+                    () => {
+
+                        const index =
+                            Number(
+                                input.dataset.index
+                            )
+
+                        mob.loot_table[index].max =
+                            Number(
+                                input.value
+                            ) || 1
+
+                        this.queueAutoSave()
+
+                    }
+                )
+
+            })
+    },
     // ====================================
     // SCRIPTS
     // ====================================

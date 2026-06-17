@@ -736,3 +736,8 @@ textarea {
 #itemSlotContainer {
     display: none;
 }
+
+.itemWindow {
+    max-height: 90vh;
+    overflow-y: auto;
+}

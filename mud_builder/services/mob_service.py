@@ -3,6 +3,67 @@ import json
 
 from config import MOBS_DIR
 
+def normalize_mob(mob):
+
+    if not isinstance(mob, dict):
+        mob = {}
+
+    mob.setdefault(
+        "vnum",
+        0
+    )
+
+    mob.setdefault(
+        "id",
+        str(mob.get("vnum", 0))
+    )
+
+    mob.setdefault(
+        "name",
+        "Unnamed Mob"
+    )
+
+    mob.setdefault(
+        "short_desc",
+        mob.get("name", "")
+    )
+
+    mob.setdefault(
+        "long_desc",
+        mob.get("name", "")
+    )
+
+    mob.setdefault(
+        "level",
+        1
+    )
+
+    mob.setdefault(
+        "hp",
+        100
+    )
+
+    mob.setdefault(
+        "xp_reward",
+        0
+    )
+
+    mob.setdefault(
+        "flags",
+        []
+    )
+
+    mob.setdefault(
+        "scripts",
+        []
+    )
+
+    mob.setdefault(
+        "loot_table",
+        []
+    )
+
+    return mob
 
 def get_mobs():
 
@@ -39,7 +100,7 @@ def get_mobs():
 
                         data["vnum"] = 0
 
-                    mobs.append(data)
+                    mobs.append(normalize_mob(data))
 
             except Exception as e:
 
@@ -67,7 +128,7 @@ def get_mobs():
 
 
 def save_mob(mob):
-
+    mob = normalize_mob(mob)
     vnum = mob.get("vnum")
 
     if vnum is None:
@@ -92,28 +153,7 @@ def save_mob(mob):
     return {
         "success": True
     }
-    # =========================
-    # DUPLICATE CHECK
-    # =========================
-
-    if os.path.exists(path):
-
-        return {
-            "error": f"Mob '{vnum}' already exists"
-        }
-        
-    with open(path, "w", encoding="utf-8") as f:
-
-        json.dump(
-            mob,
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
-
-    return {
-        "success": True
-    }
+  
 
 # =========================================
 # GET MOB
