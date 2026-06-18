@@ -246,6 +246,55 @@ const ModalManager = {
                                 .value
                         )
 
+                    const shortDesc =
+
+                        document
+                            .getElementById(
+                                'mob_short_desc'
+                            )
+                            .value
+
+                    const longDesc =
+
+                        document
+                            .getElementById(
+                                'mob_long_desc'
+                            )
+                            .value
+
+                    const mobHp =
+
+                        Number(
+
+                            document
+                                .getElementById(
+                                    'mob_hp'
+                                )
+                                .value
+                        )
+
+                    const mobXp =
+
+                        Number(
+
+                            document
+                                .getElementById(
+                                    'mob_xp_reward'
+                                )
+                                .value
+                        )
+
+                    const mobGold =
+
+                        Number(
+
+                            document
+                                .getElementById(
+                                    'mob_gold'
+                                )
+                                .value
+                        )
+
                     if (!mobId || !mobName) {
 
                         alert(
@@ -277,15 +326,17 @@ const ModalManager = {
 
                                 name: mobName,
 
-                                short_desc: mobName,
+                                short_desc: shortDesc,
 
-                                long_desc: mobName,
+                                long_desc: longDesc,
 
                                 level: mobLevel,
 
-                                hp: 100,
+                                hp: mobHp,
 
-                                xp_reward: 0,
+                                xp_reward: mobXp,
+
+                                gold: mobGold,
 
                                 loot_table:
 
@@ -757,6 +808,48 @@ const ModalManager = {
                 () => {
 
                     this.editingMob = null
+
+                    document.getElementById(
+                        'mob_id'
+                    ).value = ''
+
+                    document.getElementById(
+                        'mob_name'
+                    ).value = ''
+
+                    document.getElementById(
+                        'mob_short_desc'
+                    ).value = ''
+
+                    document.getElementById(
+                        'mob_long_desc'
+                    ).value = ''
+
+                    document.getElementById(
+                        'mob_hp'
+                    ).value = 100
+
+                    document.getElementById(
+                        'mob_xp_reward'
+                    ).value = 0
+
+                    document.getElementById(
+                        'mob_gold'
+                    ).value = 0
+
+                    document.getElementById(
+                        'mob_level'
+                    ).value = 1
+
+                    this.currentLootMob = {
+
+                        loot_table: []
+
+                    }
+
+                    this.renderLootTable(
+                        this.currentLootMob
+                    )
 
                     document
                         .getElementById(
@@ -1548,6 +1641,41 @@ const ModalManager = {
                             )
                             .value =
                             mob.level || 1
+
+                        document
+                            .getElementById(
+                                'mob_short_desc'
+                            )
+                            .value =
+                            mob.short_desc || ''
+
+                        document
+                            .getElementById(
+                                'mob_long_desc'
+                            )
+                            .value =
+                            mob.long_desc || ''
+
+                        document
+                            .getElementById(
+                                'mob_hp'
+                            )
+                            .value =
+                            mob.hp || 100
+
+                        document
+                            .getElementById(
+                                'mob_xp_reward'
+                            )
+                            .value =
+                            mob.xp_reward || 0
+
+                        document
+                            .getElementById(
+                                'mob_gold'
+                            )
+                            .value =
+                            mob.gold || 0
 
                         document
                             .getElementById(
