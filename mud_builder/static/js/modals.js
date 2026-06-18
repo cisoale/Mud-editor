@@ -304,6 +304,35 @@ const ModalManager = {
                         return
                     }
 
+                    const mobData = {
+
+                        ...(this.currentLootMob || {}),
+
+                        vnum: mobId,
+
+                        id: mobId,
+
+                        name: mobName,
+
+                        short_desc: shortDesc,
+
+                        long_desc: longDesc,
+
+                        level: mobLevel,
+
+                        hp: mobHp,
+
+                        xp_reward: mobXp,
+
+                        gold: mobGold,
+
+                        loot_table:
+
+                            this.currentLootMob
+                                ?.loot_table || []
+
+                    }
+
                     fetch(
 
                         '/api/mob',
@@ -316,34 +345,13 @@ const ModalManager = {
 
                                 'Content-Type':
                                     'application/json'
+
                             },
 
-                            body: JSON.stringify({
+                            body: JSON.stringify(
+                                mobData
+                            )
 
-                                vnum: mobId,
-
-                                id: mobId,
-
-                                name: mobName,
-
-                                short_desc: shortDesc,
-
-                                long_desc: longDesc,
-
-                                level: mobLevel,
-
-                                hp: mobHp,
-
-                                xp_reward: mobXp,
-
-                                gold: mobGold,
-
-                                loot_table:
-
-                                    this.currentLootMob
-                                        ?.loot_table || []
-
-                            })
                         }
 
                     )
@@ -363,13 +371,22 @@ const ModalManager = {
 
                             alert(
                                 `Mob ${mobId} creato`
-
                             )
 
                             await this.loadMobBrowser()
-                            document.getElementById('mob_id').value = ''
-                            document.getElementById('mob_name').value = ''
-                            document.getElementById('mob_level').value = 1
+
+                            document.getElementById(
+                                'mob_id'
+                            ).value = ''
+
+                            document.getElementById(
+                                'mob_name'
+                            ).value = ''
+
+                            document.getElementById(
+                                'mob_level'
+                            ).value = 1
+
                             document
                                 .getElementById(
                                     'mobModal'
@@ -377,6 +394,14 @@ const ModalManager = {
                                 .classList.remove(
                                     'active'
                                 )
+
+                        })
+
+                        .catch(error => {
+
+                            console.error(
+                                error
+                            )
 
                         })
 
