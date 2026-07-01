@@ -39,6 +39,11 @@ def normalize_mob(mob):
     )
 
     mob.setdefault(
+    "position",
+    "standing"
+    )
+    
+    mob.setdefault(
         "hp",
         100
     )

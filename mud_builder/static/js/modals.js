@@ -326,6 +326,14 @@ const ModalManager = {
 
                         gold: mobGold,
 
+                        position:
+
+                            document
+                                .getElementById(
+                                    "mob_position"
+                                )
+                                .value,
+
                         loot_table:
 
                             this.currentLootMob
@@ -866,7 +874,13 @@ const ModalManager = {
                         'mob_level'
                     ).value = 1
 
+                    document.getElementById(
+                        "mob_position"
+                    ).value = "standing"
+
                     this.currentLootMob = {
+                        position: "standing",
+
 
                         loot_table: []
 
