@@ -94,3 +94,23 @@ Living World
 - Fazioni
 - Dialoghi NPC
 - Entity Builder 2.0
+
+
+
+## v0.5.2 - ECS Combat Foundation
+
+### Added
+- RewardComponent
+- ECS reward integration
+- Mob movement notifications
+
+### Changed
+- CombatSystem refactored to use ECS components
+- MobFactory updated to create RewardComponent
+- Improved HUD and prompt refresh
+- Improved combat message handling
+
+### Fixed
+- Mob movement visibility
+- Prompt refresh during combat
+- Reward handling through ECS
