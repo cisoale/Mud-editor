@@ -1,0 +1,48 @@
+html,
+body {
+    margin: 0;
+    height: 100%;
+    font-family: Segoe UI,sans-serif;
+}
+
+#app {
+    height: 100vh;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.toolbar {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid #444;
+}
+
+.layout-body {
+    display: flex;
+    flex: 1;
+}
+
+.sidebar {
+    width: 240px;
+    border-right: 1px solid #444;
+    padding: 12px;
+}
+
+.workspace {
+    flex: 1;
+    padding: 20px;
+}
+
+.statusbar {
+    height: 28px;
+    border-top: 1px solid #444;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
