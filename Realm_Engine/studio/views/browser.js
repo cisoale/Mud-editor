@@ -7,7 +7,8 @@
 
 import View from "../framework/view.js";
 import Panel from "../framework/panel.js";
-import ContentBrowser from "../modules/contentbrowser.js";
+
+import Editor from "../modules/editor.js";
 
 export default class BrowserView extends View {
 
@@ -16,27 +17,35 @@ export default class BrowserView extends View {
         super();
 
         this.panel = null;
-        this.browser = null;
+        this.editor = null;
 
     }
 
     render() {
 
+        //
+        // Panel
+        //
+
         this.panel = new Panel("Content Browser");
 
         const panel = this.panel.render();
 
-        this.browser = new ContentBrowser();
+        //
+        // Editor
+        //
+
+        this.editor = new Editor();
 
         this.panel.body.appendChild(
-            this.browser.render()
+            this.editor.render()
         );
 
         //
-        // Demo data
+        // Columns
         //
 
-        this.browser.setColumns([
+        this.editor.setColumns([
 
             {
                 id: "id",
@@ -58,7 +67,37 @@ export default class BrowserView extends View {
 
         ]);
 
-        this.browser.setItems([
+        //
+        // Property Grid Schema
+        //
+
+        this.editor.setSchema([
+
+            {
+                id: "id",
+                label: "ID",
+                type: "number"
+            },
+
+            {
+                id: "name",
+                label: "Name",
+                type: "text"
+            },
+
+            {
+                id: "type",
+                label: "Type",
+                type: "text"
+            }
+
+        ]);
+
+        //
+        // Demo Data
+        //
+
+        this.editor.setItems([
 
             {
                 id: 1001,
@@ -80,9 +119,13 @@ export default class BrowserView extends View {
 
         ]);
 
-        this.browser.onSelectionChanged(item => {
+        //
+        // Selection
+        //
 
-            console.log(item);
+        this.editor.onSelectionChanged(item => {
+
+            console.log("Selected:", item);
 
         });
 

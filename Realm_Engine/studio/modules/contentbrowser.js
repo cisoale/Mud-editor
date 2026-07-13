@@ -3,23 +3,6 @@
  * Realm Studio
  * Content Browser
  * ============================================================
- *
- * Generic browser for Studio entities.
- *
- * Responsibilities
- * ----------------
- * - Displays a SearchBox.
- * - Displays a ListView.
- * - Filters visible rows.
- *
- * Must NOT know:
- * - JSON
- * - Repository
- * - Item
- * - Mob
- * - Room
- *
- * ============================================================
  */
 
 import Component from "../framework/component.js";
@@ -48,9 +31,17 @@ export default class ContentBrowser extends Component {
 
         this.element = this.createElement("div", "content-browser");
 
-        this.element.appendChild(this.search.render());
+        this.element.appendChild(
+            this.search.render()
+        );
 
-        this.element.appendChild(this.list.render());
+        this.element.appendChild(
+            this.list.render()
+        );
+
+        //
+        // Search
+        //
 
         this.search.onSearch(text => {
 
@@ -58,11 +49,15 @@ export default class ContentBrowser extends Component {
 
         });
 
-        this.list.onSelectionChanged(index => {
+        //
+        // Selection
+        //
+
+        this.list.onSelectionChanged(item => {
 
             if (this.selectionCallback) {
 
-                this.selectionCallback(index);
+                this.selectionCallback(item);
 
             }
 
@@ -72,21 +67,33 @@ export default class ContentBrowser extends Component {
 
     }
 
+    //
+    // Columns
+    //
+
     setColumns(columns) {
 
-        this.columns = columns;
+        this.columns = columns || [];
 
-        this.list.setColumns(columns);
+        this.list.setColumns(this.columns);
 
     }
+
+    //
+    // Items
+    //
 
     setItems(items) {
 
-        this.items = items;
+        this.items = items || [];
 
-        this.list.setRows(items);
+        this.list.setRows(this.items);
 
     }
+
+    //
+    // Filtering
+    //
 
     filter(text) {
 
@@ -100,12 +107,14 @@ export default class ContentBrowser extends Component {
 
         const value = text.toLowerCase();
 
-        const filtered = this.items.filter(row => {
+        const filtered = this.items.filter(item => {
 
-            return row.some(cell =>
+            return Object.values(item).some(cell =>
+
                 String(cell)
                     .toLowerCase()
                     .includes(value)
+
             );
 
         });
@@ -113,6 +122,36 @@ export default class ContentBrowser extends Component {
         this.list.setRows(filtered);
 
     }
+
+    //
+    // Selection
+    //
+
+    getSelected() {
+
+        return this.list.getSelected();
+
+    }
+
+    select(item) {
+
+        this.list.select(item);
+
+    }
+
+    //
+    // Events
+    //
+
+    onSelectionChanged(callback) {
+
+        this.selectionCallback = callback;
+
+    }
+
+    //
+    // Utility
+    //
 
     clear() {
 
@@ -125,12 +164,6 @@ export default class ContentBrowser extends Component {
     refresh() {
 
         this.list.refresh();
-
-    }
-
-    onSelectionChanged(callback) {
-
-        this.selectionCallback = callback;
 
     }
 

@@ -3,20 +3,6 @@
  * Realm Studio
  * Property Grid
  * ============================================================
- *
- * Responsibilities
- * ----------------
- * - Displays editable properties.
- * - Creates PropertyField components.
- * - Displays an object's values.
- *
- * Must NOT know:
- * - Items
- * - Mobs
- * - Rooms
- * - Repository
- *
- * ============================================================
  */
 
 import Component from "../framework/component.js";
@@ -45,13 +31,21 @@ export default class PropertyGrid extends Component {
 
     }
 
+    //
+    // Schema
+    //
+
     setSchema(schema) {
 
-        this.schema = schema;
+        this.schema = schema || [];
 
         this.refresh();
 
     }
+
+    //
+    // Object
+    //
 
     setObject(object) {
 
@@ -61,15 +55,15 @@ export default class PropertyGrid extends Component {
 
     }
 
-    clear() {
+    getObject() {
 
-        this.schema = [];
-        this.object = {};
-        this.fields = [];
-
-        this.refresh();
+        return this.object;
 
     }
+
+    //
+    // Refresh
+    //
 
     refresh() {
 
@@ -84,7 +78,7 @@ export default class PropertyGrid extends Component {
 
             const field = new PropertyField(fieldSchema);
 
-            field.render();
+            const element = field.render();
 
             field.setValue(
                 this.object[fieldSchema.id]
@@ -98,15 +92,21 @@ export default class PropertyGrid extends Component {
 
             this.fields.push(field);
 
-            this.element.appendChild(field.element);
+            this.element.appendChild(element);
 
         });
 
     }
 
-    getObject() {
+    //
+    // Utility
+    //
 
-        return this.object;
+    clear() {
+
+        this.object = {};
+
+        this.refresh();
 
     }
 

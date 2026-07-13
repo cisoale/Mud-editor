@@ -261,6 +261,32 @@ textarea.property-input {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 12px;
+    height: 100%;
     overflow: auto;
+    padding: 10px;
+}
+
+
+.splitter {
+    display: flex;
+    height: 100%;
+    gap: 12px;
+}
+
+.splitter-left {
+    display: flex;
+    flex-direction: column;
+    min-width: 250px;
+}
+
+.splitter-right {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }

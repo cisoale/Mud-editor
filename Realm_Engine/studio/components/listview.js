@@ -1,24 +1,7 @@
 /**
  * ============================================================
  * Realm Studio
- * ListView Component
- * ============================================================
- *
- * Generic table/list component.
- *
- * Responsibilities
- * ----------------
- * - Displays tabular data.
- * - Displays configurable columns.
- * - Handles row selection.
- *
- * Must NOT know:
- * - Items
- * - Mobs
- * - Rooms
- * - JSON
- * - Repository
- *
+ * ListView
  * ============================================================
  */
 
@@ -63,7 +46,7 @@ export default class ListView extends Component {
 
     setColumns(columns) {
 
-        this.columns = columns;
+        this.columns = columns || [];
 
         this.refresh();
 
@@ -71,16 +54,17 @@ export default class ListView extends Component {
 
     setRows(rows) {
 
-        this.rows = rows;
+        this.rows = rows || [];
 
-        this.refresh();
+        if (this.rows.length > 0) {
 
-    }
+            this.selectedItem = this.rows[0];
 
-    clear() {
+        } else {
 
-        this.rows = [];
-        this.selectedItem = null;
+            this.selectedItem = null;
+
+        }
 
         this.refresh();
 
@@ -88,14 +72,14 @@ export default class ListView extends Component {
 
     refresh() {
 
-        if (!this.header || !this.body || !this.footer)
+        if (!this.header)
             return;
 
         this.header.replaceChildren();
         this.body.replaceChildren();
 
         //
-        // Header
+        // HEADER
         //
 
         this.columns.forEach(column => {
@@ -115,23 +99,21 @@ export default class ListView extends Component {
         });
 
         //
-        // Rows
+        // ROWS
         //
 
         this.rows.forEach(item => {
 
             const row = this.createElement("div", "listview-row");
 
-            if (this.selectedItem === item)
+            if (item === this.selectedItem)
                 row.classList.add("selected");
 
             this.columns.forEach(column => {
 
                 const cell = this.createElement("div", "listview-cell");
 
-                const value = item[column.id];
-
-                cell.textContent = value ?? "";
+                cell.textContent = item[column.id] ?? "";
 
                 if (column.width)
                     cell.style.width = column.width + "px";
@@ -174,6 +156,16 @@ export default class ListView extends Component {
     getSelected() {
 
         return this.selectedItem;
+
+    }
+
+    clear() {
+
+        this.rows = [];
+
+        this.selectedItem = null;
+
+        this.refresh();
 
     }
 
