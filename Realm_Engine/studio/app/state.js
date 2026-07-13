@@ -1,10 +1,5 @@
-export default class State {
-
-    constructor() {
-
-        this.currentView = null;
-        this.currentProject = null;
-
-    }
-
+{
+    currentView: null,
+    currentProject: null,
+    selectedEntity: null
 }
