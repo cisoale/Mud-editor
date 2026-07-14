@@ -1,3 +1,14 @@
+/**
+ * ============================================================
+ * Realm Studio
+ * Panel
+ * ============================================================
+ *
+ * Generic container with title and body.
+ *
+ * ============================================================
+ */
+
 import Component from "./component.js";
 
 export default class Panel extends Component {
@@ -8,25 +19,49 @@ export default class Panel extends Component {
 
         this.title = title;
 
+        this.header = null;
+        this.body = null;
+
     }
 
     render() {
 
-        const panel = this.createElement("div", "panel");
+        if (this.isRendered()) {
 
-        const header = this.createElement("div", "panel-header");
-        header.textContent = this.title;
+            return this.getElement();
 
-        const body = this.createElement("div", "panel-body");
+        }
 
-        panel.append(header, body);
+        this.element = this.createElement("div", "panel");
 
-        this.body = body;
-        this.header = header;
+        this.header = this.createElement(
+            "div",
+            "panel-header"
+        );
 
-        this.element = panel;
+        this.header.textContent = this.title;
 
-        return panel;
+        this.body = this.createElement(
+            "div",
+            "panel-body"
+        );
+
+        this.element.appendChild(this.header);
+        this.element.appendChild(this.body);
+
+        return this.finishRender();
+
+    }
+
+    setTitle(title) {
+
+        this.title = title;
+
+        if (this.header) {
+
+            this.header.textContent = title;
+
+        }
 
     }
 

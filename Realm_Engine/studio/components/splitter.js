@@ -1,10 +1,15 @@
 /**
  * ============================================================
  * Realm Studio
- * Splitter Component
+ * Splitter
  * ============================================================
  *
- * Generic horizontal splitter.
+ * Generic two-panel layout.
+ *
+ * Responsibilities
+ * ----------------
+ * - Displays two components.
+ * - Never recreates components.
  *
  * ============================================================
  */
@@ -29,10 +34,23 @@ export default class Splitter extends Component {
 
     render() {
 
+        if (this.isRendered()) {
+
+            return this.getElement();
+
+        }
+
         this.element = this.createElement("div", "splitter");
 
-        this.leftPane = this.createElement("div", "splitter-left");
-        this.rightPane = this.createElement("div", "splitter-right");
+        this.leftPane = this.createElement(
+            "div",
+            "splitter-left"
+        );
+
+        this.rightPane = this.createElement(
+            "div",
+            "splitter-right"
+        );
 
         this.leftPane.style.flex = this.ratio;
         this.rightPane.style.flex = 100 - this.ratio;
@@ -42,7 +60,7 @@ export default class Splitter extends Component {
 
         this.refresh();
 
-        return this.element;
+        return this.finishRender();
 
     }
 
@@ -66,9 +84,14 @@ export default class Splitter extends Component {
 
         this.ratio = percent;
 
-        if (this.leftPane && this.rightPane) {
+        if (this.leftPane) {
 
             this.leftPane.style.flex = percent;
+
+        }
+
+        if (this.rightPane) {
+
             this.rightPane.style.flex = 100 - percent;
 
         }
@@ -83,19 +106,39 @@ export default class Splitter extends Component {
         this.leftPane.replaceChildren();
         this.rightPane.replaceChildren();
 
+        //
+        // LEFT
+        //
+
         if (this.left) {
 
-            const element = this.left.element || this.left.render();
+            if (!this.left.isRendered()) {
 
-            this.leftPane.appendChild(element);
+                this.left.render();
+
+            }
+
+            this.leftPane.appendChild(
+                this.left.getElement()
+            );
 
         }
 
+        //
+        // RIGHT
+        //
+
         if (this.right) {
 
-            const element = this.right.element || this.right.render();
+            if (!this.right.isRendered()) {
 
-            this.rightPane.appendChild(element);
+                this.right.render();
+
+            }
+
+            this.rightPane.appendChild(
+                this.right.getElement()
+            );
 
         }
 

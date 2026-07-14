@@ -7,7 +7,6 @@
 
 import View from "../framework/view.js";
 import Panel from "../framework/panel.js";
-
 import Editor from "../modules/editor.js";
 
 export default class BrowserView extends View {
@@ -23,13 +22,19 @@ export default class BrowserView extends View {
 
     render() {
 
+        if (this.isRendered()) {
+
+            return this.getElement();
+
+        }
+
         //
         // Panel
         //
 
         this.panel = new Panel("Content Browser");
 
-        const panel = this.panel.render();
+        this.element = this.panel.render();
 
         //
         // Editor
@@ -42,7 +47,7 @@ export default class BrowserView extends View {
         );
 
         //
-        // Columns
+        // Browser columns
         //
 
         this.editor.setColumns([
@@ -68,7 +73,7 @@ export default class BrowserView extends View {
         ]);
 
         //
-        // Property Grid Schema
+        // PropertyGrid schema
         //
 
         this.editor.setSchema([
@@ -94,7 +99,7 @@ export default class BrowserView extends View {
         ]);
 
         //
-        // Demo Data
+        // Demo data
         //
 
         this.editor.setItems([
@@ -119,17 +124,7 @@ export default class BrowserView extends View {
 
         ]);
 
-        //
-        // Selection
-        //
-
-        this.editor.onSelectionChanged(item => {
-
-            console.log("Selected:", item);
-
-        });
-
-        return panel;
+        return this.finishRender();
 
     }
 

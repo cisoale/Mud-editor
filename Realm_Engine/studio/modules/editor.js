@@ -31,18 +31,30 @@ export default class Editor extends Component {
 
         this.grid = new PropertyGrid();
 
-        this.grid.render();
+        //
+        // Browser -> PropertyGrid
+        //
 
-        this.browser.render();
+        this.browser.onSelectionChanged(item => {
+
+            this.grid.setObject(item);
+
+        });
 
     }
 
     render() {
 
+        if (this.isRendered()) {
+
+            return this.getElement();
+
+        }
+
         this.element = this.createElement("div", "editor");
 
         //
-        // Layout
+        // Configure Splitter
         //
 
         this.splitter.setLeft(this.browser);
@@ -52,23 +64,13 @@ export default class Editor extends Component {
             this.splitter.render()
         );
 
-        //
-        // Browser -> Grid
-        //
-
-        this.browser.onSelectionChanged(item => {
-
-            this.grid.setObject(item);
-
-        });
-
-        return this.element;
+        return this.finishRender();
 
     }
 
-    //
+    // ==========================================================
     // Browser API
-    //
+    // ==========================================================
 
     setColumns(columns) {
 
@@ -82,9 +84,15 @@ export default class Editor extends Component {
 
     }
 
-    //
-    // Property Grid API
-    //
+    getSelected() {
+
+        return this.browser.getSelected();
+
+    }
+
+    // ==========================================================
+    // PropertyGrid API
+    // ==========================================================
 
     setSchema(schema) {
 
@@ -98,9 +106,15 @@ export default class Editor extends Component {
 
     }
 
-    //
+    getObject() {
+
+        return this.grid.getObject();
+
+    }
+
+    // ==========================================================
     // Events
-    //
+    // ==========================================================
 
     onSelectionChanged(callback) {
 
@@ -108,20 +122,13 @@ export default class Editor extends Component {
 
     }
 
-    //
+    // ==========================================================
     // Helpers
-    //
-
-    getSelected() {
-
-        return this.browser.getSelected();
-
-    }
+    // ==========================================================
 
     refresh() {
 
         this.browser.refresh();
-
         this.grid.refresh();
 
     }
@@ -129,7 +136,6 @@ export default class Editor extends Component {
     clear() {
 
         this.browser.clear();
-
         this.grid.clear();
 
     }
