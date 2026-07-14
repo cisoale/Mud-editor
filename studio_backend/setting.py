@@ -1,0 +1,7 @@
+DEBUG = True
+
+API_VERSION = "0.1.0"
+
+AUTO_BACKUP = True
+
+BACKUP_ON_SAVE = True

@@ -90,6 +90,12 @@ export default class Editor extends Component {
 
     }
 
+    select(item) {
+
+        this.browser.select(item);
+
+    }
+
     // ==========================================================
     // PropertyGrid API
     // ==========================================================

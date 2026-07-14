@@ -9,6 +9,9 @@ import View from "../framework/view.js";
 import Panel from "../framework/panel.js";
 import Editor from "../modules/editor.js";
 
+import itemSchema from "../schemas/item_schema.js";
+import ItemRepository from "../repositories/item_repository.js";
+
 export default class BrowserView extends View {
 
     constructor() {
@@ -18,7 +21,61 @@ export default class BrowserView extends View {
         this.panel = null;
         this.editor = null;
 
+        this.repository = new ItemRepository();
+
     }
+
+    // ==========================================================
+    // Item Commands
+    // ==========================================================
+
+    newItem() {
+
+        const item = this.repository.create();
+
+        this.editor.setItems(
+            this.repository.getAll()
+        );
+
+        this.editor.select(item);
+
+    }
+
+    deleteItem() {
+
+        const item = this.editor.getSelected();
+
+        if (!item)
+            return;
+
+        this.repository.remove(item);
+
+        this.editor.setItems(
+            this.repository.getAll()
+        );
+
+    }
+
+    duplicateItem() {
+
+        const item = this.editor.getSelected();
+
+        if (!item)
+            return;
+
+        const copy = this.repository.duplicate(item);
+
+        this.editor.setItems(
+            this.repository.getAll()
+        );
+
+        this.editor.select(copy);
+
+    }
+
+    // ==========================================================
+    // Render
+    // ==========================================================
 
     render() {
 
@@ -47,7 +104,7 @@ export default class BrowserView extends View {
         );
 
         //
-        // Browser columns
+        // Browser Columns
         //
 
         this.editor.setColumns([
@@ -73,56 +130,24 @@ export default class BrowserView extends View {
         ]);
 
         //
-        // PropertyGrid schema
+        // Property Schema
         //
 
-        this.editor.setSchema([
-
-            {
-                id: "id",
-                label: "ID",
-                type: "number"
-            },
-
-            {
-                id: "name",
-                label: "Name",
-                type: "text"
-            },
-
-            {
-                id: "type",
-                label: "Type",
-                type: "text"
-            }
-
-        ]);
+        this.editor.setSchema(itemSchema);
 
         //
-        // Demo data
+        // Repository
         //
 
-        this.editor.setItems([
+        this.editor.setItems(
+            this.repository.getAll()
+        );
 
-            {
-                id: 1001,
-                name: "Long Sword",
-                type: "Weapon"
-            },
+        //
+        // Expose for testing
+        //
 
-            {
-                id: 1002,
-                name: "Leather Armor",
-                type: "Armor"
-            },
-
-            {
-                id: 1003,
-                name: "Healing Potion",
-                type: "Consumable"
-            }
-
-        ]);
+        window.browserView = this;
 
         return this.finishRender();
 
