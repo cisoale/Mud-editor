@@ -1,0 +1,22 @@
+{
+  "id":"readable",
+
+  "name":"Readable",
+
+  "version":1,
+
+  "fields":[
+
+    {
+      "id":"language",
+      "type":"string",
+      "default":"common"
+    },
+
+    {
+      "id":"text",
+      "type":"multiline"
+    }
+
+  ]
+}

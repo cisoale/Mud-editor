@@ -1,0 +1,53 @@
+{
+  "id": "damage",
+
+  "name": "Damage",
+
+  "version": 1,
+
+  "fields": [
+
+    {
+      "id": "min",
+      "type": "integer",
+      "default": 0
+    },
+
+    {
+      "id": "max",
+      "type": "integer",
+      "default": 0
+    },
+
+    {
+      "id": "damage_type",
+
+      "type": "enum",
+
+      "values": [
+
+        "physical",
+
+        "slash",
+
+        "pierce",
+
+        "crush",
+
+        "fire",
+
+        "ice",
+
+        "lightning",
+
+        "poison",
+
+        "holy",
+
+        "shadow",
+
+        "arcane"
+      ]
+    }
+  ]
+}

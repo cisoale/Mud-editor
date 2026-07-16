@@ -1,0 +1,134 @@
+{
+  "id": "item",
+  "name": "Item",
+  "description": "Defines the basic properties of an item.",
+
+  "version": 1,
+
+  "fields": [
+
+    {
+      "id": "category",
+      "label": "Category",
+      "type": "enum",
+      "required": true,
+
+      "values": [
+        "weapon",
+        "armor",
+        "shield",
+        "helmet",
+        "gloves",
+        "boots",
+        "ring",
+        "amulet",
+        "belt",
+        "cloak",
+
+        "consumable",
+
+        "food",
+        "drink",
+        "potion",
+        "scroll",
+
+        "book",
+
+        "crafting",
+
+        "material",
+        "tool",
+
+        "container",
+
+        "currency",
+
+        "key",
+
+        "quest",
+
+        "misc"
+      ]
+    },
+
+    {
+      "id": "rarity",
+      "label": "Rarity",
+      "type": "enum",
+
+      "default": "common",
+
+      "values": [
+        "common",
+        "uncommon",
+        "rare",
+        "epic",
+        "legendary",
+        "artifact"
+      ]
+    },
+
+    {
+      "id": "weight",
+      "label": "Weight",
+      "type": "float",
+      "default": 0
+    },
+
+    {
+      "id": "value",
+      "label": "Value",
+      "type": "integer",
+      "default": 0
+    },
+
+    {
+      "id": "stackable",
+      "label": "Stackable",
+      "type": "boolean",
+      "default": false
+    },
+
+    {
+      "id": "max_stack",
+      "label": "Maximum Stack",
+      "type": "integer",
+      "default": 1
+    },
+
+    {
+      "id": "durability",
+      "label": "Durability",
+      "type": "integer",
+      "default": 100
+    },
+
+    {
+      "id": "destroy_on_zero",
+      "label": "Destroy when durability reaches zero",
+      "type": "boolean",
+      "default": false
+    },
+
+    {
+      "id": "tradable",
+      "label": "Tradable",
+      "type": "boolean",
+      "default": true
+    },
+
+    {
+      "id": "droppable",
+      "label": "Droppable",
+      "type": "boolean",
+      "default": true
+    },
+
+    {
+      "id": "sellable",
+      "label": "Sellable",
+      "type": "boolean",
+      "default": true
+    }
+  ]
+}

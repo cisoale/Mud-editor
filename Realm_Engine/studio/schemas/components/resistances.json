@@ -1,0 +1,18 @@
+{
+  "id":"resistances",
+  "name":"Resistances",
+  "version":1,
+
+  "fields":[
+
+    {"id":"physical","type":"integer","default":0},
+    {"id":"fire","type":"integer","default":0},
+    {"id":"ice","type":"integer","default":0},
+    {"id":"lightning","type":"integer","default":0},
+    {"id":"poison","type":"integer","default":0},
+    {"id":"holy","type":"integer","default":0},
+    {"id":"shadow","type":"integer","default":0},
+    {"id":"arcane","type":"integer","default":0}
+
+  ]
+}

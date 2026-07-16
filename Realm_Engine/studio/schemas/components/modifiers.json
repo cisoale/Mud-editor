@@ -1,0 +1,74 @@
+{
+  "id": "modifiers",
+
+  "name": "Modifiers",
+
+  "version": 1,
+
+  "fields": [
+
+    {
+      "id": "strength",
+
+      "type": "integer",
+
+      "default": 0
+    },
+
+    {
+      "id": "agility",
+
+      "type": "integer",
+
+      "default": 0
+    },
+
+    {
+      "id": "constitution",
+
+      "type": "integer",
+
+      "default": 0
+    },
+
+    {
+      "id": "intelligence",
+
+      "type": "integer",
+
+      "default": 0
+    },
+
+    {
+      "id": "willpower",
+
+      "type": "integer",
+
+      "default": 0
+    },
+
+    {
+      "id": "perception",
+
+      "type": "integer",
+
+      "default": 0
+    },
+
+    {
+      "id": "hp",
+
+      "type": "integer",
+
+      "default": 0
+    },
+
+    {
+      "id": "mana",
+
+      "type": "integer",
+
+      "default": 0
+    }
+  ]
+}

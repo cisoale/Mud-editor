@@ -1,0 +1,15 @@
+{
+  "id": "attributes",
+  "name": "Attributes",
+  "description": "Attribute modifiers.",
+  "version": 1,
+
+  "fields": [
+    { "id":"strength","label":"Strength","type":"integer","default":0 },
+    { "id":"agility","label":"Agility","type":"integer","default":0 },
+    { "id":"constitution","label":"Constitution","type":"integer","default":0 },
+    { "id":"intelligence","label":"Intelligence","type":"integer","default":0 },
+    { "id":"willpower","label":"Willpower","type":"integer","default":0 },
+    { "id":"perception","label":"Perception","type":"integer","default":0 }
+  ]
+}

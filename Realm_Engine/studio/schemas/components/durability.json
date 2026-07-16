@@ -1,0 +1,29 @@
+{
+  "id":"durability",
+
+  "name":"Durability",
+
+  "version":1,
+
+  "fields":[
+
+    {
+      "id":"max",
+      "type":"integer",
+      "default":100
+    },
+
+    {
+      "id":"current",
+      "type":"integer",
+      "default":100
+    },
+
+    {
+      "id":"destroy_on_zero",
+      "type":"boolean",
+      "default":false
+    }
+
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "id": "equipment",
+  "name": "Equipment",
+  "description": "Allows an entity to be equipped.",
+
+  "version": 1,
+
+  "fields": [
+
+    {
+      "id": "slot",
+      "label": "Equipment Slot",
+      "type": "enum",
+      "required": true,
+
+      "values": [
+        "head",
+        "neck",
+        "shoulders",
+        "back",
+        "chest",
+        "arms",
+        "wrists",
+        "hands",
+        "finger_left",
+        "finger_right",
+        "waist",
+        "legs",
+        "feet",
+
+        "main_hand",
+        "off_hand",
+
+        "both_hands",
+
+        "ranged",
+
+        "ammo"
+      ]
+    },
+
+    {
+      "id": "two_handed",
+      "label": "Two Handed",
+      "type": "boolean",
+      "default": false
+    },
+
+    {
+      "id": "equip_time",
+      "label": "Equip Time",
+      "type": "float",
+      "default": 0
+    },
+
+    {
+      "id": "bind_on_pickup",
+      "label": "Bind on Pickup",
+      "type": "boolean",
+      "default": false
+    },
+
+    {
+      "id": "bind_on_equip",
+      "label": "Bind on Equip",
+      "type": "boolean",
+      "default": false
+    }
+  ]
+}
