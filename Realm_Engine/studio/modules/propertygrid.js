@@ -36,6 +36,8 @@ export default class PropertyGrid extends Component {
 
         this.fields = [];
 
+        this.changeCallback = null;
+
     }
 
     // ==========================================================
@@ -98,6 +100,16 @@ export default class PropertyGrid extends Component {
     }
 
     // ==========================================================
+    // Change callback
+    // ==========================================================
+
+    onChange(callback) {
+
+        this.changeCallback = callback;
+
+    }
+
+    // ==========================================================
     // Refresh
     // ==========================================================
 
@@ -127,7 +139,11 @@ export default class PropertyGrid extends Component {
 
                 this.object[fieldSchema.id] = value;
 
-                console.log("[PropertyGrid]", this.object);
+                if (this.changeCallback) {
+
+                    this.changeCallback(fieldSchema.id, value);
+
+                }
 
             });
 

@@ -34,6 +34,48 @@ export default class Repository {
     }
 
     // ==========================================================
+    // Dirty State
+    // ==========================================================
+
+    getDirty() {
+
+        return this.items.filter(entity =>
+            entity.meta?.dirty === true
+        );
+
+    }
+
+    markDirty(entity) {
+
+        if (entity?.meta) {
+
+            entity.meta.dirty = true;
+
+        }
+
+    }
+
+    clearDirty(entity) {
+
+        if (entity?.meta) {
+
+            entity.meta.dirty = false;
+
+        }
+
+    }
+
+    clearAllDirty() {
+
+        for (const entity of this.items) {
+
+            this.clearDirty(entity);
+
+        }
+
+    }
+
+    // ==========================================================
     // IDs
     // ==========================================================
 
@@ -84,9 +126,11 @@ export default class Repository {
 
         copy.id = this.nextId();
 
-        if (copy.name) {
+        const identity = copy.components?.["core.identity"];
 
-            copy.name += " Copy";
+        if (identity?.name) {
+
+            identity.name += " Copy";
 
         }
 

@@ -40,7 +40,9 @@ export default class Inspector extends Component {
     // ==========================================================
 
     setEntity(entity) {
+
         console.log("[Inspector] Entity:", entity);
+
         this.entity = entity;
 
         this.refresh();
@@ -88,6 +90,22 @@ export default class Inspector extends Component {
             grid.setObject(
                 components[componentId]
             );
+
+            // ==================================================
+            // Dirty State
+            // ==================================================
+
+            grid.onChange(() => {
+
+                this.entity.meta.dirty = true;
+
+                console.log(
+                    "[Inspector] Dirty:",
+                    this.entity.id,
+                    this.entity.meta
+                );
+
+            });
 
             const panel = new ComponentPanel(
                 schema.name || componentId

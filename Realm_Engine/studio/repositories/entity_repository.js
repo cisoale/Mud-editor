@@ -19,6 +19,12 @@ export default class EntityRepository extends Repository {
             {
                 id: 1001,
 
+                meta: {
+
+                    dirty: false
+
+                },
+
                 components: {
                     "core.identity": {
                         name: "Long Sword",
@@ -30,6 +36,12 @@ export default class EntityRepository extends Repository {
 
             {
                 id: 1002,
+
+                meta: {
+
+                    dirty: false
+
+                },
 
                 components: {
                     "core.identity": {
