@@ -3,16 +3,23 @@
  * Realm Studio
  * Generic Repository
  * ============================================================
+ *
+ * Base repository used by all entity repositories.
+ * It only manages a collection of entities.
+ * ============================================================
  */
 
 export default class Repository {
 
-    constructor(schema = [], data = []) {
+    constructor(data = []) {
 
-        this.schema = schema;
         this.items = data;
 
     }
+
+    // ==========================================================
+    // Query
+    // ==========================================================
 
     getAll() {
 
@@ -26,6 +33,10 @@ export default class Repository {
 
     }
 
+    // ==========================================================
+    // IDs
+    // ==========================================================
+
     nextId() {
 
         if (this.items.length === 0)
@@ -35,29 +46,31 @@ export default class Repository {
 
     }
 
-    create() {
+    // ==========================================================
+    // CRUD
+    // ==========================================================
 
-        const object = {};
+    create(data = {}) {
 
-        this.schema.forEach(field => {
+        const entity = {
 
-            object[field.id] = field.default;
+            id: this.nextId(),
 
-        });
+            ...structuredClone(data)
 
-        object.id = this.nextId();
+        };
 
-        this.items.push(object);
+        this.items.push(entity);
 
-        return object;
+        return entity;
 
     }
 
-    remove(object) {
+    remove(entity) {
 
-        const index = this.items.indexOf(object);
+        const index = this.items.indexOf(entity);
 
-        if (index >= 0) {
+        if (index !== -1) {
 
             this.items.splice(index, 1);
 
@@ -65,9 +78,9 @@ export default class Repository {
 
     }
 
-    duplicate(object) {
+    duplicate(entity) {
 
-        const copy = structuredClone(object);
+        const copy = structuredClone(entity);
 
         copy.id = this.nextId();
 
@@ -80,6 +93,12 @@ export default class Repository {
         this.items.push(copy);
 
         return copy;
+
+    }
+
+    clear() {
+
+        this.items.length = 0;
 
     }
 

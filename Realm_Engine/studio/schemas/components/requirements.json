@@ -1,0 +1,57 @@
+{
+  "id": "requirements",
+  "name": "Requirements",
+  "description": "Requirements needed to use this entity.",
+  "version": 1,
+
+  "group": "Gameplay",
+  "status": "stable",
+  "lifecycle": "definition",
+
+  "fields": [
+
+    {
+      "id":"level",
+      "type":"integer",
+      "default":1,
+      "minimum":1
+    },
+
+    {
+      "id":"strength",
+      "type":"integer",
+      "default":0
+    },
+
+    {
+      "id":"agility",
+      "type":"integer",
+      "default":0
+    },
+
+    {
+      "id":"constitution",
+      "type":"integer",
+      "default":0
+    },
+
+    {
+      "id":"intelligence",
+      "type":"integer",
+      "default":0
+    },
+
+    {
+      "id":"willpower",
+      "type":"integer",
+      "default":0
+    },
+
+    {
+      "id":"perception",
+      "type":"integer",
+      "default":0
+    }
+
+  ]
+}

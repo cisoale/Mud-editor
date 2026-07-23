@@ -3,6 +3,22 @@
  * Realm Studio
  * Property Grid
  * ============================================================
+ *
+ * Responsibilities
+ * ----------------
+ * - Displays editable properties.
+ * - Creates PropertyField components.
+ * - Binds schema fields to an object's values.
+ *
+ * Must NOT know:
+ * - Entity
+ * - Item
+ * - Mob
+ * - Room
+ * - Repository
+ * - SchemaLoader
+ *
+ * ============================================================
  */
 
 import Component from "../framework/component.js";
@@ -15,25 +31,39 @@ export default class PropertyGrid extends Component {
         super();
 
         this.schema = [];
+
         this.object = {};
 
         this.fields = [];
 
     }
 
+    // ==========================================================
+    // Render
+    // ==========================================================
+
     render() {
 
-        this.element = this.createElement("div", "property-grid");
+        if (this.isRendered()) {
+
+            return this.getElement();
+
+        }
+
+        this.element = this.createElement(
+            "div",
+            "property-grid"
+        );
 
         this.refresh();
 
-        return this.element;
+        return this.finishRender();
 
     }
 
-    //
+    // ==========================================================
     // Schema
-    //
+    // ==========================================================
 
     setSchema(schema) {
 
@@ -43,9 +73,15 @@ export default class PropertyGrid extends Component {
 
     }
 
-    //
+    getSchema() {
+
+        return this.schema;
+
+    }
+
+    // ==========================================================
     // Object
-    //
+    // ==========================================================
 
     setObject(object) {
 
@@ -61,9 +97,9 @@ export default class PropertyGrid extends Component {
 
     }
 
-    //
+    // ==========================================================
     // Refresh
-    //
+    // ==========================================================
 
     refresh() {
 
@@ -74,7 +110,10 @@ export default class PropertyGrid extends Component {
 
         this.fields = [];
 
-        this.schema.forEach(fieldSchema => {
+        if (!Array.isArray(this.schema))
+            return;
+
+        for (const fieldSchema of this.schema) {
 
             const field = new PropertyField(fieldSchema);
 
@@ -88,23 +127,29 @@ export default class PropertyGrid extends Component {
 
                 this.object[fieldSchema.id] = value;
 
+                console.log("[PropertyGrid]", this.object);
+
             });
 
             this.fields.push(field);
 
             this.element.appendChild(element);
 
-        });
+        }
 
     }
 
-    //
+    // ==========================================================
     // Utility
-    //
+    // ==========================================================
 
     clear() {
 
+        this.schema = [];
+
         this.object = {};
+
+        this.fields = [];
 
         this.refresh();
 

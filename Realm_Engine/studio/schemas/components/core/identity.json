@@ -1,0 +1,18 @@
+{
+    "id": "core.identity",
+    "name": "Identity",
+    "description": "Basic identity component",
+    "version": 1,
+    "fields": [
+        {
+            "id": "name",
+            "label": "Name",
+            "type": "string"
+        },
+        {
+            "id": "description",
+            "label": "Description",
+            "type": "textarea"
+        }
+    ]
+}

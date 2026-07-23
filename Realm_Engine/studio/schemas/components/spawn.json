@@ -1,0 +1,33 @@
+{
+  "id":"spawn",
+
+  "name":"Spawn",
+
+  "version":1,
+
+  "group":"World",
+
+  "status":"stable",
+
+  "lifecycle":"definition",
+
+  "fields":[
+
+    {
+      "id":"respawn_time",
+
+      "type":"integer",
+
+      "default":300
+    },
+
+    {
+      "id":"maximum",
+
+      "type":"integer",
+
+      "default":1
+    }
+
+  ]
+}

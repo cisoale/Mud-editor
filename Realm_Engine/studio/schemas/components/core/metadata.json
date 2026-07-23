@@ -1,0 +1,38 @@
+{
+  "id": "metadata",
+  "name": "Metadata",
+  "description": "Development metadata.",
+  "version": 1,
+
+  "group": "Core",
+  "status": "stable",
+  "lifecycle": "definition",
+
+  "fields": [
+
+    {
+      "id":"author",
+      "label":"Author",
+      "type":"string"
+    },
+
+    {
+      "id":"created",
+      "label":"Created",
+      "type":"datetime"
+    },
+
+    {
+      "id":"modified",
+      "label":"Modified",
+      "type":"datetime"
+    },
+
+    {
+      "id":"notes",
+      "label":"Developer Notes",
+      "type":"textarea"
+    }
+
+  ]
+}

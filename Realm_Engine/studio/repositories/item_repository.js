@@ -3,10 +3,16 @@
  * Realm Studio
  * Item Repository
  * ============================================================
+ *
+ * Temporary repository used during migration to the new
+ * ECS/Schema system.
+ *
+ * Schemas are no longer imported here. They will be supplied
+ * by the SchemaLoader and the PropertyGrid.
+ * ============================================================
  */
 
 import Repository from "./repository.js";
-import itemSchema from "../schemas/item_schema.js";
 
 export default class ItemRepository extends Repository {
 
@@ -14,7 +20,7 @@ export default class ItemRepository extends Repository {
 
         super(
 
-            itemSchema,
+            [],
 
             [
 
@@ -39,7 +45,7 @@ export default class ItemRepository extends Repository {
                 {
                     id: 1003,
                     name: "Healing Potion",
-                    type: "food",
+                    type: "consumable",
                     description: "Restores health.",
                     weight: 1,
                     value: 45

@@ -9,6 +9,7 @@
  * - Registers application routes.
  * - Opens Views inside the Workspace.
  * - Tracks the current route.
+ * - Injects shared application services into Views.
  *
  * Must NOT know:
  * - Sidebar
@@ -20,9 +21,11 @@
 
 export default class Router {
 
-    constructor(workspace) {
+    constructor(workspace, services = {}) {
 
         this.workspace = workspace;
+
+        this.services = services;
 
         this.routes = new Map();
 
@@ -60,7 +63,9 @@ export default class Router {
 
         const ViewClass = this.routes.get(name);
 
-        this.workspace.setView(new ViewClass());
+        const view = new ViewClass(this.services);
+
+        this.workspace.setView(view);
 
         this.currentRoute = name;
 

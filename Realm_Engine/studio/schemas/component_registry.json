@@ -1,25 +1,9 @@
 {
-  "version": 1,
-
-  "components": [
-
-    "core.identity",
-    "core.metadata",
-    "core.tags",
-    "core.flags",
-
-    "gameplay.item",
-    "gameplay.equipment",
-    "gameplay.damage",
-    "gameplay.durability",
-    "gameplay.attributes",
-    "gameplay.resistances",
-    "gameplay.requirements",
-
-    "interaction.readable",
-
-    "world.container",
-    "world.portal",
-    "world.spawn"
-  ]
+    "version": 1,
+    "components": [
+        {
+            "id": "core.identity",
+            "path": "components/core/identity.json"
+        }
+    ]
 }

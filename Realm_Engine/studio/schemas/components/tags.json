@@ -1,0 +1,24 @@
+{
+  "id": "tags",
+  "name": "Tags",
+  "description": "Entity tags.",
+  "version": 1,
+
+  "group": "Core",
+  "status": "stable",
+  "lifecycle": "definition",
+
+  "fields":[
+
+    {
+      "id":"tags",
+
+      "label":"Tags",
+
+      "type":"string_list",
+
+      "default":[]
+    }
+
+  ]
+}
