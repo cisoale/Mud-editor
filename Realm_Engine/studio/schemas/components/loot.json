@@ -1,0 +1,23 @@
+{
+  "id":"loot",
+
+  "name":"Loot",
+
+  "version":1,
+
+  "group":"Gameplay",
+
+  "status":"stable",
+
+  "lifecycle":"definition",
+
+  "fields":[
+
+    {
+      "id":"table",
+
+      "type":"resource_reference"
+    }
+
+  ]
+}

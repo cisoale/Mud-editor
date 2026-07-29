@@ -1,11 +1,14 @@
 {
-  "id":"readable",
+  "id": "readable",
+  "name": "Readable",
+  "description": "Allows an entity to be read.",
+  "version": 1,
 
-  "name":"Readable",
+  "group": "Interaction",
+  "status": "stable",
+  "lifecycle": "definition",
 
-  "version":1,
-
-  "fields":[
+  "fields": [
 
     {
       "id":"language",
@@ -14,8 +17,15 @@
     },
 
     {
+      "id":"title",
+      "type":"string",
+      "default":""
+    },
+
+    {
       "id":"text",
-      "type":"multiline"
+      "type":"textarea",
+      "default":""
     }
 
   ]

@@ -1,11 +1,14 @@
 {
-  "id":"container",
+  "id": "container",
+  "name": "Container",
+  "description": "Allows an entity to contain other entities.",
+  "version": 1,
 
-  "name":"Container",
+  "group": "World",
+  "status": "stable",
+  "lifecycle": "both",
 
-  "version":1,
-
-  "fields":[
+  "fields": [
 
     {
       "id":"capacity",

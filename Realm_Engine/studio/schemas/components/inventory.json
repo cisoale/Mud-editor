@@ -1,0 +1,33 @@
+{
+  "id":"inventory",
+
+  "name":"Inventory",
+
+  "version":1,
+
+  "group":"Gameplay",
+
+  "status":"stable",
+
+  "lifecycle":"both",
+
+  "fields":[
+
+    {
+      "id":"slots",
+
+      "type":"integer",
+
+      "default":20
+    },
+
+    {
+      "id":"max_weight",
+
+      "type":"float",
+
+      "default":0
+    }
+
+  ]
+}

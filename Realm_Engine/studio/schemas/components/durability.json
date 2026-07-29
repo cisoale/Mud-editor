@@ -1,28 +1,35 @@
 {
-  "id":"durability",
+  "id": "durability",
+  "name": "Durability",
+  "description": "Defines durability properties.",
+  "version": 1,
 
-  "name":"Durability",
+  "group": "Gameplay",
+  "status": "stable",
+  "lifecycle": "both",
 
-  "version":1,
-
-  "fields":[
+  "fields": [
 
     {
-      "id":"max",
-      "type":"integer",
-      "default":100
+      "id": "max",
+      "label": "Maximum Durability",
+      "type": "integer",
+      "default": 100,
+      "minimum": 1
     },
 
     {
-      "id":"current",
-      "type":"integer",
-      "default":100
+      "id": "destroy_on_zero",
+      "label": "Destroy at Zero",
+      "type": "boolean",
+      "default": false
     },
 
     {
-      "id":"destroy_on_zero",
-      "type":"boolean",
-      "default":false
+      "id": "repairable",
+      "label": "Repairable",
+      "type": "boolean",
+      "default": true
     }
 
   ]
