@@ -6,8 +6,8 @@
  *
  * Responsibilities
  * ----------------
- * - Combines ContentBrowser and PropertyGrid.
- * - Connects selection to property editing.
+ * - Combines ContentBrowser and Inspector.
+ * - Connects selection to Inspector.
  *
  * ============================================================
  */
@@ -17,31 +17,43 @@ import Component from "../framework/component.js";
 import Splitter from "../components/splitter.js";
 
 import ContentBrowser from "./contentbrowser.js";
-import PropertyGrid from "./propertygrid.js";
+import Inspector from "./inspector.js";
 
 export default class Editor extends Component {
 
-    constructor() {
+    constructor(services) {
 
         super();
 
+        this.services = services;
+
         this.splitter = new Splitter();
+
+        //
+        // Modules
+        //
 
         this.browser = new ContentBrowser();
 
-        this.grid = new PropertyGrid();
+        this.inspector = new Inspector(
+            this.services.schemaLoader
+        );
 
         //
-        // Browser -> PropertyGrid
+        // Browser -> Inspector
         //
 
-        this.browser.onSelectionChanged(item => {
+        this.browser.onSelectionChanged(entity => {
 
-            this.grid.setObject(item);
+            this.inspector.setEntity(entity);
 
         });
 
     }
+
+    // ==========================================================
+    // Render
+    // ==========================================================
 
     render() {
 
@@ -51,14 +63,18 @@ export default class Editor extends Component {
 
         }
 
-        this.element = this.createElement("div", "editor");
+        this.element = this.createElement(
+            "div",
+            "editor"
+        );
 
         //
         // Configure Splitter
         //
 
         this.splitter.setLeft(this.browser);
-        this.splitter.setRight(this.grid);
+
+        this.splitter.setRight(this.inspector);
 
         this.element.appendChild(
             this.splitter.render()
@@ -90,31 +106,25 @@ export default class Editor extends Component {
 
     }
 
-    select(item) {
+    select(entity) {
 
-        this.browser.select(item);
+        this.browser.select(entity);
 
     }
 
     // ==========================================================
-    // PropertyGrid API
+    // Inspector API
     // ==========================================================
 
-    setSchema(schema) {
+    setEntity(entity) {
 
-        this.grid.setSchema(schema);
-
-    }
-
-    setObject(object) {
-
-        this.grid.setObject(object);
+        this.inspector.setEntity(entity);
 
     }
 
-    getObject() {
+    getEntity() {
 
-        return this.grid.getObject();
+        return this.inspector.getEntity();
 
     }
 
@@ -135,14 +145,16 @@ export default class Editor extends Component {
     refresh() {
 
         this.browser.refresh();
-        this.grid.refresh();
+
+        this.inspector.refresh();
 
     }
 
     clear() {
 
         this.browser.clear();
-        this.grid.clear();
+
+        this.inspector.clear();
 
     }
 

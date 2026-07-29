@@ -1,0 +1,53 @@
+{
+  "id":"flags",
+
+  "name":"Flags",
+
+  "version":1,
+
+  "group":"Core",
+
+  "status":"stable",
+
+  "lifecycle":"definition",
+
+  "fields":[
+
+    {
+      "id":"tradable",
+      "type":"boolean",
+      "default":true
+    },
+
+    {
+      "id":"droppable",
+      "type":"boolean",
+      "default":true
+    },
+
+    {
+      "id":"sellable",
+      "type":"boolean",
+      "default":true
+    },
+
+    {
+      "id":"stackable",
+      "type":"boolean",
+      "default":false
+    },
+
+    {
+      "id":"unique",
+      "type":"boolean",
+      "default":false
+    },
+
+    {
+      "id":"quest_item",
+      "type":"boolean",
+      "default":false
+    }
+
+  ]
+}

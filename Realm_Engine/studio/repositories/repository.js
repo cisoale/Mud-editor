@@ -3,16 +3,23 @@
  * Realm Studio
  * Generic Repository
  * ============================================================
+ *
+ * Base repository used by all entity repositories.
+ * It only manages a collection of entities.
+ * ============================================================
  */
 
 export default class Repository {
 
-    constructor(schema = [], data = []) {
+    constructor(data = []) {
 
-        this.schema = schema;
         this.items = data;
 
     }
+
+    // ==========================================================
+    // Query
+    // ==========================================================
 
     getAll() {
 
@@ -26,6 +33,52 @@ export default class Repository {
 
     }
 
+    // ==========================================================
+    // Dirty State
+    // ==========================================================
+
+    getDirty() {
+
+        return this.items.filter(entity =>
+            entity.meta?.dirty === true
+        );
+
+    }
+
+    markDirty(entity) {
+
+        if (entity?.meta) {
+
+            entity.meta.dirty = true;
+
+        }
+
+    }
+
+    clearDirty(entity) {
+
+        if (entity?.meta) {
+
+            entity.meta.dirty = false;
+
+        }
+
+    }
+
+    clearAllDirty() {
+
+        for (const entity of this.items) {
+
+            this.clearDirty(entity);
+
+        }
+
+    }
+
+    // ==========================================================
+    // IDs
+    // ==========================================================
+
     nextId() {
 
         if (this.items.length === 0)
@@ -35,29 +88,31 @@ export default class Repository {
 
     }
 
-    create() {
+    // ==========================================================
+    // CRUD
+    // ==========================================================
 
-        const object = {};
+    create(data = {}) {
 
-        this.schema.forEach(field => {
+        const entity = {
 
-            object[field.id] = field.default;
+            id: this.nextId(),
 
-        });
+            ...structuredClone(data)
 
-        object.id = this.nextId();
+        };
 
-        this.items.push(object);
+        this.items.push(entity);
 
-        return object;
+        return entity;
 
     }
 
-    remove(object) {
+    remove(entity) {
 
-        const index = this.items.indexOf(object);
+        const index = this.items.indexOf(entity);
 
-        if (index >= 0) {
+        if (index !== -1) {
 
             this.items.splice(index, 1);
 
@@ -65,21 +120,29 @@ export default class Repository {
 
     }
 
-    duplicate(object) {
+    duplicate(entity) {
 
-        const copy = structuredClone(object);
+        const copy = structuredClone(entity);
 
         copy.id = this.nextId();
 
-        if (copy.name) {
+        const identity = copy.components?.["core.identity"];
 
-            copy.name += " Copy";
+        if (identity?.name) {
+
+            identity.name += " Copy";
 
         }
 
         this.items.push(copy);
 
         return copy;
+
+    }
+
+    clear() {
+
+        this.items.length = 0;
 
     }
 

@@ -5,6 +5,7 @@
  * ============================================================
  */
 
+import EntityAdapter from "../services/entity_adapter.js";
 import Component from "../framework/component.js";
 
 export default class ListView extends Component {
@@ -113,7 +114,26 @@ export default class ListView extends Component {
 
                 const cell = this.createElement("div", "listview-cell");
 
-                cell.textContent = item[column.id] ?? "";
+                let value = "";
+
+                switch (column.id) {
+
+                    case "name":
+                        value = EntityAdapter.getName(item);
+                        break;
+
+                    case "type":
+                    case "category":
+                        value = EntityAdapter.getCategory(item);
+                        break;
+
+                    default:
+                        value = item[column.id] ?? "";
+                        break;
+
+                }
+
+                cell.textContent = value;
 
                 if (column.width)
                     cell.style.width = column.width + "px";
@@ -123,7 +143,7 @@ export default class ListView extends Component {
 
                 row.appendChild(cell);
 
-            });
+            });   // <-- chiusura del forEach
 
             row.addEventListener("click", () => {
 

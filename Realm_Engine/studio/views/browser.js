@@ -9,19 +9,22 @@ import View from "../framework/view.js";
 import Panel from "../framework/panel.js";
 import Editor from "../modules/editor.js";
 
-import itemSchema from "../schemas/item_schema.js";
-import ItemRepository from "../repositories/item_repository.js";
+
 
 export default class BrowserView extends View {
 
-    constructor() {
+    constructor(services) {
 
         super();
+
+        this.services = services;
 
         this.panel = null;
         this.editor = null;
 
-        this.repository = new ItemRepository();
+        // TODO:
+        // in futuro arriverà da services
+        this.repository = this.services.entityRepository;
 
     }
 
@@ -97,7 +100,7 @@ export default class BrowserView extends View {
         // Editor
         //
 
-        this.editor = new Editor();
+        this.editor = new Editor(this.services);
 
         this.panel.body.appendChild(
             this.editor.render()
@@ -128,12 +131,6 @@ export default class BrowserView extends View {
             }
 
         ]);
-
-        //
-        // Property Schema
-        //
-
-        this.editor.setSchema(itemSchema);
 
         //
         // Repository

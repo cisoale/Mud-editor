@@ -1,0 +1,23 @@
+{
+  "id":"location",
+
+  "name":"Location",
+
+  "version":1,
+
+  "group":"World",
+
+  "status":"stable",
+
+  "lifecycle":"both",
+
+  "fields":[
+
+    {
+      "id":"parent",
+
+      "type":"entity_reference"
+    }
+
+  ]
+}

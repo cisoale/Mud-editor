@@ -1,0 +1,29 @@
+{
+  "id":"health",
+
+  "name":"Health",
+
+  "version":1,
+
+  "group":"Combat",
+
+  "status":"stable",
+
+  "lifecycle":"both",
+
+  "fields":[
+
+    {
+      "id":"max_hp",
+      "type":"integer",
+      "default":100
+    },
+
+    {
+      "id":"regen",
+      "type":"float",
+      "default":0
+    }
+
+  ]
+}
