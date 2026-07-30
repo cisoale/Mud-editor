@@ -25,6 +25,7 @@ import EntityRepository from "../repositories/entity_repository.js";
 import DashboardView from "../views/dashboard.js";
 import PlaceholderView from "../views/placeholder.js";
 import BrowserView from "../views/browser.js";
+import ServiceContainer from "../core/service_container.js";
 
 // ------------------------------------------------------------
 // Initialize Services
@@ -57,13 +58,12 @@ catch (error) {
 // Shared Services
 // ------------------------------------------------------------
 
-const services = {
 
-    schemaLoader,
 
-    entityRepository: new EntityRepository()
+const services = new ServiceContainer();
 
-};
+services.register("schemaLoader", schemaLoader);
+services.register("entityRepository", new EntityRepository());
 
 // ------------------------------------------------------------
 // Application
