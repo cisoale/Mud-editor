@@ -23,8 +23,8 @@ export default class BrowserView extends View {
         this.editor = null;
 
         // TODO:
-        // in futuro arriverà da services
-        this.repository = this.services.entityRepository;
+        // in futuro arriverï¿½ da services
+        this.repository = this.services.get("entityRepository");
 
     }
 

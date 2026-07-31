@@ -30,18 +30,21 @@
  * - Project (future)
  * - Session (future)
  *
- * Maturity:
- * ----------------
- * Level B
  * ============================================================
  */
 
 import ServiceContainer from "./service_container.js";
 
+import Layout from "../framework/layout.js";
+
+import Router from "../app/router.js";
+
 import SchemaLoader from "../services/schema_loader.js";
 import EntityRepository from "../repositories/entity_repository.js";
 
-
+import DashboardView from "../views/dashboard.js";
+import BrowserView from "../views/browser.js";
+import PlaceholderView from "../views/placeholder.js";
 
 export default class Application {
 
@@ -77,43 +80,152 @@ export default class Application {
 
     async initializeServices() {
 
-    this.services = new ServiceContainer();
+        this.services = new ServiceContainer();
 
-    const schemaLoader = new SchemaLoader();
+        const schemaLoader = new SchemaLoader();
 
-    try {
+        try {
 
-        await schemaLoader.load();
+            await schemaLoader.load();
 
-        console.info(
-            `[Application] ${schemaLoader.count()} schemas loaded.`
+            console.info(
+                `[Application] ${schemaLoader.count()} schemas loaded.`
+            );
+
+            console.table(
+                schemaLoader.getAll()
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "[Application] Failed to load schemas."
+            );
+
+            console.error(error);
+
+        }
+
+        this.services.register(
+            "schemaLoader",
+            schemaLoader
         );
 
-        console.table(
-            schemaLoader.getAll()
+        this.services.register(
+            "entityRepository",
+            new EntityRepository()
         );
 
     }
-    catch (error) {
 
-        console.error(
-            "[Application] Failed to load schemas."
-        );
+    createLayout() {
 
-        console.error(error);
+        const app = document.getElementById("app");
+
+        this.layout = new Layout();
+
+        this.layout.render(app);
 
     }
 
-    this.services.register(
-        "schemaLoader",
-        schemaLoader
-    );
+    createRouter() {
 
-    this.services.register(
-        "entityRepository",
-        new EntityRepository()
-    );
+        this.router = new Router(
+            this.layout.workspace,
+            this.services
+        );
 
-}
+    }
+
+    registerViews() {
+
+        this.router.register(
+            "dashboard",
+            DashboardView
+        );
+
+        this.router.register(
+            "browser",
+            BrowserView
+        );
+
+        this.router.register(
+            "items",
+            class extends PlaceholderView {
+
+                constructor(services) {
+
+                    super("Items");
+
+                    this.services = services;
+
+                }
+
+            }
+        );
+
+        this.router.register(
+            "mobs",
+            class extends PlaceholderView {
+
+                constructor(services) {
+
+                    super("Mobs");
+
+                    this.services = services;
+
+                }
+
+            }
+        );
+
+        this.router.register(
+            "rooms",
+            class extends PlaceholderView {
+
+                constructor(services) {
+
+                    super("Rooms");
+
+                    this.services = services;
+
+                }
+
+            }
+        );
+
+        this.router.register(
+            "areas",
+            class extends PlaceholderView {
+
+                constructor(services) {
+
+                    super("Areas");
+
+                    this.services = services;
+
+                }
+
+            }
+        );
+
+    }
+
+    connectSidebar() {
+
+        this.layout.sidebar.onSelect(id => {
+
+            this.router.open(id);
+
+        });
+
+    }
+
+    openDefaultView() {
+
+        this.layout.sidebar.select("dashboard");
+
+    }
 
 }
