@@ -46,6 +46,8 @@ import DashboardView from "../views/dashboard.js";
 import BrowserView from "../views/browser.js";
 import PlaceholderView from "../views/placeholder.js";
 
+import Project from "./project.js";
+
 export default class Application {
 
     constructor() {
@@ -53,24 +55,27 @@ export default class Application {
         this.services = null;
         this.layout = null;
         this.router = null;
+        this.project = null;
 
     }
 
     async start() {
 
-        await this.initializeServices();
+    await this.initializeServices();
 
-        this.createLayout();
+    this.createProject();
 
-        this.createRouter();
+    this.createLayout();
 
-        this.registerViews();
+    this.createRouter();
 
-        this.connectSidebar();
+    this.registerViews();
 
-        this.openDefaultView();
+    this.connectSidebar();
 
-    }
+    this.openDefaultView();
+
+}
 
     stop() {
 
@@ -227,5 +232,14 @@ export default class Application {
         this.layout.sidebar.select("dashboard");
 
     }
+createProject() {
 
+    this.project = new Project();
+
+    this.project.registerRepository(
+        "entities",
+        this.services.get("entityRepository")
+    );
+
+}
 }
