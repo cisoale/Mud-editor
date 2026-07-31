@@ -48,14 +48,16 @@ import PlaceholderView from "../views/placeholder.js";
 
 import Project from "./project.js";
 
+import RealmContext from "./realm_context.js";
+
 export default class Application {
 
     constructor() {
 
-        this.services = null;
+        this.context = new RealmContext();
         this.layout = null;
         this.router = null;
-        this.project = null;
+       
 
     }
 
@@ -85,7 +87,7 @@ export default class Application {
 
     async initializeServices() {
 
-        this.services = new ServiceContainer();
+        this.context.services = new ServiceContainer();
 
         const schemaLoader = new SchemaLoader();
 
@@ -112,12 +114,12 @@ export default class Application {
 
         }
 
-        this.services.register(
+        this.context.services.register(
             "schemaLoader",
             schemaLoader
         );
 
-        this.services.register(
+        this.context.services.register(
             "entityRepository",
             new EntityRepository()
         );
@@ -138,7 +140,7 @@ export default class Application {
 
         this.router = new Router(
             this.layout.workspace,
-            this.services
+            this.context
         );
 
     }
@@ -234,11 +236,11 @@ export default class Application {
     }
 createProject() {
 
-    this.project = new Project();
+    this.context.project = new Project();
 
-    this.project.registerRepository(
+    this.context.project.registerRepository(
         "entities",
-        this.services.get("entityRepository")
+        this.context.services.get("entityRepository")
     );
 
 }

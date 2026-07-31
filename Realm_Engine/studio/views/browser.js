@@ -13,7 +13,7 @@ import Editor from "../modules/editor.js";
 
 export default class BrowserView extends View {
 
-    constructor(services) {
+    constructor(context) {
 
         super();
 
