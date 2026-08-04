@@ -56,4 +56,26 @@ export default class EntityRepository extends Repository {
 
     }
 
+    createDefault() {
+
+    return {
+
+        id: this.nextId(),
+
+        meta: {
+            dirty: false
+        },
+
+        components: {
+            "core.identity": {
+                name: "New Entity",
+                description: "",
+                category: "Unknown"
+            }
+        }
+
+    };
+
+}
+
 }

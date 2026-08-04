@@ -9,7 +9,7 @@
  * - Registers application routes.
  * - Opens Views inside the Workspace.
  * - Tracks the current route.
- * - Injects shared application services into Views.
+ * - - Injects RealmContext into Views..
  *
  * Must NOT know:
  * - Sidebar
@@ -21,11 +21,11 @@
 
 export default class Router {
 
-    constructor(workspace, services = {}) {
+    constructor(workspace, context) {
 
         this.workspace = workspace;
 
-        this.services = services;
+        this.context = context;
 
         this.routes = new Map();
 
@@ -63,7 +63,7 @@ export default class Router {
 
         const ViewClass = this.routes.get(name);
 
-        const view = new ViewClass(this.services);
+        const view = new ViewClass(this.context);
 
         this.workspace.setView(view);
 

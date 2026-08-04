@@ -5,7 +5,6 @@
  * ============================================================
  */
 
-import EntityAdapter from "../services/entity_adapter.js";
 import Component from "../framework/component.js";
 
 export default class ListView extends Component {
@@ -104,6 +103,22 @@ export default class ListView extends Component {
         //
 
         this.rows.forEach(item => {
+            console.log("ROW", item);
+
+            this.columns.forEach(column => {
+
+                let value = "";
+
+                if (typeof column.value === "function") {
+                    value = column.value(item);
+                } else {
+                    value = item[column.id] ?? "";
+                }
+
+                console.log(column.id, value);
+
+    
+            });
 
             const row = this.createElement("div", "listview-row");
 
@@ -116,20 +131,14 @@ export default class ListView extends Component {
 
                 let value = "";
 
-                switch (column.id) {
+                
+                if (typeof column.value === "function") {
 
-                    case "name":
-                        value = EntityAdapter.getName(item);
-                        break;
+                   value = column.value(item);
 
-                    case "type":
-                    case "category":
-                        value = EntityAdapter.getCategory(item);
-                        break;
+                } else {
 
-                    default:
-                        value = item[column.id] ?? "";
-                        break;
+                    value = item[column.id] ?? "";
 
                 }
 

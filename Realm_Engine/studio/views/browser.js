@@ -15,18 +15,20 @@ export default class BrowserView extends View {
 
     constructor(context) {
 
-        super();
+    super();
 
-        this.services = services;
+    this.context = context;
 
-        this.panel = null;
-        this.editor = null;
+    this.services = context.services;
 
-        // TODO:
-        // in futuro arriver� da services
-        this.repository = this.services.get("entityRepository");
+    this.panel = null;
 
-    }
+    this.editor = null;
+
+    this.repository =
+        context.project.getRepository("entities");
+
+}
 
     // ==========================================================
     // Item Commands
@@ -121,13 +123,19 @@ export default class BrowserView extends View {
             {
                 id: "name",
                 label: "Name",
-                flex: 1
+                flex: 1,
+
+                value: entity =>
+                    entity.components?.["core.identity"]?.name ?? ""
             },
 
             {
-                id: "type",
-                label: "Type",
-                width: 120
+                id: "category",
+                label: "Category",
+                width: 120,
+
+                value: entity =>
+                    entity.components?.["core.identity"]?.category ?? ""
             }
 
         ]);

@@ -105,23 +105,37 @@ export default class ContentBrowser extends Component {
 
         }
 
-        const value = text.toLowerCase();
+        const search = text.toLowerCase();
 
         const filtered = this.items.filter(item => {
 
-            return Object.values(item).some(cell =>
+             return this.columns.some(column => {
 
-                String(cell)
+                let value = "";
+
+                if (typeof column.value === "function") {
+
+                    value = column.value(item);
+
+                } else {
+
+                    value = item[column.id] ?? "";
+
+                }
+
+                return String(value)
                     .toLowerCase()
-                    .includes(value)
+                    .includes(search);
 
-            );
+            });
 
-        });
+    });
+
+    
 
         this.list.setRows(filtered);
 
-    }
+}
 
     //
     // Selection

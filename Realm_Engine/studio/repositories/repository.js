@@ -94,20 +94,24 @@ export default class Repository {
 
     create(data = {}) {
 
-        const entity = {
+        const entity = this.createDefault();
 
-            id: this.nextId(),
+        Object.assign(entity, structuredClone(data));
 
-            ...structuredClone(data)
-
-        };
-
-        this.items.push(entity);
+         this.items.push(entity);
 
         return entity;
 
     }
+    createDefault() {
 
+    return {
+
+        id: this.nextId()
+
+    };
+
+    }
     remove(entity) {
 
         const index = this.items.indexOf(entity);
