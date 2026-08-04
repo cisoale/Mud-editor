@@ -91,14 +91,16 @@ export default class ComponentPanel extends Component {
 
     updateCollapse() {
 
-        if (!this.body || !this.arrow)
-            return;
+    if (!this.body || !this.arrow)
+        return;
 
-        this.body.style.display =
-            this.collapsed ? "none" : "";
+    this.element.classList.toggle(
+        "collapsed",
+        this.collapsed
+    );
 
-        this.arrow.textContent =
-            this.collapsed ? "▶" : "▼";
+    this.arrow.textContent =
+        this.collapsed ? "▶" : "▼";
 
     }
 

@@ -36,7 +36,7 @@ export default class Editor extends Component {
         this.browser = new ContentBrowser();
 
         this.inspector = new Inspector(
-            this.services.schemaLoader
+        this.services.get("schemaLoader")
         );
 
         //

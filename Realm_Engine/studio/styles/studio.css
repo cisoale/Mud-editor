@@ -321,6 +321,13 @@ textarea.property-input {
     padding: 10px;
 }
 
+.component-panel.collapsed .component-panel-body {
+
+    display: none;
+
+}
+
+
 .inspector {
     display: flex;
     flex-direction: column;
