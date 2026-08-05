@@ -11,7 +11,7 @@
  */
 
 import View from "../framework/view.js";
-import Panel from "../framework/panel.js";
+import Panel from "../framework/ui/panel.js";
 
 export default class PlaceholderView extends View {
 

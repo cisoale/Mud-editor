@@ -18,7 +18,7 @@
  * ============================================================
  */
 
-import Component from "../framework/component.js";
+import Component from "../framework/core/component.js";
 
 export default class StatusBar extends Component {
 

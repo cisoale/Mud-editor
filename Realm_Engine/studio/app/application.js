@@ -34,10 +34,8 @@
  */
 
 import ServiceContainer from "./service_container.js";
-
-import Layout from "../framework/layout.js";
-
-import Router from "../app/router.js";
+import Layout from "./layout.js";
+import Router from "./router.js";
 
 import SchemaLoader from "../services/schema_loader.js";
 import EntityRepository from "../repositories/entity_repository.js";
@@ -47,7 +45,6 @@ import BrowserView from "../views/browser.js";
 import PlaceholderView from "../views/placeholder.js";
 
 import Project from "./project.js";
-
 import RealmContext from "./realm_context.js";
 
 export default class Application {

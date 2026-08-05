@@ -5,10 +5,10 @@
  * ============================================================
  */
 
-import View from "../framework/view.js";
-import Panel from "../framework/panel.js";
+import View from "../framework/core/view.js";
+import Panel from "../framework/ui/panel.js";
 import Editor from "../modules/editor.js";
-
+import BrowserToolbar from "../components/browser_toolbar.js";
 
 
 export default class BrowserView extends View {
@@ -25,11 +25,53 @@ export default class BrowserView extends View {
 
     this.editor = null;
 
+    this.toolbar = new BrowserToolbar();
+
+    this.toolbar.onNew(() => {
+
+        this.newItem();
+
+    });
+
+    this.toolbar.onDuplicate(() => {
+
+        this.duplicateItem();
+
+    });
+
+    this.toolbar.onDelete(() => {
+
+        this.deleteItem();
+
+    });
+
     this.repository =
         context.project.getRepository("entities");
 
 }
 
+// ==========================================================
+// Toolbar
+// ==========================================================
+
+updateToolbar() {
+
+    if (!this.editor)
+        return;
+
+    const selected = this.editor.getSelected();
+
+    this.toolbar.setNewEnabled(true);
+
+    this.toolbar.setDuplicateEnabled(
+        selected !== null
+    );
+
+    this.toolbar.setDeleteEnabled(
+        selected !== null
+    );
+
+}
     // ==========================================================
     // Item Commands
     // ==========================================================
@@ -43,7 +85,7 @@ export default class BrowserView extends View {
         );
 
         this.editor.select(item);
-
+        this.updateToolbar();
     }
 
     deleteItem() {
@@ -58,7 +100,7 @@ export default class BrowserView extends View {
         this.editor.setItems(
             this.repository.getAll()
         );
-
+        this.updateToolbar();
     }
 
     duplicateItem() {
@@ -75,7 +117,7 @@ export default class BrowserView extends View {
         );
 
         this.editor.select(copy);
-
+        this.updateToolbar();
     }
 
     // ==========================================================
@@ -99,13 +141,22 @@ export default class BrowserView extends View {
         this.element = this.panel.render();
 
         //
+        //
+        // Toolbar
+                    //
+
+        this.panel.body.appendChild(
+            this.toolbar.render()
+        );
+
+        //
         // Editor
         //
 
         this.editor = new Editor(this.services);
 
         this.panel.body.appendChild(
-            this.editor.render()
+                this.editor.render()
         );
 
         //
@@ -139,7 +190,7 @@ export default class BrowserView extends View {
             }
 
         ]);
-
+        
         //
         // Repository
         //
@@ -147,7 +198,7 @@ export default class BrowserView extends View {
         this.editor.setItems(
             this.repository.getAll()
         );
-
+        this.updateToolbar();
         //
         // Expose for testing
         //

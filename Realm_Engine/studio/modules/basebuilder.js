@@ -5,7 +5,7 @@
  * ============================================================
  */
 
-import Panel from "../framework/panel.js";
+import Panel from "../framework/ui/panel.js";
 import Editor from "./editor.js";
 
 export default class BaseBuilder {

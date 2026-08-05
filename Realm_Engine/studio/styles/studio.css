@@ -335,3 +335,97 @@ textarea.property-input {
     padding: 8px;
     overflow-y: auto;
 }
+
+.browser-toolbar {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px;
+
+    border-bottom: 1px solid var(--panel-border);
+
+    background: var(--panel-header-background);
+
+}
+
+.browser-toolbar-button {
+
+    padding: 6px 12px;
+
+    cursor: pointer;
+
+}
+
+.toolbar {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px;
+
+    border-bottom: 1px solid #444;
+
+    background: #2f3136;
+
+}
+
+.toolbar-button {
+
+    padding: 5px 12px;
+
+    cursor: pointer;
+
+}
+
+.toolbar-separator {
+
+    width: 1px;
+
+    height: 22px;
+
+    background: #666;
+
+    margin: 0 4px;
+
+}
+
+.toolbar {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px;
+
+    border-bottom: 1px solid #444;
+
+    background: #2f3136;
+
+}
+
+.toolbar-separator {
+
+    width: 1px;
+
+    height: 22px;
+
+    background: #666;
+
+    margin: 0 4px;
+
+}
+
+.toolbar-spacer {
+
+    flex: 1;
+
+}

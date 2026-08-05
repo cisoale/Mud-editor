@@ -18,7 +18,7 @@
  * ============================================================
  */
 
-import Component from "../framework/component.js";
+import Component from "../framework/core/component.js";
 import menu from "../app/menu.js";
 
 export default class Sidebar extends Component {

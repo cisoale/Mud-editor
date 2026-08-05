@@ -15,7 +15,7 @@
  *
  * ============================================================
  */
-import Application from "../core/application.js";
+import Application from "./application.js";
 
 const app = new Application();
 
