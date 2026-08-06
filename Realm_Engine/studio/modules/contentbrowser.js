@@ -5,10 +5,10 @@
  * ============================================================
  */
 
-import Component from "../framework/component.js";
+import Component from "../framework/core/component.js";
 
-import SearchBox from "../components/searchbox.js";
-import ListView from "../components/listview.js";
+import SearchBox from "../framework/controls/searchbox.js";
+import ListView from "../framework/controls/list_view.js";
 
 export default class ContentBrowser extends Component {
 
@@ -87,7 +87,7 @@ export default class ContentBrowser extends Component {
 
         this.items = items || [];
 
-        this.list.setRows(this.items);
+        this.list.setItems(this.items);
 
     }
 
@@ -99,7 +99,7 @@ export default class ContentBrowser extends Component {
 
         if (!text) {
 
-            this.list.setRows(this.items);
+            this.list.setItems(this.items);
 
             return;
 
@@ -133,7 +133,7 @@ export default class ContentBrowser extends Component {
 
     
 
-        this.list.setRows(filtered);
+        this.list.setItems(filtered);
 
 }
 
@@ -143,7 +143,7 @@ export default class ContentBrowser extends Component {
 
     getSelected() {
 
-        return this.list.getSelected();
+        return this.list.getSelection();
 
     }
 
@@ -152,7 +152,11 @@ export default class ContentBrowser extends Component {
         this.list.select(item);
 
     }
+    clearSelection() {
 
+    this.list.clearSelection();
+
+    }
     //
     // Events
     //
@@ -169,9 +173,9 @@ export default class ContentBrowser extends Component {
 
     clear() {
 
-        this.items = [];
+    this.items = [];
 
-        this.list.clear();
+    this.list.setItems([]);
 
     }
 

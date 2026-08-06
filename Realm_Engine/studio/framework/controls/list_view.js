@@ -27,7 +27,7 @@
  * ============================================================
  */
 
-import Component from "./component.js";
+import Component from "../core/component.js";
 
 export default class ListView extends Component {
 

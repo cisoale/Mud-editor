@@ -7,85 +7,117 @@
 
 import View from "../framework/core/view.js";
 import Panel from "../framework/ui/panel.js";
-import Editor from "../modules/editor.js";
-import BrowserToolbar from "../components/browser_toolbar.js";
 
+import Editor from "../modules/editor.js";
+import BrowserToolbar from "../browser/browser_toolbar.js";
 
 export default class BrowserView extends View {
 
+    // ==========================================================
+    // Constructor
+    // ==========================================================
+
     constructor(context) {
 
-    super();
+        super();
 
-    this.context = context;
+        this.context = context;
 
-    this.services = context.services;
+        this.services = context.services;
 
-    this.panel = null;
+        this.repository =
+            context.project.getRepository("entities");
 
-    this.editor = null;
+        this.panel = null;
 
-    this.toolbar = new BrowserToolbar();
+        this.editor = null;
 
-    this.toolbar.onNew(() => {
+        this.toolbar = new BrowserToolbar();
 
-        this.newItem();
+        //
+        // Toolbar Events
+        //
 
-    });
+        this.toolbar.onClick(id => {
 
-    this.toolbar.onDuplicate(() => {
+            switch (id) {
 
-        this.duplicateItem();
+                case "new":
+                    this.newItem();
+                    break;
 
-    });
+                case "duplicate":
+                    this.duplicateItem();
+                    break;
 
-    this.toolbar.onDelete(() => {
+                case "delete":
+                    this.deleteItem();
+                    break;
 
-        this.deleteItem();
+            }
 
-    });
+        });
 
-    this.repository =
-        context.project.getRepository("entities");
+    }
 
-}
-
-// ==========================================================
-// Toolbar
-// ==========================================================
-
-updateToolbar() {
-
-    if (!this.editor)
-        return;
-
-    const selected = this.editor.getSelected();
-
-    this.toolbar.setNewEnabled(true);
-
-    this.toolbar.setDuplicateEnabled(
-        selected !== null
-    );
-
-    this.toolbar.setDeleteEnabled(
-        selected !== null
-    );
-
-}
+        // ==========================================================
+    // Toolbar
     // ==========================================================
-    // Item Commands
+
+    updateToolbar() {
+
+        if (!this.editor)
+            return;
+
+        const selected = this.editor.getSelected();
+
+        this.toolbar.enable("new");
+
+        if (selected) {
+
+            this.toolbar.enable("duplicate");
+            this.toolbar.enable("delete");
+
+        } else {
+
+            this.toolbar.disable("duplicate");
+            this.toolbar.disable("delete");
+
+        }
+
+    }
+
+    // ==========================================================
+    // Refresh
+    // ==========================================================
+
+    refresh() {
+
+        if (!this.editor)
+            return;
+
+        this.editor.setItems(
+            this.repository.getAll()
+        );
+
+        this.updateToolbar();
+
+    }
+
+    // ==========================================================
+    // Commands
     // ==========================================================
 
     newItem() {
 
         const item = this.repository.create();
 
-        this.editor.setItems(
-            this.repository.getAll()
-        );
+        this.refresh();
 
         this.editor.select(item);
+
         this.updateToolbar();
+
     }
 
     deleteItem() {
@@ -97,10 +129,8 @@ updateToolbar() {
 
         this.repository.remove(item);
 
-        this.editor.setItems(
-            this.repository.getAll()
-        );
-        this.updateToolbar();
+        this.refresh();
+
     }
 
     duplicateItem() {
@@ -112,28 +142,25 @@ updateToolbar() {
 
         const copy = this.repository.duplicate(item);
 
-        this.editor.setItems(
-            this.repository.getAll()
-        );
+        this.refresh();
 
         this.editor.select(copy);
+
         this.updateToolbar();
+
     }
 
-    // ==========================================================
+        // ==========================================================
     // Render
     // ==========================================================
 
     render() {
 
-        if (this.isRendered()) {
-
+        if (this.isRendered())
             return this.getElement();
 
-        }
-
         //
-        // Panel
+        // Main panel
         //
 
         this.panel = new Panel("Content Browser");
@@ -141,26 +168,30 @@ updateToolbar() {
         this.element = this.panel.render();
 
         //
+        // Editor
+        //
+
+        this.editor = new Editor(this.services);
+        this.editor.onSelectionChanged(() => {
+
+        this.updateToolbar();
+
+        });
+
         //
         // Toolbar
-                    //
+        //
 
-        this.panel.body.appendChild(
-            this.toolbar.render()
-        );
+        this.panel.append(this.toolbar);
 
         //
         // Editor
         //
 
-        this.editor = new Editor(this.services);
-
-        this.panel.body.appendChild(
-                this.editor.render()
-        );
+        this.panel.append(this.editor);
 
         //
-        // Browser Columns
+        // Columns
         //
 
         this.editor.setColumns([
@@ -190,17 +221,15 @@ updateToolbar() {
             }
 
         ]);
-        
+
         //
-        // Repository
+        // Initial data
         //
 
-        this.editor.setItems(
-            this.repository.getAll()
-        );
-        this.updateToolbar();
+        this.refresh();
+
         //
-        // Expose for testing
+        // Expose for debugging
         //
 
         window.browserView = this;

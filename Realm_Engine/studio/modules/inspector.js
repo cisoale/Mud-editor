@@ -16,9 +16,9 @@
  * ============================================================
  */
 
-import Component from "../framework/component.js";
+import Component from "../framework/core/component.js";
 
-import ComponentPanel from "../components/component_panel.js";
+import Panel from "../framework/ui/panel.js";
 import PropertyGrid from "./propertygrid.js";
 
 export default class Inspector extends Component {
@@ -107,11 +107,11 @@ export default class Inspector extends Component {
 
             });
 
-            const panel = new ComponentPanel(
+            const panel = new Panel(
                 schema.name || componentId
             );
 
-            panel.setContent(grid);
+            panel.append(grid);
 
             this.panels.push(panel);
 

@@ -12,9 +12,9 @@
  * ============================================================
  */
 
-import Component from "../framework/component.js";
+import Component from "../framework/core/component.js";
 
-import Splitter from "../components/splitter.js";
+import Splitter from "../framework/ui/splitter.js";
 
 import ContentBrowser from "./contentbrowser.js";
 import Inspector from "./inspector.js";
@@ -112,6 +112,11 @@ export default class Editor extends Component {
 
     }
 
+    clearSelection() {
+
+    this.browser.clearSelection();
+
+    }
     // ==========================================================
     // Inspector API
     // ==========================================================

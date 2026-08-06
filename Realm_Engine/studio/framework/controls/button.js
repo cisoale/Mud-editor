@@ -1,5 +1,5 @@
 import Component from "../core/component.js";
-import Control from "./control.js";
+import Control from "../core/control.js";
 
 export default class Button extends Component {
 
@@ -142,120 +142,6 @@ export default class Button extends Component {
 
             if (this.clickCallback)
                 this.clickCallback(this);
-
-        });
-
-        return this.finishRender();
-
-    }
-
-}/**
- * ============================================================
- * Realm Studio
- * Button Control
- * ============================================================
- *
- * Standard push button.
- *
- * Responsibilities
- * ----------------
- * - Render a button
- * - Display text/icon
- * - Raise click event
- *
- * ============================================================
- */
-
-import Control from "./control.js";
-
-export default class Button extends Control {
-
-    // ==========================================================
-    // Constructor
-    // ==========================================================
-
-    constructor(options = {}) {
-
-        super(options);
-
-        this.text = options.text ?? "";
-
-        this.icon = options.icon ?? "";
-
-        this.clickCallback = null;
-
-    }
-
-    // ==========================================================
-    // Public API
-    // ==========================================================
-
-    setText(text) {
-
-        this.text = text;
-
-        this.refresh();
-
-        return this;
-
-    }
-
-    setIcon(icon) {
-
-        this.icon = icon;
-
-        this.refresh();
-
-        return this;
-
-    }
-
-    onClick(callback) {
-
-        this.clickCallback = callback;
-
-        return this;
-
-    }
-
-    // ==========================================================
-    // Lifecycle
-    // ==========================================================
-
-    refresh() {
-
-        if (!this.element)
-            return;
-
-        this.element.textContent = this.icon
-            ? `${this.icon} ${this.text}`
-            : this.text;
-
-    }
-
-    render() {
-
-        if (this.isRendered())
-            return this.getElement();
-
-        this.element = this.createElement(
-            "button",
-            "ui-button"
-        );
-
-        this.element.type = "button";
-
-        this.refresh();
-
-        this.applyState();
-
-        this.element.addEventListener("click", event => {
-
-            if (!this.enabled)
-                return;
-
-            if (this.clickCallback)
-                this.clickCallback(event);
 
         });
 

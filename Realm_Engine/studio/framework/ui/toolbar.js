@@ -1,5 +1,26 @@
-import Button from "../controls/button.js";
+/**
+ * ============================================================
+ * Realm Studio
+ * Framework Toolbar
+ * ============================================================
+ *
+ * Generic toolbar component.
+ *
+ * Responsibilities
+ * ----------------
+ * - Manage toolbar items
+ * - Dispatch button events
+ * - Handle button state
+ * - Render toolbar controls
+ *
+ * This class is completely independent from Realm Studio.
+ * Any module (Browser, Inspector, Builder...) can inherit it.
+ *
+ * ============================================================
+ */
+
 import Container from "../core/container.js";
+import Button from "../controls/button.js";
 
 export default class Toolbar extends Container {
 
@@ -11,16 +32,34 @@ export default class Toolbar extends Container {
 
         super();
 
+        /**
+         * Toolbar item definitions.
+         *
+         * [
+         *   {
+         *      type : "button",
+         *      id   : "save",
+         *      text : "Save",
+         *      icon : "💾"
+         *   }
+         * ]
+         */
         this.items = [];
 
+        /**
+         * Runtime button instances.
+         */
         this.buttons = new Map();
 
+        /**
+         * Toolbar click callback.
+         */
         this.clickCallback = null;
 
     }
 
     // ==========================================================
-    // Public API
+    // Configuration
     // ==========================================================
 
     addButton(options = {}) {
@@ -35,7 +74,11 @@ export default class Toolbar extends Container {
 
             icon: options.icon ?? "",
 
-            tooltip: options.tooltip ?? ""
+            tooltip: options.tooltip ?? "",
+
+            enabled: options.enabled ?? true,
+
+            visible: options.visible ?? true
 
         });
 
@@ -75,41 +118,19 @@ export default class Toolbar extends Container {
 
     }
 
+    // ==========================================================
+    // Public API
+    // ==========================================================
+
     getButton(id) {
 
         return this.buttons.get(id);
 
     }
 
-    enable(id) {
+    hasButton(id) {
 
-        this.buttons.get(id)?.enable();
-
-        return this;
-
-    }
-
-    disable(id) {
-
-        this.buttons.get(id)?.disable();
-
-        return this;
-
-    }
-
-    show(id) {
-
-        this.buttons.get(id)?.show();
-
-        return this;
-
-    }
-
-    hide(id) {
-
-        this.buttons.get(id)?.hide();
-
-        return this;
+        return this.buttons.has(id);
 
     }
 
@@ -119,10 +140,13 @@ export default class Toolbar extends Container {
 
         const button = this.buttons.get(id);
 
-        if (button)
-            button.destroy();
+        if (button) {
 
-        this.buttons.delete(id);
+            this.remove(button);
+
+            this.buttons.delete(id);
+
+        }
 
         return this;
 
@@ -141,7 +165,101 @@ export default class Toolbar extends Container {
     }
 
     // ==========================================================
-    // Helpers
+    // State Management
+    // ==========================================================
+
+    enable(id) {
+
+        const button = this.buttons.get(id);
+
+        if (button)
+            button.enable();
+
+        const item = this.items.find(item => item.id === id);
+
+        if (item)
+            item.enabled = true;
+
+        return this;
+
+    }
+
+    disable(id) {
+
+        const button = this.buttons.get(id);
+
+        if (button)
+            button.disable();
+
+        const item = this.items.find(item => item.id === id);
+
+        if (item)
+            item.enabled = false;
+
+        return this;
+
+    }
+
+    show(id) {
+
+        const button = this.buttons.get(id);
+
+        if (button)
+            button.show();
+
+        const item = this.items.find(item => item.id === id);
+
+        if (item)
+            item.visible = true;
+
+        return this;
+
+    }
+
+    hide(id) {
+
+        const button = this.buttons.get(id);
+
+        if (button)
+            button.hide();
+
+        const item = this.items.find(item => item.id === id);
+
+        if (item)
+            item.visible = false;
+
+        return this;
+
+    }
+
+    enableAll() {
+
+        for (const item of this.items) {
+
+            if (item.type === "button")
+                this.enable(item.id);
+
+        }
+
+        return this;
+
+    }
+
+    disableAll() {
+
+        for (const item of this.items) {
+
+            if (item.type === "button")
+                this.disable(item.id);
+
+        }
+
+        return this;
+
+    }
+
+    // ==========================================================
+    // Internal Factory
     // ==========================================================
 
     createButton(item) {
@@ -152,7 +270,11 @@ export default class Toolbar extends Container {
 
             icon: item.icon,
 
-            tooltip: item.tooltip
+            tooltip: item.tooltip,
+
+            enabled: item.enabled,
+
+            visible: item.visible
 
         });
 
@@ -171,26 +293,24 @@ export default class Toolbar extends Container {
 
     createSeparator() {
 
-        const separator = document.createElement("div");
-
-        separator.className = "toolbar-separator";
-
-        return separator;
+        return this.createElement(
+            "div",
+            "toolbar-separator"
+        );
 
     }
 
     createSpacer() {
 
-        const spacer = document.createElement("div");
-
-        spacer.className = "toolbar-spacer";
-
-        return spacer;
+        return this.createElement(
+            "div",
+            "toolbar-spacer"
+        );
 
     }
 
     // ==========================================================
-    // Render
+    // Rendering
     // ==========================================================
 
     render() {
@@ -199,11 +319,8 @@ export default class Toolbar extends Container {
             return this.getElement();
 
         this.element = this.createElement(
-
             "div",
-
-            "toolbar"
-
+            "ui-toolbar"
         );
 
         this.buttons.clear();
@@ -215,9 +332,7 @@ export default class Toolbar extends Container {
                 case "button":
 
                     this.append(
-
                         this.createButton(item)
-
                     );
 
                     break;
@@ -225,9 +340,7 @@ export default class Toolbar extends Container {
                 case "separator":
 
                     this.append(
-
                         this.createSeparator()
-
                     );
 
                     break;
@@ -235,9 +348,7 @@ export default class Toolbar extends Container {
                 case "spacer":
 
                     this.append(
-
                         this.createSpacer()
-
                     );
 
                     break;
@@ -246,7 +357,50 @@ export default class Toolbar extends Container {
 
         }
 
+        this.renderChildren();
+
         return this.finishRender();
+
+    }
+
+    // ==========================================================
+    // Helpers
+    // ==========================================================
+
+    getButtons() {
+
+        return [...this.buttons.values()];
+
+    }
+
+    getItems() {
+
+        return [...this.items];
+
+    }
+
+    contains(id) {
+
+        return this.buttons.has(id);
+
+    }
+
+    refresh() {
+
+        if (!this.isRendered())
+            return;
+
+        const parent = this.element.parentNode;
+
+        if (!parent)
+            return;
+
+        const next = this.render();
+
+        parent.replaceChild(
+            next,
+            this.element
+        );
 
     }
 

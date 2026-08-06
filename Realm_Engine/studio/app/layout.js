@@ -1,4 +1,4 @@
-import Toolbar from "../components/toolbar.js";
+import Toolbar from "../framework/ui/toolbar.js";
 import Sidebar from "../components/sidebar.js";
 import Workspace from "../components/workspace.js";
 import StatusBar from "../components/statusbar.js";

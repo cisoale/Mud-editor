@@ -21,7 +21,7 @@
  * ============================================================
  */
 
-import Component from "../framework/component.js";
+import Component from "../framework/core/component.js";
 import PropertyField from "../components/propertyfield.js";
 
 export default class PropertyGrid extends Component {

@@ -4,12 +4,18 @@
  * Panel
  * ============================================================
  *
- * Generic container with title and body.
+ * Generic UI container with a title and a content area.
+ *
+ * Responsibilities
+ * ----------------
+ * - Display a header
+ * - Display a content area
+ * - Delegate child management to Container
  *
  * ============================================================
  */
 
-import Container from "./container.js";
+import Container from "../core/container.js";
 
 export default class Panel extends Container {
 
@@ -43,31 +49,9 @@ export default class Panel extends Container {
 
     }
 
-    append(child) {
+    getTitle() {
 
-        this.children.push(child);
-
-        if (this.body) {
-
-            if (child.render)
-                this.body.appendChild(child.render());
-            else
-                this.body.appendChild(child);
-
-        }
-
-        return this;
-
-    }
-
-    clear() {
-
-        this.children = [];
-
-        if (this.body)
-            this.body.replaceChildren();
-
-        return this;
+        return this.title;
 
     }
 
@@ -75,16 +59,12 @@ export default class Panel extends Container {
     // Protected
     // ==========================================================
 
-    renderChildren() {
+    /**
+     * Children are inserted inside the body.
+     */
+    getContentElement() {
 
-        for (const child of this.children) {
-
-            if (child.render)
-                this.body.appendChild(child.render());
-            else
-                this.body.appendChild(child);
-
-        }
+        return this.body;
 
     }
 
@@ -102,12 +82,20 @@ export default class Panel extends Container {
             "panel"
         );
 
+        // ------------------------------------------------------
+        // Header
+        // ------------------------------------------------------
+
         this.header = this.createElement(
             "div",
             "panel-header"
         );
 
         this.header.textContent = this.title;
+
+        // ------------------------------------------------------
+        // Body
+        // ------------------------------------------------------
 
         this.body = this.createElement(
             "div",
@@ -116,6 +104,10 @@ export default class Panel extends Container {
 
         this.element.appendChild(this.header);
         this.element.appendChild(this.body);
+
+        // ------------------------------------------------------
+        // Children
+        // ------------------------------------------------------
 
         this.renderChildren();
 

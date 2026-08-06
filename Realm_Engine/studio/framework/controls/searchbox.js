@@ -20,7 +20,7 @@
  * ============================================================
  */
 
-import Component from "../framework/component.js";
+import Component from "../core/component.js";
 
 export default class SearchBox extends Component {
 
