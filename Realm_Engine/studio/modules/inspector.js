@@ -178,6 +178,35 @@ async addComponent(componentId) {
 
     return true;
 }
+
+    async removeComponent(componentId) {
+
+    if (!this.entity)
+        return false;
+
+    if (!componentId)
+        return false;
+
+    if (!this.entity.components?.[componentId])
+        return false;
+
+    delete this.entity.components[componentId];
+
+    this.entity.meta.dirty = true;
+
+    this.history = [];
+    this.historyIndex = -1;
+    this.redoStack = [];
+
+    if (this.project) {
+        this.project.setDirty(true);
+        await this.project.save();
+    }
+
+    this.refresh();
+
+    return true;
+}
     // ==========================================================
     // Refresh
     // ==========================================================

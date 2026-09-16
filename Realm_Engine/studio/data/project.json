@@ -38,10 +38,6 @@
                         "name": "Long Sword TEST 4",
                         "description": "A sturdy iron sword.",
                         "category": "Item"
-                    },
-                    "core.stats": {
-                        "health": null,
-                        "speed": null
                     }
                 }
             },
