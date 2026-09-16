@@ -12,9 +12,9 @@ import Repository from "./repository.js";
 
 export default class EntityRepository extends Repository {
 
-    constructor() {
+    constructor(data = null) {
 
-        super([
+    super(data ?? [
 
             {
                 id: 1001,

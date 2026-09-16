@@ -1,0 +1,18 @@
+{
+    "id": "core.stats",
+    "name": "Stats",
+    "description": "Basic entity statistics",
+    "version": 1,
+    "fields": [
+        {
+            "id": "health",
+            "label": "Health",
+            "type": "integer"
+        },
+        {
+            "id": "speed",
+            "label": "Speed",
+            "type": "float"
+        }
+    ]
+}

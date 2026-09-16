@@ -4,6 +4,10 @@
         {
             "id": "core.identity",
             "path": "components/core/identity.json"
+        },
+        {
+            "id": "core.stats",
+            "path": "components/core/stats.json"
         }
     ]
 }

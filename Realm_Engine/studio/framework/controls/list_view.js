@@ -1,62 +1,113 @@
 /**
  * ============================================================
- * Realm Studio
- * List View
+ * Realm Framework
+ * ListView
  * ============================================================
  *
- * Generic component for displaying collections of objects.
+ * Generic control for displaying collections of objects.
  *
  * Responsibilities
  * ----------------
- * - Displays tabular data.
- * - Handles selection.
- * - Handles sorting.
- * - Handles filtering.
- * - Handles searching.
- * - Emits UI events.
+ * - Display tabular data
+ * - Handle selection
+ * - Handle sorting
+ * - Handle filtering
+ * - Handle searching
+ * - Emit UI events
  *
- * Must NOT know:
+ * Must NOT know
  * ----------------
  * - Repositories
  * - Entities
- * - Items
- * - Mobs
- * - Rooms
- * - Business logic
+ * - ECS
+ * - Business Logic
+ *
+ * Version
+ * ----------------
+ * 1.0
  *
  * ============================================================
  */
 
-import Component from "../core/component.js";
+import Control from "../core/control.js";
+import ListRenderer from "./list_renderer.js";
+export default class ListView extends Control {
 
-export default class ListView extends Component {
+    // ==========================================================
+    // Constructor
+    // ==========================================================
 
     constructor() {
 
         super();
 
-        this.columns = [];
-        this.items = [];
+        // ------------------------------------------------------
+        // Configuration
+        // ------------------------------------------------------
 
+        this.columns = [];
+
+        // ------------------------------------------------------
+        // Data
+        // ------------------------------------------------------
+
+        this.items = [];
         this.filteredItems = [];
 
-        this.selectedItem = null;
+        // ------------------------------------------------------
+        // Selection
+        // ------------------------------------------------------
+
+        this.selectionMode = "single";
+
+        this.selectedItems = [];
+
+        // ------------------------------------------------------
+        // Search / Filter
+        // ------------------------------------------------------
 
         this.searchText = "";
 
         this.filter = null;
 
-        this.compareFunction = null;
+        // ------------------------------------------------------
+        // Sorting
+        // ------------------------------------------------------
+
+        this.sortColumn = null;
+
+        this.sortAscending = true;
+
+        // ------------------------------------------------------
+        // Events
+        // ------------------------------------------------------
 
         this.selectionChangedCallback = null;
+
         this.doubleClickCallback = null;
 
-        this.table = null;
-        this.tbody = null;
+        this.contextMenuCallback = null;
 
+        this.activatedCallback = null;
+
+        
+
+        // ------------------------------------------------------
+        // UI
+        // ------------------------------------------------------
+
+        this.header = null;
+
+        this.body = null;
+
+        this.footer = null;
+
+        this.rows = [];
+        
+        this.renderer = new ListRenderer();
     }
 
-    // ==========================================================
+        // ==========================================================
     // Configuration
     // ==========================================================
 
@@ -64,8 +115,9 @@ export default class ListView extends Component {
 
         this.columns = columns;
 
-        if (this.isRendered())
-            this.refresh();
+        this.refresh();
+
+        return this;
 
     }
 
@@ -75,13 +127,15 @@ export default class ListView extends Component {
 
         this.refresh();
 
+        return this;
+
     }
 
-    setFilter(filter) {
+    setSelectionMode(mode = "single") {
 
-        this.filter = filter;
+        this.selectionMode = mode;
 
-        this.refresh();
+        return this;
 
     }
 
@@ -91,6 +145,18 @@ export default class ListView extends Component {
 
         this.refresh();
 
+        return this;
+
+    }
+
+    setFilter(filter = null) {
+
+        this.filter = filter;
+
+        this.refresh();
+
+        return this;
+
     }
 
     sort(compareFunction) {
@@ -99,93 +165,11 @@ export default class ListView extends Component {
 
         this.refresh();
 
-    }
-
-    // ==========================================================
-    // Selection
-    // ==========================================================
-
-    select(item) {
-
-        this.selectedItem = item;
-
-        this.refresh();
-
-        if (this.selectionChangedCallback)
-            this.selectionChangedCallback(item);
+        return this;
 
     }
 
-    clearSelection() {
-
-        this.selectedItem = null;
-
-        this.refresh();
-
-    }
-
-    getSelection() {
-
-        return this.selectedItem;
-
-    }
-
-    // ==========================================================
-    // Events
-    // ==========================================================
-
-    onSelectionChanged(callback) {
-
-        this.selectionChangedCallback = callback;
-
-    }
-
-    onDoubleClick(callback) {
-
-        this.doubleClickCallback = callback;
-
-    }
-
-    // ==========================================================
-    // Refresh
-    // ==========================================================
-
-    refresh() {
-
-        if (!this.isRendered())
-            return;
-
-        this.applyFilters();
-
-        this.renderRows();
-
-    }
-
-    applyFilters() {
-
-        this.filteredItems = [...this.items];
-
-        if (this.filter)
-            this.filteredItems =
-                this.filteredItems.filter(this.filter);
-
-        if (this.searchText) {
-
-            this.filteredItems =
-                this.filteredItems.filter(item =>
-                    JSON.stringify(item)
-                        .toLowerCase()
-                        .includes(this.searchText)
-                );
-
-        }
-
-        if (this.compareFunction)
-            this.filteredItems.sort(this.compareFunction);
-
-    }
-
-    // ==========================================================
+        // ==========================================================
     // Rendering
     // ==========================================================
 
@@ -195,20 +179,32 @@ export default class ListView extends Component {
             return this.getElement();
 
         this.element = document.createElement("div");
+        this.element.className = "listview";
 
-        this.element.className = "list-view";
+        // ------------------------------------------------------
+        // Header
+        // ------------------------------------------------------
 
-        this.table = document.createElement("table");
+        this.header = document.createElement("div");
+        this.header.className = "listview-header";
 
-        this.table.className = "list-view-table";
+        // ------------------------------------------------------
+        // Body
+        // ------------------------------------------------------
 
-        this.renderHeader();
+        this.body = document.createElement("div");
+        this.body.className = "listview-body";
 
-        this.tbody = document.createElement("tbody");
+        // ------------------------------------------------------
+        // Footer
+        // ------------------------------------------------------
 
-        this.table.appendChild(this.tbody);
+        this.footer = document.createElement("div");
+        this.footer.className = "listview-footer";
 
-        this.element.appendChild(this.table);
+        this.element.appendChild(this.header);
+        this.element.appendChild(this.body);
+        this.element.appendChild(this.footer);
 
         this.refresh();
 
@@ -218,70 +214,355 @@ export default class ListView extends Component {
 
     renderHeader() {
 
-        const thead = document.createElement("thead");
-
-        const row = document.createElement("tr");
+        this.header.innerHTML = "";
 
         for (const column of this.columns) {
 
-            const th = document.createElement("th");
+            if (column.visible === false)
+                continue;
 
-            th.textContent = column.label;
+            const cell = document.createElement("div");
+
+            cell.className = "listview-cell";
+
+            cell.textContent = column.label ?? "";
 
             if (column.width)
-                th.style.width = `${column.width}px`;
+                cell.style.width = `${column.width}px`;
 
             if (column.flex)
-                th.style.width = "auto";
+                cell.style.flex = column.flex;
 
-            row.appendChild(th);
+            if (column.align)
+                cell.style.textAlign = column.align;
+
+            if (column.sortable) {
+
+                cell.style.cursor = "pointer";
+
+                cell.addEventListener("click", () => {
+
+                    this.setSortColumn(column.id);
+
+                });
+
+            }
+
+            this.header.appendChild(cell);
 
         }
 
-        thead.appendChild(row);
+    }
 
-        this.table.appendChild(thead);
+    renderBody() {
+
+        this.body.innerHTML = "";
+
+        this.rows = [];
+
+        for (const item of this.filteredItems) {
+
+            const row = this.createRow(item);
+
+            this.rows.push(row);
+
+            this.body.appendChild(row);
+
+        }
+
+    }
+
+    renderFooter() {
+
+        const visible = this.filteredItems.length;
+
+        const total = this.items.length;
+
+        if (visible === total)
+            this.footer.textContent = `${total} item(s)`;
+        else
+            this.footer.textContent = `${visible} / ${total} item(s)`;
 
     }
 
     renderRows() {
 
-        this.tbody.innerHTML = "";
+        this.renderBody();
 
-        for (const item of this.filteredItems) {
+    }
 
-            const row = document.createElement("tr");
+    createRow(item) {
 
-            if (item === this.selectedItem)
-                row.classList.add("selected");
+        const row = document.createElement("div");
 
-            row.addEventListener("click", () => {
+        row.className = "listview-row";
 
-                this.select(item);
+        if (this.isSelected(item))
+            row.classList.add("selected");
 
-            });
+        row.addEventListener("click", () => {
 
-            row.addEventListener("dblclick", () => {
+            this.select(item);
 
-                if (this.doubleClickCallback)
-                    this.doubleClickCallback(item);
+        });
 
-            });
+        row.addEventListener("dblclick", () => {
+
+            if (this.doubleClickCallback)
+                this.doubleClickCallback(item);
+
+        });
+
+        row.addEventListener("contextmenu", event => {
+
+            event.preventDefault();
+
+            if (this.contextMenuCallback)
+                this.contextMenuCallback(item, event);
+
+        });
+
+        for (const column of this.columns) {
+
+            if (column.visible === false)
+                continue;
+
+            row.appendChild(
+
+                this.createCell(item, column)
+
+            );
+
+        }
+
+        return row;
+
+    }
+
+    createCell(item, column) {
+
+        const cell = document.createElement("div");
+
+        cell.className = "listview-cell";
+
+        if (column.width)
+            cell.style.width = `${column.width}px`;
+
+        if (column.flex)
+            cell.style.flex = column.flex;
+
+        if (column.align)
+            cell.style.textAlign = column.align;
+
+        this.renderCellContent(cell, item, column);
+
+        return cell;
+
+    }
+
+    renderCellContent(cell, item, column) {
+
+    const value = this.getCellValue(item, column);
+
+    if (!column.renderer) {
+
+        cell.textContent = value ?? "";
+
+        return;
+
+    }
+
+    const result = column.renderer(value, item);
+
+    this.renderer.render(cell, result);
+
+    }
+
+
+    onSelectionChanged(callback) {
+
+    this.selectionChangedCallback = callback;
+
+    return this;
+
+    }
+
+    getSelection() {
+
+    if (this.selectionMode === "single") {
+
+        return this.selectedItems[0] ?? null;
+
+    }
+
+    return [...this.selectedItems];
+
+    }
+
+    clearSelection() {
+
+    this.selectedItems = [];
+
+    this.renderRows();
+
+    }
+
+    select(item) {
+        console.log("[ListView] select", item);
+
+    if (this.selectionMode === "single") {
+
+        this.selectedItems = item ? [item] : [];
+
+    } else {
+
+        this.selectedItems = [item];
+
+    }
+
+    this.renderRows();
+
+    if (this.selectionChangedCallback) {
+            console.log("[ListView] callback");
+        this.selectionChangedCallback(item);
+
+    }
+
+    }
+
+    isSelected(item) {
+
+    return this.selectedItems.includes(item);
+
+    }
+
+        // ==========================================================
+    // Refresh
+    // ==========================================================
+
+    refresh() {
+
+        if (!this.isRendered())
+            return;
+
+        this.applyFilter();
+
+        this.applySearch();
+
+        this.applySort();
+
+        this.renderHeader();
+
+        this.renderRows();
+
+        this.renderFooter();
+
+    }
+
+    // ==========================================================
+    // Search / Filter / Sort
+    // ==========================================================
+
+    applyFilter() {
+
+        this.filteredItems = [...this.items];
+
+        if (!this.filter)
+            return;
+
+        this.filteredItems =
+            this.filteredItems.filter(this.filter);
+
+    }
+
+    applySearch() {
+
+        if (!this.searchText)
+            return;
+
+        this.filteredItems = this.filteredItems.filter(item => {
 
             for (const column of this.columns) {
 
-                const cell = document.createElement("td");
+                if (column.searchable === false)
+                    continue;
 
-                cell.textContent =
-                    item[column.id] ?? "";
+                const value = this.getCellValue(item, column);
 
-                row.appendChild(cell);
+                if (String(value)
+                    .toLowerCase()
+                    .includes(this.searchText))
+                    return true;
 
             }
 
-            this.tbody.appendChild(row);
+            return false;
 
-        }
+        });
+
+    }
+
+    applySort() {
+
+        if (!this.sortColumn)
+            return;
+
+        const column =
+            this.columns.find(c => c.id === this.sortColumn);
+
+        if (!column)
+            return;
+
+        this.filteredItems.sort((a, b) => {
+
+            const av = this.getCellValue(a, column);
+
+            const bv = this.getCellValue(b, column);
+
+            if (av == bv)
+                return 0;
+
+            if (this.sortAscending)
+                return av > bv ? 1 : -1;
+
+            return av < bv ? 1 : -1;
+
+        });
+
+    }
+
+    
+       
+    // ==========================================================
+    // Helpers
+    // ==========================================================
+
+    getCellValue(item, column) {
+
+        if (column.getter)
+            return column.getter(item);
+
+        return item[column.id];
+
+    }
+
+    clear() {
+
+        this.items = [];
+
+        this.filteredItems = [];
+
+        this.selectedItems = [];
+
+        this.refresh();
+
+    }
+
+    destroy() {
+
+        this.clear();
+
+        this.element = null;
 
     }
 

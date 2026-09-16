@@ -23,7 +23,7 @@ export default class ContentBrowser extends Component {
         this.columns = [];
         this.items = [];
 
-        this.selectionCallback = null;
+        this.selectionCallbacks = [];
 
     }
 
@@ -55,13 +55,13 @@ export default class ContentBrowser extends Component {
 
         this.list.onSelectionChanged(item => {
 
-            if (this.selectionCallback) {
+    for (const callback of this.selectionCallbacks) {
 
-                this.selectionCallback(item);
+        callback(item);
 
-            }
+    }
 
-        });
+});
 
         return this.element;
 
@@ -163,9 +163,9 @@ export default class ContentBrowser extends Component {
 
     onSelectionChanged(callback) {
 
-        this.selectionCallback = callback;
+    this.selectionCallbacks.push(callback);
 
-    }
+}
 
     //
     // Utility

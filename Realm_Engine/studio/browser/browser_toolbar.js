@@ -34,6 +34,20 @@ export default class BrowserToolbar extends Toolbar {
                 text: "Delete",
                 icon: "🗑",
                 tooltip: "Delete selected entity"
+            })
+
+            .addButton({
+                id: "undo",
+                text: "Undo",
+                icon: "↩️",
+                tooltip: "Undo last change"
+            })
+
+            .addButton({
+                id: "redo",
+                text: "Redo",
+                icon: "↪️",
+                tooltip: "Redo last change"
             });
 
     }

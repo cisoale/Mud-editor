@@ -26,7 +26,7 @@ export default class Editor extends Component {
         super();
 
         this.services = services;
-
+        this.repository = services.get("entityRepository");
         this.splitter = new Splitter();
 
         //
@@ -36,7 +36,9 @@ export default class Editor extends Component {
         this.browser = new ContentBrowser();
 
         this.inspector = new Inspector(
-        this.services.get("schemaLoader")
+            this.services.get("schemaLoader"),
+            this.services.get("entityRepository"),
+            window.realmApplication.context.project
         );
 
         //

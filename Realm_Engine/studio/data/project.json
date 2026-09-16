@@ -1,0 +1,63 @@
+{
+    "version": 1,
+    "repositories": {
+        "entities": [
+            {
+                "id": 1002,
+                "meta": {
+                    "dirty": true
+                },
+                "components": {
+                    "core.identity": {
+                        "name": "Goblin.. R dd  sd",
+                        "description": "A small green creature.",
+                        "category": "Mob"
+                    }
+                }
+            },
+            {
+                "id": 1003,
+                "meta": {
+                    "dirty": true
+                },
+                "components": {
+                    "core.identity": {
+                        "name": "New Entity",
+                        "description": "",
+                        "category": "Unknown"
+                    }
+                }
+            },
+            {
+                "id": 1001,
+                "meta": {
+                    "dirty": true
+                },
+                "components": {
+                    "core.identity": {
+                        "name": "Long Sword TEST 4",
+                        "description": "A sturdy iron sword.",
+                        "category": "Item"
+                    },
+                    "core.stats": {
+                        "health": null,
+                        "speed": null
+                    }
+                }
+            },
+            {
+                "id": 1004,
+                "meta": {
+                    "dirty": true
+                },
+                "components": {
+                    "core.identity": {
+                        "name": "Sword Persistence Test1a",
+                        "description": "A sturdy iron sword.",
+                        "category": "Item"
+                    }
+                }
+            }
+        ]
+    }
+}

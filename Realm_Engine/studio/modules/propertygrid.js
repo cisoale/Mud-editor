@@ -137,11 +137,20 @@ export default class PropertyGrid extends Component {
 
             field.onChange(value => {
 
+                const oldValue = this.object[fieldSchema.id];
+
+                if (oldValue === value)
+                    return;
+
                 this.object[fieldSchema.id] = value;
 
                 if (this.changeCallback) {
 
-                    this.changeCallback(fieldSchema.id, value);
+                    this.changeCallback(
+                        fieldSchema.id,
+                        value,
+                        oldValue
+                    );
 
                 }
 

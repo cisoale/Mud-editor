@@ -20,7 +20,9 @@ export default class FileService {
 
     async load(path) {
 
-        const response = await fetch(path);
+        const response = await fetch(path, {
+            cache: "no-store"
+        });
 
         if (!response.ok) {
 

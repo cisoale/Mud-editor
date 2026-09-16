@@ -39,6 +39,7 @@ import Router from "./router.js";
 
 import SchemaLoader from "../services/schema_loader.js";
 import EntityRepository from "../repositories/entity_repository.js";
+import FileService from "../services/file_service.js";
 
 import DashboardView from "../views/dashboard.js";
 import BrowserView from "../views/browser.js";
@@ -54,7 +55,8 @@ export default class Application {
         this.context = new RealmContext();
         this.layout = null;
         this.router = null;
-       
+        
+        window.realmApplication = this;
 
     }
 
@@ -117,8 +119,36 @@ export default class Application {
         );
 
         this.context.services.register(
+            "fileService",
+            new FileService()
+        );
+
+        const fileService = this.context.services.get("fileService");
+
+        let entityData = null;
+
+        try {
+
+            const projectData =
+                await fileService.load("data/project.json");
+
+            entityData =
+                projectData.repositories?.entities ?? null;
+
+            console.info("[Application] Project data loaded.");
+
+        }
+        catch (error) {
+
+            console.info(
+                "[Application] No saved project found. Using defaults."
+            );
+
+        }
+
+        this.context.services.register(
             "entityRepository",
-            new EntityRepository()
+            new EntityRepository(entityData)
         );
 
     }
@@ -234,6 +264,9 @@ export default class Application {
 createProject() {
 
     this.context.project = new Project();
+
+    this.context.project.fileService =
+        this.context.services.get("fileService");
 
     this.context.project.registerRepository(
         "entities",

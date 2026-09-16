@@ -40,6 +40,8 @@ export default class Project {
 
         this.dirty = false;
 
+        this.fileService = null;
+
     }
 
     registerRepository(name, repository) {
@@ -107,5 +109,36 @@ export default class Project {
         this.dirty = false;
 
     }
+async save() {
 
+    if (!this.fileService) {
+
+        throw new Error("FileService not available.");
+
+    }
+
+    const data = {
+
+        version: this.version,
+
+        repositories: {
+
+            entities: this.getRepository("entities")?.getAll() ?? []
+
+        }
+
+    };
+
+    console.log("[Project] Saving:", data);
+
+    await this.fileService.save(
+        "data/project.json",
+         data
+    );
+
+    console.log("[Project] Save completed.");
+
+    this.dirty = false;
+
+}
 }

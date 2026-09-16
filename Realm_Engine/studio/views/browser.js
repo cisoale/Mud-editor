@@ -38,7 +38,7 @@ export default class BrowserView extends View {
         // Toolbar Events
         //
 
-        this.toolbar.onClick(id => {
+        this.toolbar.onClick(async id => {
 
             switch (id) {
 
@@ -52,6 +52,16 @@ export default class BrowserView extends View {
 
                 case "delete":
                     this.deleteItem();
+                    break;
+
+                case "undo":
+                    await this.editor.inspector.undo();
+                    this.updateToolbar();
+                    break;
+
+                case "redo":
+                    await this.editor.inspector.redo();
+                    this.updateToolbar();
                     break;
 
             }
@@ -83,6 +93,20 @@ export default class BrowserView extends View {
             this.toolbar.disable("duplicate");
             this.toolbar.disable("delete");
 
+        }
+
+        const inspector = this.editor.inspector;
+
+        if (inspector && inspector.historyIndex >= 0) {
+            this.toolbar.enable("undo");
+        } else {
+            this.toolbar.disable("undo");
+        }
+
+        if (inspector && inspector.redoStack.length > 0) {
+            this.toolbar.enable("redo");
+        } else {
+            this.toolbar.disable("redo");
         }
 
     }
@@ -120,7 +144,7 @@ export default class BrowserView extends View {
 
     }
 
-    deleteItem() {
+    async deleteItem() {
 
         const item = this.editor.getSelected();
 
@@ -131,9 +155,11 @@ export default class BrowserView extends View {
 
         this.refresh();
 
+        await this.context.project.save();
+
     }
 
-    duplicateItem() {
+    async duplicateItem() {
 
         const item = this.editor.getSelected();
 
@@ -147,6 +173,8 @@ export default class BrowserView extends View {
         this.editor.select(copy);
 
         this.updateToolbar();
+
+        await this.context.project.save();
 
     }
 
