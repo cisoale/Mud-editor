@@ -59,80 +59,219 @@ export default class Inspector extends Component {
 
     }
 
-    async undo() {
+   async undo() {
 
-        if (this.historyIndex < 0)
-            return false;
+    if (this.historyIndex < 0)
+        return false;
 
-        const change = this.history[this.historyIndex];
-        this.redoStack.push(change);
+    const change = this.history[this.historyIndex];
+
+    // ======================================================
+    // Undo Add Component
+    // ======================================================
+
+    if (change.type === "addComponent") {
 
         const entity = this.repository?.getById(change.entityId);
 
         if (!entity)
             return false;
 
-        const component = Object.values(entity.components || {})
-            .find(component => Object.prototype.hasOwnProperty.call(
-                component,
-                change.fieldId
-            ));
-
-        if (!component)
+        if (!entity.components?.[change.componentId])
             return false;
 
-        component[change.fieldId] = change.oldValue;
+        delete entity.components[change.componentId];
+
         entity.meta.dirty = true;
+
+        this.redoStack.push(change);
+        this.historyIndex--;
 
         if (this.project) {
             this.project.setDirty(true);
             await this.project.save();
         }
-
-        this.historyIndex--;
 
         this.refresh();
 
         return true;
-
     }
-    async redo() {
 
-        if (this.redoStack.length === 0)
-            return false;
+   // ======================================================
+    // Undo Remove Component
+    // ======================================================
 
-        const change = this.redoStack.pop();
+    if (change.type === "removeComponent") {
 
         const entity = this.repository?.getById(change.entityId);
 
         if (!entity)
             return false;
 
-        const component = Object.values(entity.components || {})
-            .find(component => Object.prototype.hasOwnProperty.call(
-                component,
-                change.fieldId
-            ));
+        if (!entity.components)
+            entity.components = {};
 
-        if (!component)
+        if (entity.components[change.componentId])
             return false;
 
-        component[change.fieldId] = change.newValue;
+        entity.components[change.componentId] =
+            structuredClone(change.componentData);
 
         entity.meta.dirty = true;
+
+        this.redoStack.push(change);
+        this.historyIndex--;
 
         if (this.project) {
             this.project.setDirty(true);
             await this.project.save();
         }
+
+        this.refresh();
+
+        return true;
+    }
+    //-----
+    //undo fiel change
+    //
+    const entity = this.repository?.getById(change.entityId);
+
+    if (!entity)
+        return false;
+
+    const component = Object.values(entity.components || {})
+        .find(component =>
+            Object.prototype.hasOwnProperty.call(
+                component,
+                change.fieldId
+            )
+        );
+
+    if (!component)
+        return false;
+
+    component[change.fieldId] = change.oldValue;
+
+    entity.meta.dirty = true;
+
+    this.redoStack.push(change);
+    this.historyIndex--;
+
+    if (this.project) {
+        this.project.setDirty(true);
+        await this.project.save();
+    }
+
+    this.refresh();
+
+    return true;
+}
+    async redo() {
+
+    if (this.redoStack.length === 0)
+        return false;
+
+    const change = this.redoStack.pop();
+
+    // ======================================================
+    // Redo Add Component
+    // ======================================================
+
+    if (change.type === "addComponent") {
+
+        const entity = this.repository?.getById(change.entityId);
+
+        if (!entity)
+            return false;
+
+        if (!entity.components)
+            entity.components = {};
+
+        if (entity.components[change.componentId])
+            return false;
+
+        entity.components[change.componentId] =
+            structuredClone(change.componentData);
+
+        entity.meta.dirty = true;
 
         this.historyIndex++;
 
+        if (this.project) {
+            this.project.setDirty(true);
+            await this.project.save();
+        }
+
+        this.refresh();
+
+                return true;
+    }
+
+    // ======================================================
+    // Redo Remove Component
+    // ======================================================
+
+    if (change.type === "removeComponent") {
+
+        const entity = this.repository?.getById(change.entityId);
+
+        if (!entity)
+            return false;
+
+        if (!entity.components?.[change.componentId])
+            return false;
+
+        delete entity.components[change.componentId];
+
+        entity.meta.dirty = true;
+
+        this.historyIndex++;
+
+        if (this.project) {
+            this.project.setDirty(true);
+            await this.project.save();
+        }
+
         this.refresh();
 
         return true;
     }
 
+    // ======================================================
+    // Redo Field Change
+    // ======================================================
+
+    const entity = this.repository?.getById(change.entityId);
+
+    if (!entity)
+        return false;
+
+    const component = Object.values(entity.components || {})
+        .find(component =>
+            Object.prototype.hasOwnProperty.call(
+                component,
+                change.fieldId
+            )
+        );
+
+    if (!component)
+        return false;
+
+    component[change.fieldId] = change.newValue;
+
+    entity.meta.dirty = true;
+
+    this.historyIndex++;
+
+    if (this.project) {
+        this.project.setDirty(true);
+        await this.project.save();
+    }
+
+    this.refresh();
+
+    return true;
+}
     // ==========================================================
 // Components
 // ==========================================================
@@ -164,16 +303,22 @@ async addComponent(componentId) {
     }
 
     this.entity.components[componentId] = component;
-    console.log(
-    "[Inspector] AFTER ADD:",
-    structuredClone(this.entity.components)
-    );
+
     this.entity.meta.dirty = true;
 
-    this.history = [];
-    this.historyIndex = -1;
-    this.redoStack = [];
+    this.history.push({
+        type: "addComponent",
+        entityId: this.entity.id,
+        componentId,
+        componentData: structuredClone(component)
+    });
 
+    this.historyIndex = this.history.length - 1;
+    this.redoStack = [];
+    if (this.project) {
+    this.project.setDirty(true);
+    await this.project.save();
+}
     this.refresh();
 
     return true;
@@ -190,13 +335,26 @@ async addComponent(componentId) {
     if (!this.entity.components?.[componentId])
         return false;
 
-    delete this.entity.components[componentId];
+    const removedComponent =
+    structuredClone(this.entity.components[componentId]);
 
-    this.entity.meta.dirty = true;
+delete this.entity.components[componentId];
 
-    this.history = [];
-    this.historyIndex = -1;
-    this.redoStack = [];
+this.entity.meta.dirty = true;
+
+if (this.historyIndex < this.history.length - 1) {
+    this.history.splice(this.historyIndex + 1);
+}
+
+this.history.push({
+    type: "removeComponent",
+    entityId: this.entity.id,
+    componentId,
+    componentData: removedComponent
+});
+
+this.historyIndex = this.history.length - 1;
+this.redoStack = [];
 
     if (this.project) {
         this.project.setDirty(true);
